@@ -1,0 +1,20 @@
+name: CD-dev
+on:
+  push:
+    branches:
+      - dev-cd
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # https://github.com/appleboy/ssh-action
+      - name: excuting remote ssh commands
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.AWS_REMOTE_IP }}
+          username: ${{ secrets.AWS_ACCESS_USER }}
+          key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          port: ${{ secrets.AWS_ACCESS_PORT }}
+          script_stop: true
+          script: ./deploy.sh
