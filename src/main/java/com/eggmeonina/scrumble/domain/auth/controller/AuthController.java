@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.eggmeonina.scrumble.domain.auth.controller.generator.OauthGenerator;
 import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Auth 테스트", description = "oauth, 회원가입, 로그인 테스트용 API Controller")
@@ -28,10 +30,12 @@ public class AuthController {
 	}
 
 	@GetMapping("/oauth-url")
-	public ResponseEntity<String> getOauthUrl(@RequestParam OauthType type){
-		OauthGenerator generator = oauthGenerator.get(type.getGeneratorName());
+	@Operation(summary = "oauth 서버 요청용 request url 조회", description = "oauth 서버에 요청할 request url을 조합하여 반환해주는 메서드입니다.",
+		parameters = @Parameter(name = "oauthType", description = "oauth type || GOOGLE : 구글"))
+	public ResponseEntity<String> getOauthUrl(@RequestParam OauthType oauthType){
+		OauthGenerator generator = oauthGenerator.get(oauthType.getGeneratorName());
 		if (generator == null) {
-			return ResponseEntity.badRequest().body("지원하지 않는 로그인 타입입니다.");
+			return ResponseEntity.badRequest().body("지원하지 않는 oauth 타입입니다.");
 		}
 		return ResponseEntity.ok().body(generator.getUrl());
 	}
