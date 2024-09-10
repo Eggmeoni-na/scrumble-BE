@@ -1,6 +1,7 @@
 package com.eggmeonina.scrumble.domain.auth.controller;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +33,15 @@ public class AuthController {
 	@GetMapping("/oauth-url")
 	@Operation(summary = "oauth 서버 요청용 request url 조회", description = "oauth 서버에 요청할 request url을 조합하여 반환해주는 메서드입니다.",
 		parameters = @Parameter(name = "oauthType", description = "oauth type || GOOGLE : 구글"))
-	public ResponseEntity<String> getOauthUrl(@RequestParam OauthType oauthType){
+	public ResponseEntity<Map<String, String>> getOauthUrl(@RequestParam OauthType oauthType){
+		Map<String, String> response = new HashMap<>();
+
 		OauthGenerator generator = oauthGenerator.get(oauthType.getGeneratorName());
 		if (generator == null) {
-			return ResponseEntity.badRequest().body("지원하지 않는 oauth 타입입니다.");
+			response.put("error", "지원하지 않는 oauth 타입입니다.");
+			return ResponseEntity.badRequest().body(response);
 		}
-		return ResponseEntity.ok().body(generator.getUrl());
+		response.put("request-url", generator.getUrl());
+		return ResponseEntity.ok().body(response);
 	}
 }
