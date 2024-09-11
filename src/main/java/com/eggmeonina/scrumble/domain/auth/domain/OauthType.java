@@ -6,8 +6,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum OauthType {
-	GOOGLE("googleGenerator");
+	GOOGLE("googleGenerator", "googleAuthClient");
 
 	private final String generatorName;
+	private final String authClientName;
 
 }
