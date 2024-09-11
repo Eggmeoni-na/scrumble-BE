@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.eggmeonina.scrumble.domain.auth.domain.MemberInformation;
 import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
-import com.eggmeonina.scrumble.domain.auth.dto.SessionMember;
+import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
 
@@ -32,14 +32,14 @@ class MemberServiceTest {
 		MemberInformation request = new MemberInformation("123456789", "test@naver.com", "testName", "");
 
 		// when
-		SessionMember sessionMember = memberService.login(request, OauthType.GOOGLE);
+		LoginMember loginMember = memberService.login(request, OauthType.GOOGLE);
 
 		Member foundMember = memberRepository.findByOauthId(request.getOauthId()).get();
 
 		// then
 		assertSoftly(softly -> {
-			softly.assertThat(sessionMember.getMemberId()).isEqualTo(foundMember.getId());
-			softly.assertThat(sessionMember.getEmail()).isEqualTo(foundMember.getEmail());
+			softly.assertThat(loginMember.getMemberId()).isEqualTo(foundMember.getId());
+			softly.assertThat(loginMember.getEmail()).isEqualTo(foundMember.getEmail());
 		});
 	}
 
