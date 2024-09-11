@@ -15,7 +15,7 @@ spring:
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
@@ -29,6 +29,12 @@ spring:
         config:
           default:
             loggerLevel: basic
+  sql:
+    init:
+      schema-locations: classpath:db/shema.sql
+      data-locations: classpath:db/data.sql
+      mode: always                                  # 서버 재기동 마다 schema, data 새로 생성
+
 
 springdoc:
   version: '@project.version@'
@@ -43,5 +49,5 @@ springdoc:
     disable-swagger-default-url: true
     doc-expansion: none
   paths-to-match:
-    - /api/** # /api/**로 시작하는 모든 경로가 문서화된다.
+    - /** # /api/**로 시작하는 모든 경로가 문서화된다.
 
