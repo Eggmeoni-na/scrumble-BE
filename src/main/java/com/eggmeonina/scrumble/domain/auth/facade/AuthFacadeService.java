@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.eggmeonina.scrumble.domain.auth.client.AuthClient;
 import com.eggmeonina.scrumble.domain.auth.dto.GoogleAuthClientResponse;
+import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
 import com.eggmeonina.scrumble.domain.auth.dto.OauthRequest;
-import com.eggmeonina.scrumble.domain.auth.dto.SessionMember;
 import com.eggmeonina.scrumble.domain.auth.domain.MemberInformation;
 import com.eggmeonina.scrumble.domain.member.service.MemberService;
 
@@ -25,7 +25,7 @@ public class AuthFacadeService {
 		this.authClients = Collections.unmodifiableMap(authClients);
 	}
 
-	public SessionMember getToken(OauthRequest request){
+	public LoginMember getToken(OauthRequest request){
 		AuthClient authClient = authClients.get(request.getOauthType().getAuthClientName());
 		if(authClient == null){
 			throw new RuntimeException("지원하지 않는 type입니다.");

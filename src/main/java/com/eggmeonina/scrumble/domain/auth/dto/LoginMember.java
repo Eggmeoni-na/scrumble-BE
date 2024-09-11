@@ -7,11 +7,12 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class SessionMember {
+public class LoginMember {
 	private Long memberId;
 	private String email;
+	private String name;
 
-	public static SessionMember from(Member member){
-		return new SessionMember(member.getId(), member.getEmail());
+	public static LoginMember from(Member member){
+		return new LoginMember(member.getId(), member.getEmail(), member.getName());
 	}
 }
