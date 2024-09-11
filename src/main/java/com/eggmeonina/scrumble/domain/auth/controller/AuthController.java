@@ -27,7 +27,7 @@ import jakarta.servlet.http.HttpSession;
 
 @Tag(name = "Auth 테스트", description = "oauth, 회원가입, 로그인 테스트용 API Controller")
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 public class AuthController {
 
 	private final Map<String, OauthGenerator> oauthGenerators;
@@ -65,6 +65,17 @@ public class AuthController {
 		SessionMember sessionMember = authFacadeService.getToken(request);
 		HttpSession session = servletRequest.getSession(true);
 		session.setAttribute(SessionKey.LOGIN_USER.name(), sessionMember);
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/logout")
+	@Operation(summary = "회원의 로그아웃을 진행한다.", description = "로그아웃을 위해 세션을 만료한다.")
+	public ResponseEntity<String> logout(HttpServletRequest servletRequest){
+		HttpSession session = servletRequest.getSession(false);
+		if (session == null) {
+			throw new IllegalStateException("유효하지 않은 요청입니다.");
+		}
+		session.invalidate();
 		return ResponseEntity.ok().build();
 	}
 }
