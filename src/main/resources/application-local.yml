@@ -23,6 +23,13 @@ spring:
       hibernate.format_sql: true
       #hibernate.dialect: org.hibernate.dialect.H2Dialect
 
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            loggerLevel: basic
+
 springdoc:
   version: '@project.version@'
   api-docs:
@@ -37,3 +44,4 @@ springdoc:
     doc-expansion: none
   paths-to-match:
     - /api/** # /api/**로 시작하는 모든 경로가 문서화된다.
+
