@@ -1,10 +1,13 @@
 package com.eggmeonina.scrumble.domain.member.domain;
 
+import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
+
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.eggmeonina.scrumble.common.domain.BaseEntity;
+import com.eggmeonina.scrumble.common.exception.MemberException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -60,7 +63,7 @@ public class Member extends BaseEntity {
 
 	public void withdraw(){
 		if(this.memberStatus == MemberStatus.WITHDRAW){
-			throw new RuntimeException("이미 탈퇴한 회원입니다.");
+			throw new MemberException(MEMBER_ALREADY_WITHDRAW);
 		}
 		this.memberStatus = MemberStatus.WITHDRAW;
 		this.leavedAt = LocalDateTime.now();

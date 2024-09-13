@@ -14,6 +14,8 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import com.eggmeonina.scrumble.common.exception.ErrorCode;
+import com.eggmeonina.scrumble.common.exception.MemberException;
 import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
 import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
 import com.eggmeonina.scrumble.domain.member.domain.SessionKey;
@@ -50,7 +52,25 @@ class MemberControllerTest extends WebMvcTestHelper {
 			.andExpect(status().isOk());
 	}
 
-	//TODO : 에러 핸들러가 추가되면 실패한 경우도 구현
+	@Test
+	@DisplayName("회원 조회 실패 시, not found 오류가 발생한다.")
+	void findMember_fail_throwsNotFoundException() throws Exception {
+		// given
+		MemberResponse response = new MemberResponse(OauthType.GOOGLE, "test@test.com");
+		given(memberService.findMember(1L)).willThrow(new MemberException(ErrorCode.MEMBER_NOT_FOUND));
+
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute(
+			SessionKey.LOGIN_USER.name(), new LoginMember(1L, response.getEmail(), "test")
+		);
+
+		// when, then
+		mockMvc.perform(get("/members/me").session(session))
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$.message").value(ErrorCode.MEMBER_NOT_FOUND.getMessage()))
+			.andDo(print())
+			.andExpect(status().isNotFound());
+	}
 
 	@Test
 	@DisplayName("회원 탈퇴 요청 시, 세션이 만료된다")
@@ -67,6 +87,5 @@ class MemberControllerTest extends WebMvcTestHelper {
 			.andDo(print())
 			.andExpect(status().isOk());
 	}
-
 
 }

@@ -1,5 +1,6 @@
 package com.eggmeonina.scrumble.common.resolver;
 
+import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.BDDAssertions.*;
 import static org.assertj.core.api.SoftAssertions.*;
@@ -20,6 +21,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 
 import com.eggmeonina.scrumble.common.anotation.Member;
+import com.eggmeonina.scrumble.common.exception.AuthException;
 import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
 import com.eggmeonina.scrumble.domain.member.domain.SessionKey;
 
@@ -115,7 +117,8 @@ class MemberArgumentResolverTest {
 		// when, then
 		thenThrownBy(
 			()-> memberArgumentResolver.resolveArgument(null, null, webRequest, null))
-			.isInstanceOf(RuntimeException.class);
+			.isInstanceOf(AuthException.class)
+			.hasMessageContaining(UNAUTHORIZED_ACCESS.getMessage());
 	}
 
 	private MethodParameter getMethodParameter(String methodName, Class<?> parameter) throws NoSuchMethodException {

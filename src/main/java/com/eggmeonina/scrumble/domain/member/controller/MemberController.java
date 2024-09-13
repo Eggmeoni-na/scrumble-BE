@@ -1,5 +1,7 @@
 package com.eggmeonina.scrumble.domain.member.controller;
 
+import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eggmeonina.scrumble.common.anotation.Member;
 import com.eggmeonina.scrumble.common.domain.ApiResponse;
+import com.eggmeonina.scrumble.common.exception.MemberException;
 import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
 import com.eggmeonina.scrumble.domain.member.dto.MemberResponse;
 import com.eggmeonina.scrumble.domain.member.service.MemberService;
@@ -39,7 +42,7 @@ public class MemberController {
 		HttpServletRequest servletRequest){
 		HttpSession session = servletRequest.getSession(false);
 		if (session == null) {
-			throw new IllegalStateException("유효하지 않은 요청입니다.");
+			throw new MemberException(UNAUTHORIZED_ACCESS);
 		}
 		memberService.withdraw(member.getMemberId());
 		session.invalidate();
