@@ -1,5 +1,6 @@
 package com.eggmeonina.scrumble.domain.member.service;
 
+import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.SoftAssertions.*;
 
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.eggmeonina.scrumble.common.exception.MemberException;
 import com.eggmeonina.scrumble.domain.auth.domain.MemberInformation;
 import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
 import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
@@ -88,7 +90,8 @@ class MemberServiceTest {
 	void findMember_fail_throwsException() {
 		// when
 		assertThatThrownBy(() ->memberService.findMember(1L))
-			.isInstanceOf(RuntimeException.class);
+			.isInstanceOf(MemberException.class)
+			.hasMessageContaining(MEMBER_NOT_FOUND.getMessage());
 	}
 
 	@Test
@@ -113,7 +116,8 @@ class MemberServiceTest {
 	@DisplayName("존재하지 않는 회원을 탈퇴 요청하면 예외가 발생한다.")
 	void withdraw_fail_throwsException() {
 		assertThatThrownBy(()-> memberService.withdraw(1L))
-			.isInstanceOf(RuntimeException.class);
+			.isInstanceOf(MemberException.class)
+			.hasMessageContaining(MEMBER_NOT_FOUND.getMessage());
 	}
 
 }
