@@ -1,8 +1,11 @@
 package com.eggmeonina.scrumble.domain.member.service;
 
+import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.eggmeonina.scrumble.common.exception.MemberException;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
 import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
@@ -28,14 +31,14 @@ public class MemberService {
 
 	public MemberResponse findMember(Long memberId){
 		Member foundMember = memberRepository.findById(memberId)
-			.orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 		return MemberResponse.from(foundMember);
 	}
 
 	@Transactional
 	public void withdraw(Long memberId) {
 		Member foundMember = memberRepository.findById(memberId)
-			.orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 		foundMember.withdraw();
 	}
 }

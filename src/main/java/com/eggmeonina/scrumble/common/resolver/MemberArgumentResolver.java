@@ -1,5 +1,7 @@
 package com.eggmeonina.scrumble.common.resolver;
 
+import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
+
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -7,6 +9,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.eggmeonina.scrumble.common.anotation.Member;
+import com.eggmeonina.scrumble.common.exception.AuthException;
 import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
 import com.eggmeonina.scrumble.domain.member.domain.SessionKey;
 
@@ -30,7 +33,7 @@ public class MemberArgumentResolver implements HandlerMethodArgumentResolver {
 		HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 		HttpSession session = request.getSession(false);
 		if (session == null) {
-			throw new RuntimeException("로그인하지 않은 회원입니다.");
+			throw new AuthException(UNAUTHORIZED_ACCESS);
 		}
 		return session.getAttribute(SessionKey.LOGIN_USER.name());
 	}

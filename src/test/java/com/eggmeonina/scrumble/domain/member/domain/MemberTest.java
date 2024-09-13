@@ -1,5 +1,6 @@
 package com.eggmeonina.scrumble.domain.member.domain;
 
+import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
@@ -7,6 +8,7 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.eggmeonina.scrumble.common.exception.MemberException;
 import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
 
 class MemberTest {
@@ -45,6 +47,7 @@ class MemberTest {
 
 		// when
 		assertThatThrownBy(withdrawMember::withdraw)
-			.isInstanceOf(RuntimeException.class);
+			.isInstanceOf(MemberException.class)
+			.hasMessageContaining(MEMBER_ALREADY_WITHDRAW.getMessage());
 	}
 }

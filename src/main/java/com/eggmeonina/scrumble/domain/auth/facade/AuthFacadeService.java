@@ -1,11 +1,14 @@
 package com.eggmeonina.scrumble.domain.auth.facade;
 
+import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
+
 import java.util.Collections;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.eggmeonina.scrumble.common.exception.AuthException;
 import com.eggmeonina.scrumble.domain.auth.client.AuthClient;
 import com.eggmeonina.scrumble.domain.auth.dto.GoogleAuthClientResponse;
 import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
@@ -28,7 +31,7 @@ public class AuthFacadeService {
 	public LoginMember getToken(OauthRequest request){
 		AuthClient authClient = authClients.get(request.getOauthType().getAuthClientName());
 		if(authClient == null){
-			throw new RuntimeException("지원하지 않는 type입니다.");
+			throw new AuthException(TYPE_NOT_SUPPORTED);
 		}
 		GoogleAuthClientResponse accessToken = authClient.getAccessToken(request.getCode(), request.getScope());
 		String token = String.format("%s %s", accessToken.getTokenType(), accessToken.getAccessToken());
