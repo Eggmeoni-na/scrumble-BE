@@ -52,5 +52,21 @@ class MemberControllerTest extends WebMvcTestHelper {
 
 	//TODO : 에러 핸들러가 추가되면 실패한 경우도 구현
 
+	@Test
+	@DisplayName("회원 탈퇴 요청 시, 세션이 만료된다")
+	void withdrawMember_success_InvalidSession() throws Exception {
+		// given
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute(
+			SessionKey.LOGIN_USER.name(), new LoginMember(1L, "test@test.com", "test")
+		);
+		
+		// when, then
+		mockMvc.perform(delete("/members").session(session))
+			.andExpect(request().sessionAttributeDoesNotExist(SessionKey.LOGIN_USER.name())) // 세션 만료 확인
+			.andDo(print())
+			.andExpect(status().isOk());
+	}
+
 
 }
