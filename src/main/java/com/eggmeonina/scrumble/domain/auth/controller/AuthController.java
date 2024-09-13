@@ -1,5 +1,7 @@
 package com.eggmeonina.scrumble.domain.auth.controller;
 
+import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eggmeonina.scrumble.common.domain.ApiResponse;
+import com.eggmeonina.scrumble.common.exception.AuthException;
 import com.eggmeonina.scrumble.domain.auth.controller.generator.OauthGenerator;
 import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
 import com.eggmeonina.scrumble.domain.auth.dto.OauthRequest;
@@ -45,10 +48,9 @@ public class AuthController {
 		parameters = @Parameter(name = "oauthType", description = "oauth type || GOOGLE : 구글"))
 	public ApiResponse<Map<String, String>> getOauthUrl(@RequestParam OauthType oauthType) {
 		Map<String, String> response = new HashMap<>();
-
 		OauthGenerator generator = oauthGenerators.get(oauthType.getGeneratorName());
 		if (generator == null) {
-			throw new RuntimeException("지원하지 않는 type입니다.");
+			throw new AuthException(TYPE_NOT_SUPPORTED);
 		}
 		response.put("request-url", generator.getUrl());
 		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), response);
@@ -60,8 +62,7 @@ public class AuthController {
 		@Parameter(name = "code", description = "oauth 서버에서 응답된 code"),
 		@Parameter(name = "scope", description = "oauth 서버에서 응답된 scope")})
 	public ApiResponse<Void> login(
-		HttpServletRequest servletRequest,
-		@RequestBody OauthRequest request
+		HttpServletRequest servletRequest, @RequestBody OauthRequest request
 	) {
 		LoginMember loginMember = authFacadeService.getToken(request);
 		HttpSession session = servletRequest.getSession(true);
@@ -74,7 +75,7 @@ public class AuthController {
 	public ApiResponse<Void> logout(HttpServletRequest servletRequest){
 		HttpSession session = servletRequest.getSession(false);
 		if (session == null) {
-			throw new IllegalStateException("유효하지 않은 요청입니다.");
+			throw new AuthException(UNAUTHORIZED_ACCESS);
 		}
 		session.invalidate();
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
