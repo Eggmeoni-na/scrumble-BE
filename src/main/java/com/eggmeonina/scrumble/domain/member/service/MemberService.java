@@ -31,4 +31,11 @@ public class MemberService {
 			.orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
 		return MemberResponse.from(foundMember);
 	}
+
+	@Transactional
+	public void withdraw(Long memberId) {
+		Member foundMember = memberRepository.findById(memberId)
+			.orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
+		foundMember.withdraw();
+	}
 }

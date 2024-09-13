@@ -57,4 +57,12 @@ public class Member extends BaseEntity {
 		this.memberStatus = memberStatus;
 		this.joinedAt = joinedAt;
 	}
+
+	public void withdraw(){
+		if(this.memberStatus == MemberStatus.WITHDRAW){
+			throw new RuntimeException("이미 탈퇴한 회원입니다.");
+		}
+		this.memberStatus = MemberStatus.WITHDRAW;
+		this.leavedAt = LocalDateTime.now();
+	}
 }
