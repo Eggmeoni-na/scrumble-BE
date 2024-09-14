@@ -17,4 +17,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 		 WHERE m.memberStatus = 'JOIN' AND m.oauthInformation.oauthId = :oauthId
 		""")
 	Optional<Member> findByOauthId(final String oauthId);
+
+	@Query("""
+		SELECT m
+		  FROM Member m
+		 WHERE m.memberStatus = 'JOIN' AND m.email = :email
+		""")
+	Optional<Member> findByEmail(final String email);
 }
