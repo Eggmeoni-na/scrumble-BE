@@ -31,8 +31,8 @@ spring:
             loggerLevel: basic
   sql:
     init:
-      schema-locations: classpath:db/shema.sql
-      data-locations: classpath:db/data.sql
+      schema-locations: classpath:db/h2/schema.sql
+      data-locations: classpath:db/h2/data.sql
       mode: always                                  # 서버 재기동 마다 schema, data 새로 생성
 
 

@@ -36,8 +36,8 @@ public class Membership extends BaseEntity {
 	@JoinColumn(name = "member_id")
 	private Member member;
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "group_id")
-	private Group group;
+	@JoinColumn(name = "squad_id")
+	private Squad squad;
 	@Enumerated(EnumType.STRING)
 	@Column(name = "membership_status", nullable = false)
 	private MembershipStatus membershipStatus;
@@ -46,13 +46,13 @@ public class Membership extends BaseEntity {
 	private MembershipRole membershipRole;
 
 	@Builder(builderMethodName = "create")
-	public Membership(Member member, Group group, MembershipStatus membershipStatus, MembershipRole membershipRole) {
+	public Membership(Member member, Squad squad, MembershipStatus membershipStatus, MembershipRole membershipRole) {
 		this.membershipStatus = membershipStatus;
 		this.membershipRole = membershipRole;
-		if(member == null || group == null){
+		if(member == null || squad == null){
 			throw new MembershipException(MEMBER_OR_GROUP_NOT_FOUND);
 		}
 		this.member = member;
-		this.group = group;
+		this.squad = squad;
 	}
 }
