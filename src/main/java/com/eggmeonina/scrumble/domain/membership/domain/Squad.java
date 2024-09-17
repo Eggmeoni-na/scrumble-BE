@@ -15,22 +15,22 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "groups")
+@Table(name = "squad")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Group extends BaseEntity {
+public class Squad extends BaseEntity {
 
 	@Id
-	@Column(name = "group_id")
+	@Column(name = "squad_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column(name = "group_name", nullable = false)
-	private String groupName;
+	@Column(name = "squad_name", nullable = false)
+	private String squadName;
 	@Column(name = "deleted_flag", nullable = false)
 	private boolean deletedFlag;
 
 	@Builder(builderMethodName = "create")
-	public Group(String groupName, boolean deletedFlag) {
-		this.groupName = groupName;
+	public Squad(String squadName, boolean deletedFlag) {
+		this.squadName = squadName;
 		this.deletedFlag = deletedFlag;
 	}
 }

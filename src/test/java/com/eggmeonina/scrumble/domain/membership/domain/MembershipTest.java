@@ -22,19 +22,19 @@ class MembershipTest {
 		// given
 		Member newMember = new Member("test@test.com", "test", "", new OauthInformation("1234", OauthType.GOOGLE),
 			MemberStatus.JOIN, LocalDateTime.now());
-		Group newGroup = new Group("test group", false);
+		Squad newSquad = new Squad("test group", false);
 
 		// when
 		Membership newMembership = Membership.create()
 			.member(newMember)
 			.membershipRole(MembershipRole.LEADER)
 			.membershipStatus(MembershipStatus.JOIN)
-			.group(newGroup)
+			.squad(newSquad)
 			.build();
 
 		// then
 		// 연관관계 편의 메서드가 builder 내부에서 정상 작동하는지 확인한다.
-		assertThat(newMembership.getGroup().getGroupName()).isEqualTo(newGroup.getGroupName());
+		assertThat(newMembership.getSquad().getSquadName()).isEqualTo(newSquad.getSquadName());
 		assertThat(newMembership.getMember().getName()).isEqualTo(newMember.getName());
 	}
 
@@ -42,14 +42,14 @@ class MembershipTest {
 	@DisplayName("Membership 객체 생성 시 Member 객체를 누락하면 예외가 발생한다")
 	void constructorWithoutMember_fail_throwsException() {
 		// given
-		Group newGroup = new Group("test group", false);
+		Squad newSquad = new Squad("test group", false);
 
 		// when, then
 		assertThatThrownBy(
 			Membership.create()
 				.membershipRole(MembershipRole.LEADER)
 				.membershipStatus(MembershipStatus.JOIN)
-				.group(newGroup)::build)
+				.squad(newSquad)::build)
 			.isInstanceOf(MembershipException.class)
 			.hasMessageContaining(ErrorCode.MEMBER_OR_GROUP_NOT_FOUND.getMessage());
 	}
