@@ -25,8 +25,12 @@ public enum ErrorCode {
 	 * 회원
 	 */
 	MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
-	MEMBER_ALREADY_WITHDRAW(HttpStatus.BAD_REQUEST, "이미 탈퇴한 회원입니다.");
+	MEMBER_ALREADY_WITHDRAW(HttpStatus.BAD_REQUEST, "이미 탈퇴한 회원입니다."),
 
+	/**
+	 * 그룹
+	 */
+	MEMBER_OR_GROUP_NOT_FOUND(HttpStatus.BAD_REQUEST, "회원 또는 그룹이 누락되었습니다.");
 
 	private final HttpStatus status;
 	private final String message;
