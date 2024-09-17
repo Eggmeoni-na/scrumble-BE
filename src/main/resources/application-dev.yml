@@ -2,9 +2,10 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ENC(Q3QV4xti1Of2iRAYsQoCgft4ulzL9iHjXY1vXNOuBgLjlwpztOQF+7frF/1TzXv7UDsetmNUIbk=)
-    username: ENC(Zzn6JPJE+5TBkEOC/aon5gW/gukk0qY6)
-    password: ENC(yIWPVkWzhzNz/56lEOW6JWEYvlhzy/n0)
+    # url 끝에 database 지정
+    url: ENC(guF68Y6iOlHDaD8ZfdcwcACoAGIWz8k3g5CO2OK/JcV32rdi4vJS3AzHN+9HV61HYcCasQ3RdsY=)
+    username: ENC(Dq0TfNx5U8TpiPtx4Rl8Luf+kStsMzpo)
+    password: ENC(OYwM8ItpW3jAocG6FL3KbBIeppCejcOw)
 
   jpa:
     open-in-view: true
@@ -18,8 +19,8 @@ spring:
 
   sql:
     init:
-      schema-locations: classpath:db/shema.sql
-      data-locations: classpath:db/data.sql
+      schema-locations: classpath:db/mysql/schema.sql
+      data-locations: classpath:db/mysql/data.sql
       mode: always                                  # 서버 재기동 마다 schema, data 새로 생성
 
 springdoc:
