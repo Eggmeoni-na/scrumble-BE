@@ -22,7 +22,7 @@ CREATE TABLE membership
 (
     membership_id     BIGINT      NOT NULL AUTO_INCREMENT,
     member_id         BIGINT      NOT NULL,
-    group_id          BIGINT      NOT NULL,
+    squad_id          BIGINT      NOT NULL,
     membership_status VARCHAR(50) NOT NULL DEFAULT 'INVITING',
     membership_role   VARCHAR(50) NOT NULL DEFAULT 'NORMAL',
     created_at        TIMESTAMP,
@@ -30,16 +30,16 @@ CREATE TABLE membership
     PRIMARY KEY (membership_id)
 );
 
-DROP TABLE IF EXISTS groups;
+DROP TABLE IF EXISTS squad;
 
-CREATE TABLE groups
+CREATE TABLE squad
 (
-    group_id     BIGINT       NOT NULL AUTO_INCREMENT,
-    group_name   VARCHAR(100) NOT NULL,
+    squad_id     BIGINT       NOT NULL AUTO_INCREMENT,
+    squad_name   VARCHAR(100) NOT NULL,
     deleted_flag TINYINT      NOT NULL DEFAULT 0,
     created_at   TIMESTAMP,
     updated_at   TIMESTAMP,
-    PRIMARY KEY (group_id)
+    PRIMARY KEY (squad_id)
 );
 
 
