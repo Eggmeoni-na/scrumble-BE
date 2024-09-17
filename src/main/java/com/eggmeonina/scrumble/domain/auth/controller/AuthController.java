@@ -52,7 +52,7 @@ public class AuthController {
 		if (generator == null) {
 			throw new AuthException(TYPE_NOT_SUPPORTED);
 		}
-		response.put("redirect-url", generator.getUrl());
+		response.put("redirectUrl", generator.getUrl());
 		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), response);
 	}
 
