@@ -18,7 +18,6 @@ import com.eggmeonina.scrumble.domain.member.domain.OauthInformation;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
 import com.eggmeonina.scrumble.domain.membership.domain.Membership;
 import com.eggmeonina.scrumble.domain.membership.domain.Squad;
-import com.eggmeonina.scrumble.domain.membership.dto.SquadCreateRequest;
 import com.eggmeonina.scrumble.domain.membership.repository.MembershipRepository;
 import com.eggmeonina.scrumble.domain.membership.repository.SquadRepository;
 import com.eggmeonina.scrumble.helper.IntegrationTestHelper;
@@ -37,20 +36,7 @@ class MembershipServiceTest extends IntegrationTestHelper {
 	@Autowired
 	private SquadRepository squadRepository;
 
-	@Test
-	@DisplayName("스쿼드를 생성한다")
-	void createSquad_success_returnsSquadId() {
-		// given
-		SquadCreateRequest request = new SquadCreateRequest("테스트 스쿼드");
 
-		// when
-		Long squadId = membershipService.createSquad(request);
-
-		Squad foundSquad = squadRepository.findById(squadId).get();
-
-		// then
-		assertThat(squadId).isEqualTo(foundSquad.getId());
-	}
 
 	@Test
 	@DisplayName("회원과 스쿼드로 멤버십을 생성한다")

@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.eggmeonina.scrumble.domain.membership.dto.SquadCreateRequest;
 import com.eggmeonina.scrumble.domain.membership.service.MembershipService;
+import com.eggmeonina.scrumble.domain.membership.service.SquadService;
 
 @ExtendWith(MockitoExtension.class)
 class MembershipFacadeServiceTest {
@@ -21,6 +22,9 @@ class MembershipFacadeServiceTest {
 
 	@Mock
 	private MembershipService membershipService;
+
+	@Mock
+	private SquadService squadService;
 
 
 	@Test
@@ -32,7 +36,7 @@ class MembershipFacadeServiceTest {
 		Long membershipId = 1L;
 		SquadCreateRequest request = new SquadCreateRequest("테스트 스쿼드");
 
-		given(membershipService.createSquad(any())).willReturn(squadId);
+		given(squadService.createSquad(any())).willReturn(squadId);
 		given(membershipService.createMembership(anyLong(), anyLong())).willReturn(membershipId);
 
 		// when
