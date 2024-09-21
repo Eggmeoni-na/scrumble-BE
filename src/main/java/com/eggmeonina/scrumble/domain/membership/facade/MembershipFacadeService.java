@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.eggmeonina.scrumble.domain.membership.dto.SquadCreateRequest;
 import com.eggmeonina.scrumble.domain.membership.service.MembershipService;
+import com.eggmeonina.scrumble.domain.membership.service.SquadService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -12,12 +13,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MembershipFacadeService {
 
+	private final SquadService squadService;
 	private final MembershipService membershipService;
 
 	@Transactional
 	public Long createSquad(Long memberId, SquadCreateRequest request){
 		// 스쿼드를 생성한다.
-		Long squadId = membershipService.createSquad(request);
+		Long squadId = squadService.createSquad(request);
 		// 스쿼드장을 등록한다.
 		membershipService.createMembership(memberId, squadId);
 		return squadId;

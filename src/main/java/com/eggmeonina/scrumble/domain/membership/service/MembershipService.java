@@ -13,7 +13,6 @@ import com.eggmeonina.scrumble.domain.membership.domain.Membership;
 import com.eggmeonina.scrumble.domain.membership.domain.MembershipRole;
 import com.eggmeonina.scrumble.domain.membership.domain.MembershipStatus;
 import com.eggmeonina.scrumble.domain.membership.domain.Squad;
-import com.eggmeonina.scrumble.domain.membership.dto.SquadCreateRequest;
 import com.eggmeonina.scrumble.domain.membership.repository.SquadRepository;
 import com.eggmeonina.scrumble.domain.membership.repository.MembershipRepository;
 
@@ -27,13 +26,6 @@ public class MembershipService {
 	private final MemberRepository memberRepository;
 	private final MembershipRepository membershipRepository;
 	private final SquadRepository squadRepository;
-
-	@Transactional
-	public Long createSquad(SquadCreateRequest request){
-		Squad newSquad = SquadCreateRequest.to(request);
-		squadRepository.save(newSquad);
-		return newSquad.getId();
-	}
 
 	@Transactional
 	public Long createMembership(Long memberId, Long squadId){

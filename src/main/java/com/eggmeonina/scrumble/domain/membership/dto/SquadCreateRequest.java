@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 public class SquadCreateRequest {
 
 	@NotBlank
-	private String groupName;
+	private String squadName;
 
 	public static Squad to(SquadCreateRequest request){
 		return Squad.create()
-			.squadName(request.getGroupName())
+			.squadName(request.getSquadName())
 			.deletedFlag(false)
 			.build();
 	}
