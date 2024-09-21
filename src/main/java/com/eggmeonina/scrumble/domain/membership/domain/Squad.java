@@ -33,4 +33,10 @@ public class Squad extends BaseEntity {
 		this.squadName = squadName;
 		this.deletedFlag = deletedFlag;
 	}
+
+	public Squad(Long id, String squadName, boolean deletedFlag) {
+		this.id = id;
+		this.squadName = squadName;
+		this.deletedFlag = deletedFlag;
+	}
 }
