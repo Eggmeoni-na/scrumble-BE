@@ -1,5 +1,6 @@
 package com.eggmeonina.scrumble.domain.membership.domain;
 
+import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
@@ -7,7 +8,6 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.eggmeonina.scrumble.common.exception.ErrorCode;
 import com.eggmeonina.scrumble.common.exception.MembershipException;
 import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
@@ -51,7 +51,7 @@ class MembershipTest {
 				.membershipStatus(MembershipStatus.JOIN)
 				.squad(newSquad)::build)
 			.isInstanceOf(MembershipException.class)
-			.hasMessageContaining(ErrorCode.MEMBER_OR_GROUP_NOT_FOUND.getMessage());
+			.hasMessageContaining(MEMBER_OR_SQUAD_NOT_FOUND.getMessage());
 	}
 
 	@Test
@@ -68,7 +68,7 @@ class MembershipTest {
 				.membershipStatus(MembershipStatus.JOIN)
 				.member(newMember)::build)
 			.isInstanceOf(MembershipException.class)
-			.hasMessageContaining(ErrorCode.MEMBER_OR_GROUP_NOT_FOUND.getMessage());
+			.hasMessageContaining(MEMBER_OR_SQUAD_NOT_FOUND.getMessage());
 	}
 
 }

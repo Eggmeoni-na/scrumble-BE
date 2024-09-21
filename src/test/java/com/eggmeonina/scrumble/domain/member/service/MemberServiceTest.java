@@ -8,8 +8,6 @@ import static org.assertj.core.api.SoftAssertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.eggmeonina.scrumble.common.exception.MemberException;
 import com.eggmeonina.scrumble.domain.auth.domain.MemberInformation;
@@ -19,10 +17,9 @@ import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.domain.MemberStatus;
 import com.eggmeonina.scrumble.domain.member.dto.MemberResponse;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
+import com.eggmeonina.scrumble.helper.IntegrationTestHelper;
 
-@SpringBootTest
-@Transactional
-class MemberServiceTest {
+class MemberServiceTest extends IntegrationTestHelper {
 
 	@Autowired
 	private MemberService memberService;
