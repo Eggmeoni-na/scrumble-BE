@@ -50,7 +50,7 @@ public class Membership extends BaseEntity {
 		this.membershipStatus = membershipStatus;
 		this.membershipRole = membershipRole;
 		if(member == null || squad == null){
-			throw new MembershipException(MEMBER_OR_GROUP_NOT_FOUND);
+			throw new MembershipException(MEMBER_OR_SQUAD_NOT_FOUND);
 		}
 		this.member = member;
 		this.squad = squad;
