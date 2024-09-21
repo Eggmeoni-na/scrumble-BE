@@ -23,7 +23,7 @@ import com.eggmeonina.scrumble.domain.member.dto.MemberResponse;
 import com.eggmeonina.scrumble.domain.member.service.MemberService;
 import com.eggmeonina.scrumble.helper.WebMvcTestHelper;
 
-class MemberControllerTest extends WebMvcTestHelper {
+class UserControllerTest extends WebMvcTestHelper {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -44,7 +44,7 @@ class MemberControllerTest extends WebMvcTestHelper {
 		);
 
 		// when, then
-		mockMvc.perform(get("/members/me").session(session))
+		mockMvc.perform(get("/api/users/me").session(session))
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 			.andExpect(MockMvcResultMatchers.jsonPath("$.data.oauthType").value(response.getOauthType().name()))
 			.andExpect(MockMvcResultMatchers.jsonPath("$.data.email").value(response.getEmail()))
@@ -65,7 +65,7 @@ class MemberControllerTest extends WebMvcTestHelper {
 		);
 
 		// when, then
-		mockMvc.perform(get("/members/me").session(session))
+		mockMvc.perform(get("/api/users/me").session(session))
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$.message").value(ErrorCode.MEMBER_NOT_FOUND.getMessage()))
 			.andDo(print())
@@ -82,7 +82,7 @@ class MemberControllerTest extends WebMvcTestHelper {
 		);
 		
 		// when, then
-		mockMvc.perform(delete("/members").session(session))
+		mockMvc.perform(delete("/api/users").session(session))
 			.andExpect(request().sessionAttributeDoesNotExist(SessionKey.LOGIN_USER.name())) // 세션 만료 확인
 			.andDo(print())
 			.andExpect(status().isOk());
