@@ -24,9 +24,9 @@ import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Member 테스트", description = "회원조회, 회원탈퇴 등 API Controller")
 @RestController
-@RequestMapping("/members")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
-public class MemberController {
+public class UserController {
 
 	private final MemberService memberService;
 
