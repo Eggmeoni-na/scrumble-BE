@@ -31,7 +31,7 @@ import jakarta.servlet.http.HttpSession;
 
 @Tag(name = "Auth 테스트", description = "oauth, 회원가입, 로그인 테스트용 API Controller")
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
 	private final Map<String, OauthGenerator> oauthGenerators;
