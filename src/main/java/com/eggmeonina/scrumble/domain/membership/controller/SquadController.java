@@ -15,6 +15,7 @@ import com.eggmeonina.scrumble.domain.membership.dto.SquadCreateRequest;
 import com.eggmeonina.scrumble.domain.membership.facade.MembershipFacadeService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,10 @@ public class SquadController {
 
 	@PostMapping
 	@Operation(summary = "스쿼드를 생성한다", description = "스쿼드를 생성하면서 스쿼드장을 같이 생성한다.")
-	public ApiResponse<Map<String, Long>> createSquad(@Member LoginMember member, @RequestBody @Valid SquadCreateRequest request){
+	public ApiResponse<Map<String, Long>> createSquad(
+		@Parameter(hidden = true) @Member LoginMember member,
+		@RequestBody @Valid SquadCreateRequest request
+	) {
 		Long squadId = membershipFacadeService.createSquad(member.getMemberId(), request);
 		return ApiResponse.createSuccessResponse(HttpStatus.CREATED.value(), Map.of("squadId", squadId));
 	}
