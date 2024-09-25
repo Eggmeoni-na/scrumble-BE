@@ -54,9 +54,9 @@ def generated = 'src/main/generated'
 tasks.withType(JavaCompile).configureEach {
 	options.generatedSourceOutputDirectory = file(generated)
 }
-sourceSets {main.java.srcDirs += "$projectDir/build/generated"}
+sourceSets {main.java.srcDirs += "$projectDir/src/main/generated"}
 
-clean {	delete file('src/main/generated')}
+clean {	delete file(generated)}
 
 dependencyManagement {
 	imports {
