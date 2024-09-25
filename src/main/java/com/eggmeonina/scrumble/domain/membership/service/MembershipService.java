@@ -2,6 +2,8 @@ package com.eggmeonina.scrumble.domain.membership.service;
 
 import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +15,7 @@ import com.eggmeonina.scrumble.domain.membership.domain.Membership;
 import com.eggmeonina.scrumble.domain.membership.domain.MembershipRole;
 import com.eggmeonina.scrumble.domain.membership.domain.MembershipStatus;
 import com.eggmeonina.scrumble.domain.membership.domain.Squad;
+import com.eggmeonina.scrumble.domain.membership.dto.SquadResponse;
 import com.eggmeonina.scrumble.domain.membership.repository.SquadRepository;
 import com.eggmeonina.scrumble.domain.membership.repository.MembershipRepository;
 
@@ -43,5 +46,9 @@ public class MembershipService {
 			.build();
 		membershipRepository.save(newMembership);
 		return newMembership.getId();
+	}
+
+	public List<SquadResponse> findBySquads(Long memberId){
+		return membershipRepository.findSquads(memberId);
 	}
 }
