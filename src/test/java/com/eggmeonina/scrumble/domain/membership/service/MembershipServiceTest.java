@@ -145,4 +145,126 @@ class MembershipServiceTest {
 			.hasMessageContaining(UNAUTHORIZED_ACTION.getMessage());
 	}
 
+	@Test
+	@DisplayName("리더를 위임한다_정상")
+	void assignLeader_success_doNothing() {
+		// given
+		Member newLeader = Member.create()
+			.email("test@test.com")
+			.name("testA")
+			.memberStatus(MemberStatus.JOIN)
+			.oauthInformation(new OauthInformation("1234567", OauthType.GOOGLE))
+			.joinedAt(LocalDateTime.now())
+			.build();
+
+		Member newMember = Member.create()
+			.email("test@test.com")
+			.name("testA")
+			.memberStatus(MemberStatus.JOIN)
+			.oauthInformation(new OauthInformation("1234567", OauthType.GOOGLE))
+			.joinedAt(LocalDateTime.now())
+			.build();
+
+		Squad newSquad = Squad.create()
+			.squadName("테스트 스쿼드")
+			.deletedFlag(false)
+			.build();
+
+		Membership leader = Membership.create()
+			.squad(newSquad)
+			.member(newLeader)
+			.membershipRole(MembershipRole.LEADER)
+			.membershipStatus(MembershipStatus.JOIN)
+			.build();
+
+		Membership member = Membership.create()
+			.squad(newSquad)
+			.member(newMember)
+			.membershipRole(MembershipRole.NORMAL)
+			.membershipStatus(MembershipStatus.JOIN)
+			.build();
+
+		given(membershipRepository.findByMemberIdAndSquadId(anyLong(), anyLong()))
+			.willReturn(Optional.ofNullable(leader))
+			.willReturn(Optional.ofNullable(member));
+
+		// when
+		membershipService.assignLeader(1L, 1L, 2L);
+
+		// then
+		assert leader != null;
+		assertThat(leader.isLeader()).isFalse();
+		assert member != null;
+		assertThat(member.isLeader()).isTrue();
+	}
+
+	@Test
+	@DisplayName("리더가 아닌 멤버가 리더를 위임한다_실패")
+	void assignLeader_fail_throwsMembershipException() {
+		// given
+		// given
+		Member newLeader = Member.create()
+			.email("test@test.com")
+			.name("testA")
+			.memberStatus(MemberStatus.JOIN)
+			.oauthInformation(new OauthInformation("1234567", OauthType.GOOGLE))
+			.joinedAt(LocalDateTime.now())
+			.build();
+
+		Squad newSquad = Squad.create()
+			.squadName("테스트 스쿼드")
+			.deletedFlag(false)
+			.build();
+
+		Membership member1 = Membership.create()
+			.squad(newSquad)
+			.member(newLeader)
+			.membershipRole(MembershipRole.NORMAL)
+			.membershipStatus(MembershipStatus.JOIN)
+			.build();
+
+		given(membershipRepository.findByMemberIdAndSquadId(anyLong(), anyLong()))
+			.willReturn(Optional.ofNullable(member1));
+		
+		// when, then
+		assertThatThrownBy(() ->membershipService.assignLeader(1L, 1L, 2L))
+			.isInstanceOf(MembershipException.class)
+			.hasMessageContaining(UNAUTHORIZED_ACTION.getMessage());
+	}
+
+	@Test
+	@DisplayName("존재하지 않는 멤버에게 리더를 위임한다_실패")
+	void assignLeaderWhenNotExistMember_fail_throwsMembershipException() {
+		// given
+		// given
+		Member newLeader = Member.create()
+			.email("test@test.com")
+			.name("testA")
+			.memberStatus(MemberStatus.JOIN)
+			.oauthInformation(new OauthInformation("1234567", OauthType.GOOGLE))
+			.joinedAt(LocalDateTime.now())
+			.build();
+
+		Squad newSquad = Squad.create()
+			.squadName("테스트 스쿼드")
+			.deletedFlag(false)
+			.build();
+
+		Membership member1 = Membership.create()
+			.squad(newSquad)
+			.member(newLeader)
+			.membershipRole(MembershipRole.LEADER)
+			.membershipStatus(MembershipStatus.JOIN)
+			.build();
+
+		given(membershipRepository.findByMemberIdAndSquadId(anyLong(), anyLong()))
+			.willReturn(Optional.ofNullable(member1))
+			.willReturn(Optional.empty());
+
+		// when, then
+		assertThatThrownBy(() -> membershipService.assignLeader(1L, 1L, 2L))
+			.isInstanceOf(MembershipException.class)
+			.hasMessageContaining(MEMBERSHIP_NOT_FOUND.getMessage());
+	}
+
 }
