@@ -55,4 +55,8 @@ public class Membership extends BaseEntity {
 		this.member = member;
 		this.squad = squad;
 	}
+
+	public boolean isLeader(){
+		return membershipRole.equals(MembershipRole.LEADER);
+	}
 }
