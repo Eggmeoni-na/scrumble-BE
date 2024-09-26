@@ -59,4 +59,18 @@ public class Membership extends BaseEntity {
 	public boolean isLeader(){
 		return membershipRole.equals(MembershipRole.LEADER);
 	}
+
+	public void assignLeader(){
+		if(isLeader()) {
+			return;
+		}
+		this.membershipRole = MembershipRole.LEADER;
+	}
+
+	public void resignAsLeader(){
+		if(!isLeader()){
+			return;
+		}
+		this.membershipRole = MembershipRole.NORMAL;
+	}
 }

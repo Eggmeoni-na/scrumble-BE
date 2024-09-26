@@ -73,4 +73,15 @@ public class SquadController {
 		membershipService.updateSquad(member.getMemberId(), squadId, request);
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
+
+	@PutMapping("/{squadId}/members/{memberId}")
+	@Operation(summary = "스쿼드 리더를 위임한다", description = "스쿼드 리더가 리더를 위임한다.")
+	public ApiResponse<Void> assignLeader(
+		@Parameter(hidden = true) @Member LoginMember member,
+		@PathVariable("squadId") Long squadId,
+		@PathVariable("memberId") Long newLeaderId
+	){
+		membershipService.assignLeader(squadId, member.getMemberId(), newLeaderId);
+		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
+	}
 }
