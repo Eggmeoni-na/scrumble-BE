@@ -61,9 +61,25 @@ public class MembershipService {
 		Membership foundMembership = membershipRepository.findByMemberIdAndSquadId(memberId, squadId)
 			.orElseThrow(() -> new MembershipException(MEMBERSHIP_NOT_FOUND));
 		// 스쿼드 리더가 아니면 예외를 발생시킨다.
-		if(!foundMembership.isLeader()){
+		hasAuthorization(foundMembership);
+		foundSquad.rename(request.getSquadName());
+	}
+
+	@Transactional
+	public void assignLeader(Long squadId, Long leaderId, Long newLeaderId){
+		Membership foundLeader = membershipRepository.findByMemberIdAndSquadId(leaderId, squadId)
+			.orElseThrow(() -> new MembershipException(MEMBERSHIP_NOT_FOUND));
+		// 스쿼드 리더가 아니면 예외를 발생시킨다.
+		hasAuthorization(foundLeader);
+		Membership foundMember = membershipRepository.findByMemberIdAndSquadId(newLeaderId, squadId)
+			.orElseThrow(() -> new MembershipException(MEMBERSHIP_NOT_FOUND));
+		foundLeader.resignAsLeader();
+		foundMember.assignLeader();
+	}
+
+	private void hasAuthorization(Membership membership){
+		if(!membership.isLeader()){
 			throw new MembershipException(UNAUTHORIZED_ACTION);
 		}
-		foundSquad.rename(request.getSquadName());
 	}
 }
