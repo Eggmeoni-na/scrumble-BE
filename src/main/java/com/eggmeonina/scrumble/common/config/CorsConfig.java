@@ -11,7 +11,12 @@ public class CorsConfig implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/api/**")
-			.allowedOrigins("https://egg-scrumble.vercel.app", "https://scrumble-k-jeonghee-kimjeonghees-projects.vercel.app")
+			.allowedOrigins
+				(
+					"https://egg-scrumble.vercel.app",
+					"https://scrumble-k-jeonghee-kimjeonghees-projects.vercel.app",
+					"http://localhost:8080"
+				)
 			.allowCredentials(true);
 	}
 }
