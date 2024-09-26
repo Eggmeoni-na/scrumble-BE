@@ -100,18 +100,62 @@ class MembershipTest {
 			MemberStatus.JOIN, LocalDateTime.now());
 		Squad newSquad = new Squad("test group", false);
 
-		// when
 		Membership newMembership = Membership.create()
 			.member(newMember)
 			.membershipRole(MembershipRole.NORMAL)
 			.membershipStatus(MembershipStatus.JOIN)
 			.squad(newSquad)
 			.build();
+
 		// when
 		boolean isLeader = newMembership.isLeader();
 
 		// then
 		assertThat(isLeader).isFalse();
+	}
+
+	@Test
+	@DisplayName("리더로 위임한다_정상")
+	void assignLeader_success() {
+		// given
+		Member newMember = new Member("test@test.com", "test", "", new OauthInformation("1234", OauthType.GOOGLE),
+			MemberStatus.JOIN, LocalDateTime.now());
+		Squad newSquad = new Squad("test group", false);
+
+		Membership newMembership = Membership.create()
+			.member(newMember)
+			.membershipRole(MembershipRole.NORMAL)
+			.membershipStatus(MembershipStatus.JOIN)
+			.squad(newSquad)
+			.build();
+		
+		// when
+		newMembership.assignLeader();
+
+		// then
+		assertThat(newMembership.isLeader()).isTrue();
+	}
+
+	@Test
+	@DisplayName("리더에서 사임한다_정상")
+	void resignAsLeader_success() {
+		// given
+		Member newMember = new Member("test@test.com", "test", "", new OauthInformation("1234", OauthType.GOOGLE),
+			MemberStatus.JOIN, LocalDateTime.now());
+		Squad newSquad = new Squad("test group", false);
+
+		Membership newMembership = Membership.create()
+			.member(newMember)
+			.membershipRole(MembershipRole.LEADER)
+			.membershipStatus(MembershipStatus.JOIN)
+			.squad(newSquad)
+			.build();
+
+		// when
+		newMembership.resignAsLeader();
+
+		// then
+		assertThat(newMembership.isLeader()).isFalse();
 	}
 
 }
