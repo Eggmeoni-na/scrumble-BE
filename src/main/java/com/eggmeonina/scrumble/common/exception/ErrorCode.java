@@ -30,8 +30,8 @@ public enum ErrorCode {
 	/**
 	 * 스쿼드
 	 */
-	MEMBER_OR_SQUAD_NOT_FOUND(HttpStatus.BAD_REQUEST, "회원 또는 스쿼드가 누락되었습니다."),
-	SQUAD_NOT_FOUND(HttpStatus.BAD_REQUEST, "스쿼드가 누락되었습니다.");
+	MEMBER_OR_SQUAD_NOT_FOUND(HttpStatus.BAD_REQUEST, "회원 또는 스쿼드가 존재하지 않습니다."),
+	SQUAD_NOT_FOUND(HttpStatus.BAD_REQUEST, "스쿼드가 존재하지 않습니다.");
 
 	private final HttpStatus status;
 	private final String message;
