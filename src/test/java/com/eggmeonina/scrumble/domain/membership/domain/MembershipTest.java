@@ -33,7 +33,6 @@ class MembershipTest {
 			.build();
 
 		// then
-		// 연관관계 편의 메서드가 builder 내부에서 정상 작동하는지 확인한다.
 		assertThat(newMembership.getSquad().getSquadName()).isEqualTo(newSquad.getSquadName());
 		assertThat(newMembership.getMember().getName()).isEqualTo(newMember.getName());
 	}

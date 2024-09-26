@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.eggmeonina.scrumble.domain.membership.domain.Squad;
 
 @Repository
-public interface SquadRepository extends JpaRepository<Squad, Long> {
+public interface SquadRepository extends JpaRepository<Squad, Long>, SquadRepositoryCustom {
 }
