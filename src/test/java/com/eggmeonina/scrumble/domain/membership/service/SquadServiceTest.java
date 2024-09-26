@@ -1,5 +1,6 @@
 package com.eggmeonina.scrumble.domain.membership.service;
 
+import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.SoftAssertions.*;
 import static org.mockito.BDDMockito.*;
@@ -15,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.eggmeonina.scrumble.common.exception.ErrorCode;
 import com.eggmeonina.scrumble.common.exception.SquadException;
 import com.eggmeonina.scrumble.domain.membership.domain.Squad;
 import com.eggmeonina.scrumble.domain.membership.dto.SquadCreateRequest;
@@ -85,7 +85,6 @@ class SquadServiceTest {
 		// when, then
 		assertThatThrownBy(()-> squadService.findSquadAndMembers(squadId))
 			.isInstanceOf(SquadException.class)
-			.hasMessageContaining(ErrorCode.SQUAD_NOT_FOUND.getMessage());
+			.hasMessageContaining(SQUAD_NOT_FOUND.getMessage());
 	}
-
 }

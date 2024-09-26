@@ -70,4 +70,48 @@ class MembershipTest {
 			.hasMessageContaining(MEMBER_OR_SQUAD_NOT_FOUND.getMessage());
 	}
 
+	@Test
+	@DisplayName("리더인지 확인한다_true")
+	void isLeader_success_returnTrue() {
+		// given
+		Member newMember = new Member("test@test.com", "test", "", new OauthInformation("1234", OauthType.GOOGLE),
+			MemberStatus.JOIN, LocalDateTime.now());
+		Squad newSquad = new Squad("test group", false);
+
+		// when
+		Membership newMembership = Membership.create()
+			.member(newMember)
+			.membershipRole(MembershipRole.LEADER)
+			.membershipStatus(MembershipStatus.JOIN)
+			.squad(newSquad)
+			.build();
+		// when
+		boolean isLeader = newMembership.isLeader();
+
+		// then
+		assertThat(isLeader).isTrue();
+	}
+
+	@Test
+	@DisplayName("리더인지 확인한다_false")
+	void isLeader_success_returnFalse() {
+		// given
+		Member newMember = new Member("test@test.com", "test", "", new OauthInformation("1234", OauthType.GOOGLE),
+			MemberStatus.JOIN, LocalDateTime.now());
+		Squad newSquad = new Squad("test group", false);
+
+		// when
+		Membership newMembership = Membership.create()
+			.member(newMember)
+			.membershipRole(MembershipRole.NORMAL)
+			.membershipStatus(MembershipStatus.JOIN)
+			.squad(newSquad)
+			.build();
+		// when
+		boolean isLeader = newMembership.isLeader();
+
+		// then
+		assertThat(isLeader).isFalse();
+	}
+
 }

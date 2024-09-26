@@ -39,4 +39,8 @@ public class Squad extends BaseEntity {
 		this.squadName = squadName;
 		this.deletedFlag = deletedFlag;
 	}
+
+	public void rename(String newSquadName){
+		this.squadName = newSquadName;
+	}
 }
