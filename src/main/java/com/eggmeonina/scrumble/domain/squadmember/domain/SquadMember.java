@@ -73,4 +73,8 @@ public class SquadMember extends BaseEntity {
 		}
 		this.squadMemberRole = SquadMemberRole.NORMAL;
 	}
+
+	public void leave() {
+		this.squadMemberStatus = SquadMemberStatus.LEAVE;
+	}
 }

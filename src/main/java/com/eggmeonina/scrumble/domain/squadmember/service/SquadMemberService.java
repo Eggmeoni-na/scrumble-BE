@@ -77,6 +77,17 @@ public class SquadMemberService {
 		foundMember.assignLeader();
 	}
 
+	@Transactional
+	public void leaveSquad(Long squadId, Long memberId){
+		SquadMember foundSquadMember = squadMemberRepository.findByMemberIdAndSquadId(memberId, squadId)
+			.orElseThrow(() -> new SquadMemberException(SQUADMEMBER_NOT_FOUND));
+		// 스쿼드에 인원이 있는 스쿼드 리더는 위임하거나 삭제만 가능하다.
+		if(foundSquadMember.isLeader() && squadMemberRepository.existsBySquadMemberNotMemberId(squadId, memberId)){
+			throw new SquadMemberException(LEADER_CANNOT_LEAVE);
+		}
+		foundSquadMember.leave();
+	}
+
 	private void hasAuthorization(SquadMember squadMember){
 		if(!squadMember.isLeader()){
 			throw new SquadMemberException(UNAUTHORIZED_ACTION);
