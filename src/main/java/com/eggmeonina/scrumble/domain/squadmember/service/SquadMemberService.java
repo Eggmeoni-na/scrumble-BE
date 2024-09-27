@@ -88,6 +88,20 @@ public class SquadMemberService {
 		foundSquadMember.leave();
 	}
 
+	@Transactional
+	public void kickSquadMember(Long squadId, Long leaderId, Long memberId){
+		// 리더가 권한을 가졌는지 확인한다.
+		SquadMember squadLeader = squadMemberRepository.findByMemberIdAndSquadId(leaderId, squadId)
+			.orElseThrow(() -> new SquadMemberException(SQUADMEMBER_NOT_FOUND));
+		hasAuthorization(squadLeader);
+
+		SquadMember squadMember = squadMemberRepository.findByMemberIdAndSquadId(memberId, squadId)
+			.orElseThrow(() -> new SquadMemberException(SQUADMEMBER_NOT_FOUND));
+
+		// 멤버를 탈퇴시킨다.
+		squadMember.leave();
+	}
+
 	private void hasAuthorization(SquadMember squadMember){
 		if(!squadMember.isLeader()){
 			throw new SquadMemberException(UNAUTHORIZED_ACTION);

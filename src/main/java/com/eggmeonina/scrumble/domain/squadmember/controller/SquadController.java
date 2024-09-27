@@ -101,4 +101,20 @@ public class SquadController {
 		squadMemberService.leaveSquad(squadId,member.getMemberId());
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
+
+	@DeleteMapping("/{squadId}/members/{memberId}")
+	@Parameters({
+		@Parameter(name = "member", hidden = true),
+		@Parameter(name = "squadId", description = "스쿼드의 ID, path variable"),
+		@Parameter(name = "memberId", description = "강퇴 당할 스쿼드 멤버의 ID, path variable")
+	})
+	@Operation(summary = "스쿼드 멤버를 강퇴한다", description = "스쿼드 멤버를 강퇴한다. 단, 리더인 경우에만 강퇴가 가능하다.")
+	public ApiResponse<Void> kickSquadMember(
+		@Parameter(hidden = true) @Member LoginMember member,
+		@PathVariable("squadId") Long squadId,
+		@PathVariable("memberId") Long memberId
+	){
+		squadMemberService.kickSquadMember(member.getMemberId(), squadId, memberId);
+		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
+	}
 }
