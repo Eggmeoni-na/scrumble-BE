@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -88,6 +89,16 @@ public class SquadController {
 		@PathVariable("memberId") Long newLeaderId
 	){
 		squadMemberService.assignLeader(squadId, member.getMemberId(), newLeaderId);
+		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
+	}
+
+	@DeleteMapping("/{squadId}/members/")
+	@Operation(summary = "스쿼드를 탈퇴한다", description = "스쿼드를 탈퇴한다. 단, 리더인 경우 스쿼드 멤버가 없어야 탈퇴 가능하다.")
+	public ApiResponse<Void> leaveSquad(
+		@Parameter(hidden = true) @Member LoginMember member,
+		@PathVariable("squadId") Long squadId
+	){
+		squadMemberService.leaveSquad(squadId,member.getMemberId());
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 }
