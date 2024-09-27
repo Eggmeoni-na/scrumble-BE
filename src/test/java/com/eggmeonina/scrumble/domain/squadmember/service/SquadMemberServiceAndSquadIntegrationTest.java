@@ -269,7 +269,7 @@ class SquadMemberServiceAndSquadIntegrationTest extends IntegrationTestHelper {
 			.member(newMember1)
 			.squad(newSquad)
 			.squadMemberRole(SquadMemberRole.LEADER)
-			.squadMemberStatus(SquadMemberStatus.WITHDRAW)
+			.squadMemberStatus(SquadMemberStatus.LEAVE)
 			.build();
 
 		memberRepository.save(newMember1);
@@ -318,7 +318,7 @@ class SquadMemberServiceAndSquadIntegrationTest extends IntegrationTestHelper {
 			.member(newMember2)
 			.squad(newSquad)
 			.squadMemberRole(SquadMemberRole.NORMAL)
-			.squadMemberStatus(SquadMemberStatus.WITHDRAW)
+			.squadMemberStatus(SquadMemberStatus.LEAVE)
 			.build();
 
 		memberRepository.save(newMember1);
@@ -370,7 +370,7 @@ class SquadMemberServiceAndSquadIntegrationTest extends IntegrationTestHelper {
 			.member(newMember2)
 			.squad(newSquad)
 			.squadMemberRole(SquadMemberRole.NORMAL)
-			.squadMemberStatus(SquadMemberStatus.WITHDRAW)
+			.squadMemberStatus(SquadMemberStatus.LEAVE)
 			.build();
 
 		memberRepository.save(newMember1);
@@ -384,5 +384,148 @@ class SquadMemberServiceAndSquadIntegrationTest extends IntegrationTestHelper {
 
 		// then
 		assertThat(response.getSquadMembers()).hasSize(1);
+	}
+
+	@Test
+	@DisplayName("리더가 멤버가 없는 스쿼드를 탈퇴한다_성공")
+	void leaveSquadWhenMemberNotInSquad_success() {
+		// given
+		Member newMember = Member.create()
+			.name("testA")
+			.email("test@test.com")
+			.memberStatus(MemberStatus.JOIN)
+			.oauthInformation(new OauthInformation("123456789", OauthType.GOOGLE))
+			.joinedAt(LocalDateTime.now())
+			.build();
+
+		Squad newSquad = Squad.create()
+			.squadName("테스트 스쿼드")
+			.deletedFlag(false)
+			.build();
+
+		SquadMember newSquadMember = SquadMember.create()
+			.member(newMember)
+			.squad(newSquad)
+			.squadMemberRole(SquadMemberRole.LEADER)
+			.squadMemberStatus(SquadMemberStatus.JOIN)
+			.build();
+
+		memberRepository.save(newMember);
+		squadRepository.save(newSquad);
+		squadMemberRepository.save(newSquadMember);
+
+		// when
+		squadMemberService.leaveSquad(newSquad.getId(), newMember.getId());
+
+		SquadMember foundMember = squadMemberRepository.findById(newSquadMember.getId()).get();
+
+		// then
+		assertThat(foundMember.getSquadMemberStatus()).isEqualTo(SquadMemberStatus.LEAVE);
+	}
+
+	@Test
+	@DisplayName("리더가 탈퇴한 멤버만 있는 스쿼드를 탈퇴한다_성공")
+	void leaveSquadWhenLeavedMemberInSquad_success() {
+		// given
+		Member newMember1 = Member.create()
+			.name("testA")
+			.email("test@test.com")
+			.memberStatus(MemberStatus.JOIN)
+			.oauthInformation(new OauthInformation("123456789", OauthType.GOOGLE))
+			.joinedAt(LocalDateTime.now())
+			.build();
+
+		Member newMember2 = Member.create()
+			.name("testB")
+			.email("test2@test.com")
+			.memberStatus(MemberStatus.WITHDRAW)
+			.oauthInformation(new OauthInformation("987654321", OauthType.GOOGLE))
+			.joinedAt(LocalDateTime.now())
+			.build();
+
+		Squad newSquad = Squad.create()
+			.squadName("테스트 스쿼드")
+			.deletedFlag(false)
+			.build();
+
+		SquadMember newSquadMember1 = SquadMember.create()
+			.member(newMember1)
+			.squad(newSquad)
+			.squadMemberRole(SquadMemberRole.LEADER)
+			.squadMemberStatus(SquadMemberStatus.JOIN)
+			.build();
+
+		SquadMember newSquadMember2 = SquadMember.create()
+			.member(newMember2)
+			.squad(newSquad)
+			.squadMemberRole(SquadMemberRole.NORMAL)
+			.squadMemberStatus(SquadMemberStatus.LEAVE)
+			.build();
+
+		memberRepository.save(newMember1);
+		memberRepository.save(newMember2);
+		squadRepository.save(newSquad);
+		squadMemberRepository.save(newSquadMember1);
+		squadMemberRepository.save(newSquadMember2);
+
+		// when
+		squadMemberService.leaveSquad(newSquad.getId(), newMember1.getId());
+
+		SquadMember foundMember = squadMemberRepository.findById(newSquadMember1.getId()).get();
+
+		// then
+		assertThat(foundMember.getSquadMemberStatus()).isEqualTo(SquadMemberStatus.LEAVE);
+	}
+
+	@Test
+	@DisplayName("리더가 멤버가 있는 스쿼드를 탈퇴한다_실패")
+	void leaveSquadWhenMemberInSquad_fail() {
+		// given
+		Member newMember1 = Member.create()
+			.name("testA")
+			.email("test@test.com")
+			.memberStatus(MemberStatus.JOIN)
+			.oauthInformation(new OauthInformation("123456789", OauthType.GOOGLE))
+			.joinedAt(LocalDateTime.now())
+			.build();
+
+		Member newMember2 = Member.create()
+			.name("testB")
+			.email("test2@test.com")
+			.memberStatus(MemberStatus.WITHDRAW)
+			.oauthInformation(new OauthInformation("987654321", OauthType.GOOGLE))
+			.joinedAt(LocalDateTime.now())
+			.build();
+
+		Squad newSquad = Squad.create()
+			.squadName("테스트 스쿼드")
+			.deletedFlag(false)
+			.build();
+
+		SquadMember newSquadMember1 = SquadMember.create()
+			.member(newMember1)
+			.squad(newSquad)
+			.squadMemberRole(SquadMemberRole.LEADER)
+			.squadMemberStatus(SquadMemberStatus.JOIN)
+			.build();
+
+		SquadMember newSquadMember2 = SquadMember.create()
+			.member(newMember2)
+			.squad(newSquad)
+			.squadMemberRole(SquadMemberRole.NORMAL)
+			.squadMemberStatus(SquadMemberStatus.JOIN)
+			.build();
+
+		memberRepository.save(newMember1);
+		memberRepository.save(newMember2);
+		squadRepository.save(newSquad);
+		squadMemberRepository.save(newSquadMember1);
+		squadMemberRepository.save(newSquadMember2);
+
+		// when
+		assertThatThrownBy(() ->squadMemberService.leaveSquad(newSquad.getId(), newMember1.getId()))
+			.isInstanceOf(SquadMemberException.class)
+			.hasMessageContaining(LEADER_CANNOT_LEAVE.getMessage())
+			;
 	}
 }
