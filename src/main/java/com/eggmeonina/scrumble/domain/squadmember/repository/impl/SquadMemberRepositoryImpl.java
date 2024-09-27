@@ -34,4 +34,15 @@ public class SquadMemberRepositoryImpl implements SquadMemberRepositoryCustom {
 				)
 				.fetch();
 	}
+
+	@Override
+	public boolean existsBySquadMemberNotMemberId(Long squadId, Long memberId) {
+		Integer fetchOne = query.selectOne()
+			.from(squadMember)
+			.where(squadMember.member.id.ne(memberId)
+				.and(squadMember.squad.id.eq(squadId))
+				.and(squadMember.squadMemberStatus.eq(SquadMemberStatus.JOIN)))
+			.fetchFirst();
+		return fetchOne != null;
+	}
 }
