@@ -16,18 +16,18 @@ CREATE TABLE member
     PRIMARY KEY (member_id)
 );
 
-DROP TABLE IF EXISTS membership;
+DROP TABLE IF EXISTS squad_member;
 
-CREATE TABLE membership
+CREATE TABLE squad_member
 (
-    membership_id     BIGINT      NOT NULL AUTO_INCREMENT,
+    squad_member_id     BIGINT      NOT NULL AUTO_INCREMENT,
     member_id         BIGINT      NOT NULL,
     squad_id          BIGINT      NOT NULL,
-    membership_status VARCHAR(50) NOT NULL DEFAULT 'INVITING',
-    membership_role   VARCHAR(50) NOT NULL DEFAULT 'NORMAL',
+    squad_member_status VARCHAR(50) NOT NULL DEFAULT 'INVITING',
+    squad_member_role   VARCHAR(50) NOT NULL DEFAULT 'NORMAL',
     created_at        TIMESTAMP,
     updated_at        TIMESTAMP,
-    PRIMARY KEY (membership_id)
+    PRIMARY KEY (squad_member_id)
 );
 
 DROP TABLE IF EXISTS squad;
@@ -41,6 +41,3 @@ CREATE TABLE squad
     updated_at   TIMESTAMP,
     PRIMARY KEY (squad_id)
 );
-
-
-
