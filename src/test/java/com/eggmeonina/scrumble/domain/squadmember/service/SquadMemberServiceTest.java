@@ -1,11 +1,11 @@
 package com.eggmeonina.scrumble.domain.squadmember.service;
 
 import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
+import static com.eggmeonina.scrumble.fixture.SquadMemberFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.*;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -17,10 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.eggmeonina.scrumble.common.exception.SquadMemberException;
 import com.eggmeonina.scrumble.common.exception.SquadException;
-import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.domain.MemberStatus;
-import com.eggmeonina.scrumble.domain.member.domain.OauthInformation;
 import com.eggmeonina.scrumble.domain.squadmember.domain.SquadMember;
 import com.eggmeonina.scrumble.domain.squadmember.domain.SquadMemberRole;
 import com.eggmeonina.scrumble.domain.squadmember.domain.SquadMemberStatus;
@@ -39,31 +37,17 @@ class SquadMemberServiceTest {
 	@Mock
 	private SquadRepository squadRepository;
 
-
 	@Test
 	@DisplayName("스쿼드명을 변경한다_성공")
 	void updateSquad_success_doNothing() {
 		// given
 		SquadUpdateRequest request = new SquadUpdateRequest("새로운 스쿼드명");
-		Member newMember = Member.create()
-			.email("test@test.com")
-			.name("testA")
-			.memberStatus(MemberStatus.JOIN)
-			.oauthInformation(new OauthInformation("1234567", OauthType.GOOGLE))
-			.joinedAt(LocalDateTime.now())
-			.build();
+		Member newMember = createMember("test@test.com", "testA", MemberStatus.JOIN);
 
-		Squad newSquad = Squad.create()
-			.squadName("테스트 스쿼드")
-			.deletedFlag(false)
-			.build();
+		Squad newSquad = createSquad("테스트 스쿼드");
 
-		SquadMember newSquadMember = SquadMember.create()
-			.squad(newSquad)
-			.member(newMember)
-			.squadMemberRole(SquadMemberRole.LEADER)
-			.squadMemberStatus(SquadMemberStatus.JOIN)
-			.build();
+		SquadMember newSquadMember = createSquadMember(newSquad, newMember, SquadMemberRole.LEADER,
+			SquadMemberStatus.JOIN);
 
 		given(squadMemberRepository.findByMemberIdAndSquadId(anyLong(), anyLong()))
 			.willReturn(Optional.ofNullable(newSquadMember));
@@ -86,7 +70,7 @@ class SquadMemberServiceTest {
 		given(squadRepository.findById(anyLong())).willReturn(Optional.empty());
 
 		// when
-		assertThatThrownBy(()-> squadMemberService.updateSquad(1L, 1L, request))
+		assertThatThrownBy(() -> squadMemberService.updateSquad(1L, 1L, request))
 			.isInstanceOf(SquadException.class)
 			.hasMessageContaining(SQUAD_NOT_FOUND.getMessage());
 	}
@@ -95,17 +79,14 @@ class SquadMemberServiceTest {
 	@DisplayName("속하지 않은 회원이 스쿼드명을 변경한다_실패")
 	void updateSquadWhenMemberNotInSquad_fail_throwsException() {
 		// given
-		Squad newSquad = Squad.create()
-			.squadName("테스트 스쿼드")
-			.deletedFlag(false)
-			.build();
+		Squad newSquad = createSquad("테스트 스쿼드");
 		SquadUpdateRequest request = new SquadUpdateRequest("새로운 스쿼드명");
 
 		given(squadRepository.findById(anyLong())).willReturn(Optional.ofNullable(newSquad));
 		given(squadMemberRepository.findByMemberIdAndSquadId(anyLong(), anyLong())).willReturn(Optional.empty());
 
 		// when
-		assertThatThrownBy(()-> squadMemberService.updateSquad(1L, 1L, request))
+		assertThatThrownBy(() -> squadMemberService.updateSquad(1L, 1L, request))
 			.isInstanceOf(SquadMemberException.class)
 			.hasMessageContaining(SQUADMEMBER_NOT_FOUND.getMessage());
 	}
@@ -114,25 +95,12 @@ class SquadMemberServiceTest {
 	@DisplayName("리더가 아닌 회원이 스쿼드명을 변경한다_실패")
 	void updateSquadWhenNotLeader_fail_throwsException() {
 		// given
-		Member newMember = Member.create()
-			.email("test@test.com")
-			.name("testA")
-			.memberStatus(MemberStatus.JOIN)
-			.oauthInformation(new OauthInformation("1234567", OauthType.GOOGLE))
-			.joinedAt(LocalDateTime.now())
-			.build();
+		Member newMember = createMember("test@test.com", "testA", MemberStatus.JOIN);
 
-		Squad newSquad = Squad.create()
-			.squadName("테스트 스쿼드")
-			.deletedFlag(false)
-			.build();
+		Squad newSquad = createSquad("테스트 스쿼드");
 
-		SquadMember newSquadMember = SquadMember.create()
-			.squad(newSquad)
-			.member(newMember)
-			.squadMemberRole(SquadMemberRole.NORMAL)
-			.squadMemberStatus(SquadMemberStatus.JOIN)
-			.build();
+		SquadMember newSquadMember = createSquadMember(newSquad, newMember, SquadMemberRole.NORMAL,
+			SquadMemberStatus.JOIN);
 		SquadUpdateRequest request = new SquadUpdateRequest("새로운 스쿼드명");
 
 		given(squadRepository.findById(anyLong())).willReturn(Optional.ofNullable(newSquad));
@@ -140,7 +108,7 @@ class SquadMemberServiceTest {
 			.willReturn(Optional.ofNullable(newSquadMember));
 
 		// when
-		assertThatThrownBy(()-> squadMemberService.updateSquad(1L, 1L, request))
+		assertThatThrownBy(() -> squadMemberService.updateSquad(1L, 1L, request))
 			.isInstanceOf(SquadMemberException.class)
 			.hasMessageContaining(UNAUTHORIZED_ACTION.getMessage());
 	}
@@ -149,40 +117,15 @@ class SquadMemberServiceTest {
 	@DisplayName("리더를 위임한다_정상")
 	void assignLeader_success_doNothing() {
 		// given
-		Member newLeader = Member.create()
-			.email("test@test.com")
-			.name("testA")
-			.memberStatus(MemberStatus.JOIN)
-			.oauthInformation(new OauthInformation("1234567", OauthType.GOOGLE))
-			.joinedAt(LocalDateTime.now())
-			.build();
+		Member newLeader = createMember("test@test.com", "testA", MemberStatus.JOIN);
 
-		Member newMember = Member.create()
-			.email("test@test.com")
-			.name("testA")
-			.memberStatus(MemberStatus.JOIN)
-			.oauthInformation(new OauthInformation("1234567", OauthType.GOOGLE))
-			.joinedAt(LocalDateTime.now())
-			.build();
+		Member newMember = createMember("test2@test.com", "testB", MemberStatus.JOIN);
 
-		Squad newSquad = Squad.create()
-			.squadName("테스트 스쿼드")
-			.deletedFlag(false)
-			.build();
+		Squad newSquad = createSquad("테스트 스쿼드");
 
-		SquadMember leader = SquadMember.create()
-			.squad(newSquad)
-			.member(newLeader)
-			.squadMemberRole(SquadMemberRole.LEADER)
-			.squadMemberStatus(SquadMemberStatus.JOIN)
-			.build();
+		SquadMember leader = createSquadMember(newSquad, newLeader, SquadMemberRole.LEADER, SquadMemberStatus.JOIN);
 
-		SquadMember member = SquadMember.create()
-			.squad(newSquad)
-			.member(newMember)
-			.squadMemberRole(SquadMemberRole.NORMAL)
-			.squadMemberStatus(SquadMemberStatus.JOIN)
-			.build();
+		SquadMember member = createSquadMember(newSquad, newMember, SquadMemberRole.NORMAL, SquadMemberStatus.JOIN);
 
 		given(squadMemberRepository.findByMemberIdAndSquadId(anyLong(), anyLong()))
 			.willReturn(Optional.ofNullable(leader))
@@ -203,31 +146,17 @@ class SquadMemberServiceTest {
 	void assignLeader_fail_throwsMembershipException() {
 		// given
 		// given
-		Member newLeader = Member.create()
-			.email("test@test.com")
-			.name("testA")
-			.memberStatus(MemberStatus.JOIN)
-			.oauthInformation(new OauthInformation("1234567", OauthType.GOOGLE))
-			.joinedAt(LocalDateTime.now())
-			.build();
+		Member newLeader = createMember("test@test.com", "testA", MemberStatus.JOIN);
 
-		Squad newSquad = Squad.create()
-			.squadName("테스트 스쿼드")
-			.deletedFlag(false)
-			.build();
+		Squad newSquad = createSquad("테스트 스쿼드");
 
-		SquadMember member1 = SquadMember.create()
-			.squad(newSquad)
-			.member(newLeader)
-			.squadMemberRole(SquadMemberRole.NORMAL)
-			.squadMemberStatus(SquadMemberStatus.JOIN)
-			.build();
+		SquadMember member1 = createSquadMember(newSquad, newLeader, SquadMemberRole.NORMAL, SquadMemberStatus.JOIN);
 
 		given(squadMemberRepository.findByMemberIdAndSquadId(anyLong(), anyLong()))
 			.willReturn(Optional.ofNullable(member1));
-		
+
 		// when, then
-		assertThatThrownBy(() ->squadMemberService.assignLeader(1L, 1L, 2L))
+		assertThatThrownBy(() -> squadMemberService.assignLeader(1L, 1L, 2L))
 			.isInstanceOf(SquadMemberException.class)
 			.hasMessageContaining(UNAUTHORIZED_ACTION.getMessage());
 	}
@@ -236,25 +165,11 @@ class SquadMemberServiceTest {
 	@DisplayName("존재하지 않는 멤버에게 리더를 위임한다_실패")
 	void assignLeaderWhenNotExistMember_fail_throwsMembershipException() {
 		// given
-		Member newLeader = Member.create()
-			.email("test@test.com")
-			.name("testA")
-			.memberStatus(MemberStatus.JOIN)
-			.oauthInformation(new OauthInformation("1234567", OauthType.GOOGLE))
-			.joinedAt(LocalDateTime.now())
-			.build();
+		Member newLeader = createMember("test@test.com", "testA", MemberStatus.JOIN);
 
-		Squad newSquad = Squad.create()
-			.squadName("테스트 스쿼드")
-			.deletedFlag(false)
-			.build();
+		Squad newSquad = createSquad("테스트 스쿼드");
 
-		SquadMember member1 = SquadMember.create()
-			.squad(newSquad)
-			.member(newLeader)
-			.squadMemberRole(SquadMemberRole.LEADER)
-			.squadMemberStatus(SquadMemberStatus.JOIN)
-			.build();
+		SquadMember member1 = createSquadMember(newSquad, newLeader, SquadMemberRole.LEADER, SquadMemberStatus.JOIN);
 
 		given(squadMemberRepository.findByMemberIdAndSquadId(anyLong(), anyLong()))
 			.willReturn(Optional.ofNullable(member1))
@@ -270,25 +185,12 @@ class SquadMemberServiceTest {
 	@DisplayName("일반 멤버가 스쿼드를 탈퇴한다_성공")
 	void leaveSquad_success() {
 		// given
-		Member newLeader = Member.create()
-			.email("test@test.com")
-			.name("testA")
-			.memberStatus(MemberStatus.JOIN)
-			.oauthInformation(new OauthInformation("1234567", OauthType.GOOGLE))
-			.joinedAt(LocalDateTime.now())
-			.build();
+		Member newLeader = createMember("test@test.com", "testA", MemberStatus.JOIN);
 
-		Squad newSquad = Squad.create()
-			.squadName("테스트 스쿼드")
-			.deletedFlag(false)
-			.build();
+		Squad newSquad = createSquad("테스트 스쿼드");
 
-		SquadMember squadMember = SquadMember.create()
-			.squad(newSquad)
-			.member(newLeader)
-			.squadMemberRole(SquadMemberRole.NORMAL)
-			.squadMemberStatus(SquadMemberStatus.JOIN)
-			.build();
+		SquadMember squadMember = createSquadMember(newSquad, newLeader, SquadMemberRole.NORMAL,
+			SquadMemberStatus.JOIN);
 
 		given(squadMemberRepository.findByMemberIdAndSquadId(anyLong(), anyLong()))
 			.willReturn(Optional.ofNullable(squadMember));
@@ -305,25 +207,12 @@ class SquadMemberServiceTest {
 	@DisplayName("리더가 멤버가 없는 스쿼드를 탈퇴한다_성공")
 	void leaveSquadWhenMemberNotInSquad_success() {
 		// given
-		Member newLeader = Member.create()
-			.email("test@test.com")
-			.name("testA")
-			.memberStatus(MemberStatus.JOIN)
-			.oauthInformation(new OauthInformation("1234567", OauthType.GOOGLE))
-			.joinedAt(LocalDateTime.now())
-			.build();
+		Member newLeader = createMember("test@test.com", "testA", MemberStatus.JOIN);
 
-		Squad newSquad = Squad.create()
-			.squadName("테스트 스쿼드")
-			.deletedFlag(false)
-			.build();
+		Squad newSquad = createSquad("테스트 스쿼드");
 
-		SquadMember squadMember = SquadMember.create()
-			.squad(newSquad)
-			.member(newLeader)
-			.squadMemberRole(SquadMemberRole.LEADER)
-			.squadMemberStatus(SquadMemberStatus.JOIN)
-			.build();
+		SquadMember squadMember = createSquadMember(newSquad, newLeader, SquadMemberRole.LEADER,
+			SquadMemberStatus.JOIN);
 
 		given(squadMemberRepository.findByMemberIdAndSquadId(anyLong(), anyLong()))
 			.willReturn(Optional.ofNullable(squadMember));
@@ -342,25 +231,12 @@ class SquadMemberServiceTest {
 	@DisplayName("리더가 멤버가 있는 스쿼드를 탈퇴한다_실패")
 	void leaveSquadWhenMemberInSquad_success() {
 		// given
-		Member newLeader = Member.create()
-			.email("test@test.com")
-			.name("testA")
-			.memberStatus(MemberStatus.JOIN)
-			.oauthInformation(new OauthInformation("1234567", OauthType.GOOGLE))
-			.joinedAt(LocalDateTime.now())
-			.build();
+		Member newLeader = createMember("test@test.com", "testA", MemberStatus.JOIN);
 
-		Squad newSquad = Squad.create()
-			.squadName("테스트 스쿼드")
-			.deletedFlag(false)
-			.build();
+		Squad newSquad = createSquad("테스트 스쿼드");
 
-		SquadMember squadMember = SquadMember.create()
-			.squad(newSquad)
-			.member(newLeader)
-			.squadMemberRole(SquadMemberRole.LEADER)
-			.squadMemberStatus(SquadMemberStatus.JOIN)
-			.build();
+		SquadMember squadMember = createSquadMember(newSquad, newLeader, SquadMemberRole.LEADER,
+			SquadMemberStatus.JOIN);
 
 		given(squadMemberRepository.findByMemberIdAndSquadId(anyLong(), anyLong()))
 			.willReturn(Optional.ofNullable(squadMember));
@@ -368,7 +244,7 @@ class SquadMemberServiceTest {
 			.willReturn(true);
 
 		// when
-		assertThatThrownBy(()->squadMemberService.leaveSquad(1L, 1L))
+		assertThatThrownBy(() -> squadMemberService.leaveSquad(1L, 1L))
 			.isInstanceOf(SquadMemberException.class)
 			.hasMessageContaining(LEADER_CANNOT_LEAVE.getMessage());
 	}
@@ -381,6 +257,75 @@ class SquadMemberServiceTest {
 			.willReturn(Optional.empty());
 		// when, then
 		assertThatThrownBy(() -> squadMemberService.leaveSquad(1L, 1L))
+			.isInstanceOf(SquadMemberException.class)
+			.hasMessageContaining(SQUADMEMBER_NOT_FOUND.getMessage());
+	}
+
+	@Test
+	@DisplayName("리더가 스쿼드 멤버를 강퇴시킨다_정상")
+	void kickSquadMember_success() {
+		// given
+		Member newLeader = createMember("test@test.com", "testA", MemberStatus.JOIN);
+		Member newMember = createMember("testB@test.com", "testB", MemberStatus.JOIN);
+
+		Squad newSquad = createSquad("테스트 스쿼드");
+
+		SquadMember squadLeader =
+			createSquadMember(newSquad, newLeader, SquadMemberRole.LEADER, SquadMemberStatus.JOIN);
+		SquadMember squadMember =
+			createSquadMember(newSquad, newMember, SquadMemberRole.NORMAL, SquadMemberStatus.JOIN);
+
+		given(squadMemberRepository.findByMemberIdAndSquadId(anyLong(), anyLong()))
+			.willReturn(Optional.ofNullable(squadLeader))
+			.willReturn(Optional.ofNullable(squadMember));
+
+		// when
+		squadMemberService.kickSquadMember(1L, 1L, 2L);
+
+		// then
+		assert squadMember != null;
+		assertThat(squadMember.getSquadMemberStatus()).isEqualTo(SquadMemberStatus.LEAVE);
+	}
+
+	@Test
+	@DisplayName("권한 없는 멤버가 스쿼드 멤버를 강퇴시킨다_실패")
+	void kickSquadMemberWhenHasNoAuthorization_fail() {
+		// given
+		Member newLeader = createMember("test@test.com", "testA", MemberStatus.JOIN);
+		Member newMember = createMember("testB@test.com", "testB", MemberStatus.JOIN);
+
+		Squad newSquad = createSquad("테스트 스쿼드");
+
+		SquadMember squadLeader =
+			createSquadMember(newSquad, newLeader, SquadMemberRole.NORMAL, SquadMemberStatus.JOIN);
+		SquadMember squadMember =
+			createSquadMember(newSquad, newMember, SquadMemberRole.NORMAL, SquadMemberStatus.JOIN);
+
+		given(squadMemberRepository.findByMemberIdAndSquadId(anyLong(), anyLong()))
+			.willReturn(Optional.ofNullable(squadLeader))
+			.willReturn(Optional.ofNullable(squadMember));
+		// when, then
+		assertThatThrownBy(() -> squadMemberService.kickSquadMember(1L, 1L, 2L))
+			.isInstanceOf(SquadMemberException.class)
+			.hasMessageContaining(UNAUTHORIZED_ACTION.getMessage());
+	}
+
+	@Test
+	@DisplayName("존재하지 않는 스쿼드 멤버를 강퇴시킨다_실패")
+	void kickSquadMemberWhenNotExistsMemberInSquad_fail() {
+		// given
+		Member newLeader = createMember("test@test.com", "testA", MemberStatus.JOIN);
+
+		Squad newSquad = createSquad("테스트 스쿼드");
+
+		SquadMember squadLeader =
+			createSquadMember(newSquad, newLeader, SquadMemberRole.LEADER, SquadMemberStatus.JOIN);
+
+		given(squadMemberRepository.findByMemberIdAndSquadId(anyLong(), anyLong()))
+			.willReturn(Optional.ofNullable(squadLeader))
+			.willReturn(Optional.empty());
+		// when, then
+		assertThatThrownBy(() -> squadMemberService.kickSquadMember(1L, 1L, 2L))
 			.isInstanceOf(SquadMemberException.class)
 			.hasMessageContaining(SQUADMEMBER_NOT_FOUND.getMessage());
 	}
