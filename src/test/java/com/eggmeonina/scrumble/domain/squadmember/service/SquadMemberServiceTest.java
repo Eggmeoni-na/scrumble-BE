@@ -3,9 +3,11 @@ package com.eggmeonina.scrumble.domain.squadmember.service;
 import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
 import static com.eggmeonina.scrumble.fixture.SquadMemberFixture.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.SoftAssertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -328,6 +330,92 @@ class SquadMemberServiceTest {
 		assertThatThrownBy(() -> squadMemberService.kickSquadMember(1L, 1L, 2L))
 			.isInstanceOf(SquadMemberException.class)
 			.hasMessageContaining(SQUADMEMBER_NOT_FOUND.getMessage());
+	}
+
+	@Test
+	@DisplayName("스쿼드를 삭제한다_정상_1명")
+	void deleteSquadWithOneMember_success() {
+		// given
+		Member newLeader = createMember("test@test.com", "testA", MemberStatus.JOIN);
+
+		Squad newSquad = createSquad("테스트 스쿼드");
+
+		SquadMember squadLeader =
+			createSquadMember(newSquad, newLeader, SquadMemberRole.LEADER, SquadMemberStatus.JOIN);
+
+		List<SquadMember> squadMembers = createSquadMembers(squadLeader);
+
+		given(squadRepository.findById(anyLong()))
+			.willReturn(Optional.ofNullable(newSquad));
+		given(squadMemberRepository.findByMemberIdAndSquadId(anyLong(), anyLong()))
+			.willReturn(Optional.ofNullable(squadLeader));
+		given(squadMemberRepository.findBySquadId(anyLong()))
+			.willReturn(squadMembers);
+
+		// when
+		squadMemberService.deleteSquad(1L, 1L);
+
+		// then
+		assert squadLeader != null;
+		assertThat(squadLeader.getSquadMemberStatus()).isEqualTo(SquadMemberStatus.LEAVE);
+		assert newSquad != null;
+		assertThat(newSquad.isDeletedFlag()).isTrue();
+	}
+
+	@Test
+	@DisplayName("스쿼드를 삭제한다_정상_N명")
+	void deleteSquadWithMembers_success() {
+		// given
+		Member newLeader = createMember("test@test.com", "testA", MemberStatus.JOIN);
+		Member newMember = createMember("test2@test.com", "testB", MemberStatus.JOIN);
+
+		Squad newSquad = createSquad("테스트 스쿼드");
+
+		SquadMember squadLeader =
+			createSquadMember(newSquad, newLeader, SquadMemberRole.LEADER, SquadMemberStatus.JOIN);
+		SquadMember squadMember =
+			createSquadMember(newSquad, newMember, SquadMemberRole.NORMAL, SquadMemberStatus.JOIN);
+
+		List<SquadMember> squadMembers = createSquadMembers(squadLeader, squadMember);
+
+		given(squadRepository.findById(anyLong()))
+			.willReturn(Optional.ofNullable(newSquad));
+		given(squadMemberRepository.findByMemberIdAndSquadId(anyLong(), anyLong()))
+			.willReturn(Optional.ofNullable(squadLeader));
+		given(squadMemberRepository.findBySquadId(anyLong()))
+			.willReturn(squadMembers);
+
+		// when
+		squadMemberService.deleteSquad(1L, 1L);
+
+		// then
+		assertSoftly(softly -> {
+			softly.assertThat(squadLeader.getSquadMemberStatus()).isEqualTo(SquadMemberStatus.LEAVE);
+			softly.assertThat(squadMember.getSquadMemberStatus()).isEqualTo(SquadMemberStatus.LEAVE);
+			softly.assertThat(newSquad.isDeletedFlag()).isTrue();
+		});
+	}
+
+	@Test
+	@DisplayName("권한 없는 멤버가 스쿼드를 삭제한다_실패")
+	void deleteSquadWithHasNoAuthorization_fail() {
+		// given
+		Member newLeader = createMember("test@test.com", "testA", MemberStatus.JOIN);
+
+		Squad newSquad = createSquad("테스트 스쿼드");
+
+		SquadMember squadLeader =
+			createSquadMember(newSquad, newLeader, SquadMemberRole.NORMAL, SquadMemberStatus.JOIN);
+
+		given(squadRepository.findById(anyLong()))
+			.willReturn(Optional.ofNullable(newSquad));
+		given(squadMemberRepository.findByMemberIdAndSquadId(anyLong(), anyLong()))
+			.willReturn(Optional.ofNullable(squadLeader));
+
+		// when, then
+		assertThatThrownBy(() -> squadMemberService.deleteSquad(1L, 1L))
+			.isInstanceOf(SquadMemberException.class)
+			.hasMessageContaining(UNAUTHORIZED_ACTION.getMessage());
 	}
 
 }
