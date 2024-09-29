@@ -33,7 +33,7 @@ public class SquadMemberService {
 	private final SquadRepository squadRepository;
 
 	@Transactional
-	public Long createMembership(Long memberId, Long squadId){
+	public Long createSquadMember(Long memberId, Long squadId){
 		Member foundMember = memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
@@ -100,6 +100,21 @@ public class SquadMemberService {
 
 		// 멤버를 탈퇴시킨다.
 		squadMember.leave();
+	}
+
+	@Transactional
+	public void deleteSquad(Long squadId, Long leaderId){
+		Squad foundSquad = squadRepository.findById(squadId)
+			.orElseThrow(() -> new SquadException(SQUAD_NOT_FOUND));
+
+		// 리더가 권한을 가졌는지 확인한다.
+		SquadMember squadLeader = squadMemberRepository.findByMemberIdAndSquadId(leaderId, squadId)
+			.orElseThrow(() -> new SquadMemberException(SQUADMEMBER_NOT_FOUND));
+		hasAuthorization(squadLeader);
+
+		// 스쿼드 멤버들을 모두 탈퇴 시킨다.
+		squadMemberRepository.findBySquadId(squadId).forEach(SquadMember::leave);
+		foundSquad.delete();
 	}
 
 	private void hasAuthorization(SquadMember squadMember){

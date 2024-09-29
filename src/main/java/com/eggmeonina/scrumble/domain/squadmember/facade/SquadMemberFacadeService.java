@@ -21,7 +21,7 @@ public class SquadMemberFacadeService {
 		// 스쿼드를 생성한다.
 		Long squadId = squadService.createSquad(request);
 		// 스쿼드장을 등록한다.
-		squadMemberService.createMembership(memberId, squadId);
+		squadMemberService.createSquadMember(memberId, squadId);
 		return squadId;
 	}
 }
