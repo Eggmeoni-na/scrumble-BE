@@ -37,7 +37,7 @@ class SquadMemberFacadeServiceTest {
 		SquadCreateRequest request = new SquadCreateRequest("테스트 스쿼드");
 
 		given(squadService.createSquad(any())).willReturn(squadId);
-		given(squadMemberService.createMembership(anyLong(), anyLong())).willReturn(membershipId);
+		given(squadMemberService.createSquadMember(anyLong(), anyLong())).willReturn(membershipId);
 
 		// when
 		Long newSquadId = squadMemberFacadeService.createSquad(memberId, request);

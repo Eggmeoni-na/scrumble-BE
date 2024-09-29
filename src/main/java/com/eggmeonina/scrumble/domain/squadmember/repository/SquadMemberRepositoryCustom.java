@@ -6,5 +6,7 @@ import com.eggmeonina.scrumble.domain.squadmember.dto.SquadResponse;
 
 public interface SquadMemberRepositoryCustom {
 
-	List<SquadResponse> findSquads(Long memberId);
+	List<SquadResponse> findSquads(final Long memberId);
+
+	boolean existsBySquadMemberNotMemberId(final Long squadId, final Long memberId);
 }

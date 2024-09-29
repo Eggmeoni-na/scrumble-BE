@@ -158,4 +158,26 @@ class SquadMemberTest {
 		assertThat(newMembership.isLeader()).isFalse();
 	}
 
+	@Test
+	@DisplayName("스쿼드를 탈퇴한다_성공")
+	void leave_success() {
+		// given
+		Member newMember = new Member("test@test.com", "test", "", new OauthInformation("1234", OauthType.GOOGLE),
+			MemberStatus.JOIN, LocalDateTime.now());
+		Squad newSquad = new Squad("test group", false);
+
+		SquadMember newSquadMember = SquadMember.create()
+			.member(newMember)
+			.squadMemberRole(SquadMemberRole.LEADER)
+			.squadMemberStatus(SquadMemberStatus.JOIN)
+			.squad(newSquad)
+			.build();
+
+		// when
+		newSquadMember.leave();
+
+		// then
+		assertThat(newSquadMember.getSquadMemberStatus()).isEqualTo(SquadMemberStatus.LEAVE);
+	}
+
 }
