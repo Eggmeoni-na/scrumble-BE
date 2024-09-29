@@ -1,6 +1,7 @@
 package com.eggmeonina.scrumble.fixture;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
@@ -12,11 +13,11 @@ import com.eggmeonina.scrumble.domain.squadmember.domain.SquadMemberRole;
 import com.eggmeonina.scrumble.domain.squadmember.domain.SquadMemberStatus;
 
 public class SquadMemberFixture {
-	public static SquadMember createSquadMember(Squad newSquad, Member newLeader, SquadMemberRole leader, SquadMemberStatus status) {
+	public static SquadMember createSquadMember(Squad newSquad, Member member, SquadMemberRole role, SquadMemberStatus status) {
 		return SquadMember.create()
 			.squad(newSquad)
-			.member(newLeader)
-			.squadMemberRole(leader)
+			.member(member)
+			.squadMemberRole(role)
 			.squadMemberStatus(status)
 			.build();
 	}
@@ -36,5 +37,9 @@ public class SquadMemberFixture {
 			.oauthInformation(new OauthInformation("1234567", OauthType.GOOGLE))
 			.joinedAt(LocalDateTime.now())
 			.build();
+	}
+
+	public static List<SquadMember> createSquadMembers(SquadMember... squadMember){
+		return List.of(squadMember);
 	}
 }
