@@ -25,4 +25,20 @@ class SquadTest {
 		assertThat(newSquad.getSquadName()).isEqualTo(newName);
 	}
 
+	@Test
+	@DisplayName("스쿼드를 삭제한다_성공")
+	void delete_success() {
+		// given
+		Squad newSquad = Squad.create()
+			.squadName("테스트 스쿼드")
+			.deletedFlag(false)
+			.build();
+
+		// when
+		newSquad.delete();
+
+		// then
+		assertThat(newSquad.isDeletedFlag()).isTrue();
+	}
+
 }
