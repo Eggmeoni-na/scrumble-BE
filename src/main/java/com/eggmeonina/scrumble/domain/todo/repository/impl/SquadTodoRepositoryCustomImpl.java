@@ -32,6 +32,7 @@ public class SquadTodoRepositoryCustomImpl implements SquadTodoRepositoryCustom 
 				.and(squadToDo.toDo.member.id.eq(memberId))
 				.and(squadToDo.toDo.todoAt.between(request.getStartDate(), request.getEndDate()))
 				.and(squadToDo.toDo.deletedFlag.eq(false)))
+			.orderBy(squadToDo.toDo.todoAt.desc())
 			.fetch();
 	}
 }
