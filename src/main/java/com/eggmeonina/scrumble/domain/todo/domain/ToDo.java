@@ -1,5 +1,7 @@
 package com.eggmeonina.scrumble.domain.todo.domain;
 
+import java.time.LocalDate;
+
 import com.eggmeonina.scrumble.common.domain.BaseEntity;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 
@@ -16,8 +18,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @Table(name = "todo")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -39,6 +43,9 @@ public class ToDo extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private TodoStatus todoStatus;
 
+	@Column(name = "todo_at", nullable = false)
+	private LocalDate todoAt;
+
 	@Column(name = "deleted_flag")
 	private boolean deletedFlag;
 
@@ -46,11 +53,13 @@ public class ToDo extends BaseEntity {
 	@JoinColumn(name = "member_id")
 	private Member member;
 
-	@Builder(buildMethodName = "create")
-	public ToDo(ToDoType toDoType, String contents, TodoStatus todoStatus, boolean deletedFlag, Member member) {
+	@Builder(builderMethodName = "create")
+	public ToDo(ToDoType toDoType, String contents, TodoStatus todoStatus, LocalDate todoAt, boolean deletedFlag,
+		Member member) {
 		this.toDoType = toDoType;
 		this.contents = contents;
 		this.todoStatus = todoStatus;
+		this.todoAt = todoAt;
 		this.deletedFlag = deletedFlag;
 		this.member = member;
 	}

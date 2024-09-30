@@ -19,6 +19,7 @@ CREATE TABLE squad_todo
     squad_todo_id BIGINT    NOT NULL AUTO_INCREMENT,
     todo_id       BIGINT    NOT NULL,
     squad_id      BIGINT    NOT NULL,
+    deleted_flag  TINYINT   NOT NULL,
     created_at    TIMESTAMP NULL,
     updated_at    TIMESTAMP NULL,
     PRIMARY KEY (squad_todo_id)
