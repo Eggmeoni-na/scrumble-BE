@@ -89,7 +89,7 @@ class SquadToDoFacadeServiceIntegrationTest extends IntegrationTestHelper {
 
 	@Test
 	@DisplayName("탈퇴한 회원의 투두를 등록한다_실패")
-	void createToDoWhenNotExsitsMember_fail() {
+	void createToDoWhenNotExistsMember_fail() {
 		// given
 		Member newMember = createMember("memberA", "test@test.com", MemberStatus.WITHDRAW, "12345677");
 		Squad newSquad = createSquad("테스트 스쿼드", false);
