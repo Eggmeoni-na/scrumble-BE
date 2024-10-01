@@ -52,9 +52,9 @@ class SquadTodoServiceIntegrationTest extends IntegrationTestHelper {
 		void setUp() {
 			newMember = createMember("testA", "test@test.com", MemberStatus.JOIN, "12345567");
 			newSquad = createSquad("테스트 스쿼드", false);
-			ToDo newTodo1 = createTodo(newMember, "삭제된 투두1", TodoStatus.PENDING, true, LocalDate.now().minusDays(2));
-			ToDo newTodo2 = createTodo(newMember, "테스트 투두2", TodoStatus.PENDING, false, LocalDate.now().minusDays(1));
-			ToDo newTodo3 = createTodo(newMember, "테스트 투두3", TodoStatus.PENDING, false, LocalDate.now());
+			ToDo newTodo1 = createToDo(newMember, "삭제된 투두1", TodoStatus.PENDING, true, LocalDate.now().minusDays(2));
+			ToDo newTodo2 = createToDo(newMember, "테스트 투두2", TodoStatus.PENDING, false, LocalDate.now().minusDays(1));
+			ToDo newTodo3 = createToDo(newMember, "테스트 투두3", TodoStatus.PENDING, false, LocalDate.now());
 			SquadToDo newSquadToDo1 = createSquadTodo(newSquad, newTodo1, true);
 			SquadToDo newSquadToDo2 = createSquadTodo(newSquad, newTodo2, false);
 			SquadToDo newSquadToDo3 = createSquadTodo(newSquad, newTodo3, false);
