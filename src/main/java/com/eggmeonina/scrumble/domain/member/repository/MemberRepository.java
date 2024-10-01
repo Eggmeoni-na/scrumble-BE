@@ -24,4 +24,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 		 WHERE m.memberStatus = 'JOIN' AND m.email = :email
 		""")
 	Optional<Member> findByEmail(final String email);
+
+	@Query("""
+		SELECT m
+		  FROM Member m
+		 WHERE m.id = :memberId AND m.memberStatus = 'JOIN'
+		""")
+	Optional<Member> findByIdAndMemberStatusNotJOIN(final Long memberId);
 }
