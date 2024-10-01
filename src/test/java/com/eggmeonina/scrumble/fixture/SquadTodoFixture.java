@@ -15,7 +15,7 @@ import com.eggmeonina.scrumble.domain.todo.domain.TodoStatus;
 
 public class SquadTodoFixture {
 
-	public static ToDo createTodo(Member newMember, String contents, TodoStatus todoStatus, boolean deletedFlag,
+	public static ToDo createToDo(Member newMember, String contents, TodoStatus todoStatus, boolean deletedFlag,
 		LocalDate todoAt) {
 		return ToDo.create()
 			.toDoType(ToDoType.DAILY)
