@@ -3,6 +3,7 @@ package com.eggmeonina.scrumble.domain.todo.service;
 import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
 import static com.eggmeonina.scrumble.fixture.SquadTodoFixture.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.SoftAssertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ import com.eggmeonina.scrumble.domain.todo.domain.ToDo;
 import com.eggmeonina.scrumble.domain.todo.domain.ToDoType;
 import com.eggmeonina.scrumble.domain.todo.domain.TodoStatus;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoCreateRequest;
+import com.eggmeonina.scrumble.domain.todo.dto.ToDoUpdateRequest;
 import com.eggmeonina.scrumble.domain.todo.repository.TodoRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -67,7 +69,7 @@ class ToDoServiceTest {
 	}
 
 	@Test
-	@DisplayName("투두를 삭제한다._성공")
+	@DisplayName("투두를 삭제한다_성공")
 	void deleteToDo_success() {
 		// given
 		Member newMember = createMember("userA", "test@test.com", MemberStatus.JOIN, "!2234235");
@@ -94,6 +96,63 @@ class ToDoServiceTest {
 		assertThatThrownBy(()->toDoService.deleteToDo(1L))
 			.isInstanceOf(ToDoException.class)
 			.hasMessageContaining(TODO_NOT_FOUND.getMessage());
+	}
+
+	@Test
+	@DisplayName("투두를 수정한다_성공")
+	void updateToDo_success() {
+		// given
+		Member newMember = createMember("userA", "test@test.com", MemberStatus.JOIN, "!2234235");
+		ToDo newToDo = createToDo(newMember, "모각코", TodoStatus.PENDING, false, LocalDate.now());
+
+		ToDoUpdateRequest request = new ToDoUpdateRequest("수정된 투두 내용", TodoStatus.COMPLETED, LocalDate.now());
+
+		given(todoRepository.existsByIdAndMemberId(anyLong(), anyLong()))
+			.willReturn(true);
+		given(todoRepository.findByIdAndDeletedFlagNot(anyLong()))
+			.willReturn(Optional.ofNullable(newToDo));
+
+		// when
+		toDoService.updateToDo(1L, 1L, request);
+
+		// then
+		assertSoftly(softly -> {
+			softly.assertThat(newToDo.getContents()).isEqualTo(request.getContents());
+			softly.assertThat(newToDo.getTodoStatus()).isEqualTo(request.getToDoStatus());
+			softly.assertThat(newToDo.getTodoAt()).isEqualTo(request.getToDoAt());
+		});
+	}
+
+	@Test
+	@DisplayName("삭제된 투두를 수정한다_실패")
+	void updateToDoWhenDeletedToDo_fail() {
+		// given
+		ToDoUpdateRequest request = new ToDoUpdateRequest("수정된 투두 내용", TodoStatus.COMPLETED, LocalDate.now());
+
+		given(todoRepository.existsByIdAndMemberId(anyLong(), anyLong()))
+			.willReturn(true);
+		given(todoRepository.findByIdAndDeletedFlagNot(anyLong()))
+			.willReturn(Optional.empty());
+
+		// when, then
+		assertThatThrownBy(() -> toDoService.updateToDo(1L, 1L, request))
+			.isInstanceOf(ToDoException.class)
+			.hasMessageContaining(TODO_NOT_FOUND.getMessage());
+	}
+
+	@Test
+	@DisplayName("작성자가 아닌 회원이 투두를 수정한다_실패")
+	void updateToDoWhenIsNotWriter_fail() {
+		// given
+		ToDoUpdateRequest request = new ToDoUpdateRequest("수정된 투두 내용", TodoStatus.COMPLETED, LocalDate.now());
+
+		given(todoRepository.existsByIdAndMemberId(anyLong(), anyLong()))
+			.willReturn(false);
+
+		// when, then
+		assertThatThrownBy(() -> toDoService.updateToDo(1L, 1L, request))
+			.isInstanceOf(ToDoException.class)
+			.hasMessageContaining(WRITER_IS_NOT_MATCH.getMessage());
 	}
 
 }

@@ -11,6 +11,7 @@ import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
 import com.eggmeonina.scrumble.domain.todo.domain.ToDo;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoCreateRequest;
+import com.eggmeonina.scrumble.domain.todo.dto.ToDoUpdateRequest;
 import com.eggmeonina.scrumble.domain.todo.repository.TodoRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -43,5 +44,15 @@ public class ToDoService {
 			.orElseThrow(() -> new ToDoException(TODO_NOT_FOUND));
 		foundToDo.delete();
 		return foundToDo.getId();
+	}
+
+	@Transactional
+	public void updateToDo(Long memberId, Long toDoId, ToDoUpdateRequest request){
+		if(!isWriter(memberId, toDoId)){
+			throw new ToDoException(WRITER_IS_NOT_MATCH);
+		}
+		ToDo foundToDo = todoRepository.findByIdAndDeletedFlagNot(toDoId)
+			.orElseThrow(() -> new ToDoException(TODO_NOT_FOUND));
+		foundToDo.update(request.getContents(), request.getToDoStatus(), request.getToDoAt());
 	}
 }
