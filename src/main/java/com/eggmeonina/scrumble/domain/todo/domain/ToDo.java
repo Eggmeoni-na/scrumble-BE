@@ -67,4 +67,10 @@ public class ToDo extends BaseEntity {
 	public void delete(){
 		this.deletedFlag = true;
 	}
+
+	public void update(String newContents, TodoStatus newTodoStatus, LocalDate newTodoAt){
+		this.contents = newContents;
+		this.todoStatus = newTodoStatus;
+		this.todoAt = newTodoAt;
+	}
 }

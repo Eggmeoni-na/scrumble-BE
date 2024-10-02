@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,8 +20,10 @@ import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoCreateRequest;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoRequest;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoResponse;
+import com.eggmeonina.scrumble.domain.todo.dto.ToDoUpdateRequest;
 import com.eggmeonina.scrumble.domain.todo.facade.SquadToDoFacadeService;
 import com.eggmeonina.scrumble.domain.todo.service.SquadTodoService;
+import com.eggmeonina.scrumble.domain.todo.service.ToDoService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,6 +38,7 @@ public class TodoController {
 
 	private final SquadToDoFacadeService squadToDoFacadeService;
 	private final SquadTodoService squadTodoService;
+	private final ToDoService toDoService;
 
 	@GetMapping("/squads/{squadId}/members/{memberId}")
 	@Operation(summary = "스쿼드 투두들을 조회한다", description = "스쿼드에 속한 투두들을 조회한다.")
@@ -57,7 +61,7 @@ public class TodoController {
 		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), Map.of("toDoId", toDoId));
 	}
 
-	@DeleteMapping("{toDoId}/squads/{squadId}")
+	@DeleteMapping("/{toDoId}/squads/{squadId}")
 	@Operation(summary = "스쿼드에 속한 투두를 삭제한다", description = "본인의 스쿼드에 속한 투두를 삭제한다.")
 	public ApiResponse<Void> deleteToDo(
 		@Parameter(description = "투두 ID") @PathVariable Long toDoId,
@@ -65,6 +69,17 @@ public class TodoController {
 		@Parameter(hidden = true) @Member LoginMember member
 	){
 		squadToDoFacadeService.deleteToDoAndSquadToDo(squadId, toDoId, member.getMemberId());
+		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
+	}
+
+	@PutMapping("/{toDoId}")
+	@Operation(summary = "투두를 수정한다", description = "본인이 작성한 투두를 수정한다.")
+	public ApiResponse<Void> updateToDo(
+		@Parameter(description = "투두 ID") @PathVariable Long toDoId,
+		@Parameter(hidden = true) @Member LoginMember member,
+		@RequestBody ToDoUpdateRequest request
+	){
+		toDoService.updateToDo(member.getMemberId(), toDoId, request);
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
