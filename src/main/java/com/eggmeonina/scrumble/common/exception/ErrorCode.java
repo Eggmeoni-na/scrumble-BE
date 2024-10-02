@@ -34,7 +34,14 @@ public enum ErrorCode {
 	SQUAD_NOT_FOUND(HttpStatus.BAD_REQUEST, "스쿼드가 존재하지 않습니다."),
 	SQUADMEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "스쿼드에 존재하는 회원이 아닙니다."),
 	UNAUTHORIZED_ACTION(HttpStatus.FORBIDDEN, "권한이 없는 사용자입니다."),
-	LEADER_CANNOT_LEAVE(HttpStatus.FORBIDDEN, "스쿼드의 리더는 탈퇴가 불가능합니다.");
+	LEADER_CANNOT_LEAVE(HttpStatus.FORBIDDEN, "스쿼드의 리더는 탈퇴가 불가능합니다."),
+
+	/**
+	 * 투두
+	 */
+	TODO_NOT_FOUND(HttpStatus.BAD_REQUEST, "투두가 존재하지 않습니다."),
+	SQUAD_TODO_NOT_FOUND(HttpStatus.BAD_REQUEST, "스쿼드에 속한 투두가 존재하지 않습니다."),
+	WRITER_IS_NOT_MATCH(HttpStatus.FORBIDDEN, "투두 작성자가 아닙니다.");
 
 	private final HttpStatus status;
 	private final String message;
