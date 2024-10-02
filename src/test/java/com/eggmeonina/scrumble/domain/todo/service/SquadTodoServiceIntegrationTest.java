@@ -26,10 +26,13 @@ import com.eggmeonina.scrumble.domain.todo.repository.SquadTodoRepository;
 import com.eggmeonina.scrumble.domain.todo.repository.TodoRepository;
 import com.eggmeonina.scrumble.helper.IntegrationTestHelper;
 
-class SquadTodoServiceIntegrationTest extends IntegrationTestHelper {
+class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 
 	@Autowired
 	private SquadTodoService squadTodoService;
+
+	@Autowired
+	private ToDoService toDoService;
 
 	@Autowired
 	private SquadTodoRepository squadTodoRepository;
@@ -110,9 +113,43 @@ class SquadTodoServiceIntegrationTest extends IntegrationTestHelper {
 			// then
 			assertThat(squadTodos).hasSize(2);
 		}
-
 	}
 
+	@Test
+	@DisplayName("작성자 여부를 확인한다_성공")
+	void isWriter_success() {
+		// given
+		Member newMember = createMember("testA", "test@test.com", MemberStatus.JOIN, "12335346");
+		ToDo newToDo = createToDo(newMember, "모각코", TodoStatus.PENDING, false, LocalDate.now());
+
+		memberRepository.save(newMember);
+		todoRepository.save(newToDo);
+
+		// when
+		boolean isWriter = toDoService.isWriter(newMember.getId(), newToDo.getId());
+
+		// then
+		assertThat(isWriter).isTrue();
+	}
+
+	@Test
+	@DisplayName("작성자 여부를 확인한다_실패")
+	void isWriter_fail() {
+		// given
+		Member newMember1 = createMember("testA", "test@test.com", MemberStatus.JOIN, "12335346");
+		Member newMember2 = createMember("testA", "test@test.com", MemberStatus.JOIN, "12335346");
+		ToDo newToDo = createToDo(newMember1, "모각코", TodoStatus.PENDING, false, LocalDate.now());
+
+		memberRepository.save(newMember1);
+		memberRepository.save(newMember2);
+		todoRepository.save(newToDo);
+
+		// when
+		boolean isWriter = toDoService.isWriter(newMember2.getId(), newToDo.getId());
+
+		// then
+		assertThat(isWriter).isFalse();
+	}
 
 
 }
