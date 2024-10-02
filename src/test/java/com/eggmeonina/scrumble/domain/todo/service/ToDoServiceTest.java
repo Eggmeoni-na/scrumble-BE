@@ -16,10 +16,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.eggmeonina.scrumble.common.exception.MemberException;
+import com.eggmeonina.scrumble.common.exception.ToDoException;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.domain.MemberStatus;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
+import com.eggmeonina.scrumble.domain.todo.domain.ToDo;
 import com.eggmeonina.scrumble.domain.todo.domain.ToDoType;
+import com.eggmeonina.scrumble.domain.todo.domain.TodoStatus;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoCreateRequest;
 import com.eggmeonina.scrumble.domain.todo.repository.TodoRepository;
 
@@ -61,6 +64,36 @@ class ToDoServiceTest {
 		assertThatThrownBy(()-> toDoService.createToDo(1L, request))
 			.isInstanceOf(MemberException.class)
 			.hasMessageContaining(MEMBER_NOT_FOUND.getMessage());
+	}
+
+	@Test
+	@DisplayName("투두를 삭제한다._성공")
+	void deleteToDo_success() {
+		// given
+		Member newMember = createMember("userA", "test@test.com", MemberStatus.JOIN, "!2234235");
+		ToDo newToDo = createToDo(newMember, "모각코", TodoStatus.PENDING, false, LocalDate.now());
+
+		given(todoRepository.findByIdAndDeletedFlagNot(anyLong()))
+			.willReturn(Optional.ofNullable(newToDo));
+
+		// when
+		toDoService.deleteToDo(1L);
+
+		// then
+		assertThat(newToDo.isDeletedFlag()).isTrue();
+	}
+
+	@Test
+	@DisplayName("없거나 삭제된 투두를 삭제한다_실패")
+	void deleteToDoWhenDeletedToDo_success() {
+		// given
+		given(todoRepository.findByIdAndDeletedFlagNot(anyLong()))
+			.willReturn(Optional.empty());
+
+		// when, then
+		assertThatThrownBy(()->toDoService.deleteToDo(1L))
+			.isInstanceOf(ToDoException.class)
+			.hasMessageContaining(TODO_NOT_FOUND.getMessage());
 	}
 
 }

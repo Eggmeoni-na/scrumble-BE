@@ -1,6 +1,8 @@
 package com.eggmeonina.scrumble.domain.todo.domain;
 
 import com.eggmeonina.scrumble.common.domain.BaseEntity;
+import com.eggmeonina.scrumble.common.exception.ErrorCode;
+import com.eggmeonina.scrumble.common.exception.SquadToDoException;
 import com.eggmeonina.scrumble.domain.squadmember.domain.Squad;
 
 import jakarta.persistence.Column;
@@ -40,8 +42,18 @@ public class SquadToDo extends BaseEntity {
 
 	@Builder(builderMethodName = "create")
 	public SquadToDo(ToDo toDo, Squad squad, boolean deletedFlag) {
+		if(toDo == null){
+			throw new SquadToDoException(ErrorCode.TODO_NOT_FOUND);
+		}
+		if(squad == null){
+			throw new SquadToDoException(ErrorCode.SQUAD_NOT_FOUND);
+		}
 		this.toDo = toDo;
 		this.squad = squad;
 		this.deletedFlag = deletedFlag;
+	}
+
+	public void delete(){
+		deletedFlag = true;
 	}
 }
