@@ -119,7 +119,7 @@ class ToDoServiceTest {
 		assertSoftly(softly -> {
 			softly.assertThat(newToDo.getContents()).isEqualTo(request.getContents());
 			softly.assertThat(newToDo.getTodoStatus()).isEqualTo(request.getToDoStatus());
-			softly.assertThat(newToDo.getTodoAt()).isEqualTo(request.getToDoAT());
+			softly.assertThat(newToDo.getTodoAt()).isEqualTo(request.getToDoAt());
 		});
 	}
 
