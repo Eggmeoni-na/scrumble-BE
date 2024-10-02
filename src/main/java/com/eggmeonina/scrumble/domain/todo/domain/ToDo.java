@@ -63,4 +63,8 @@ public class ToDo extends BaseEntity {
 		this.deletedFlag = deletedFlag;
 		this.member = member;
 	}
+
+	public void delete(){
+		this.deletedFlag = true;
+	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,6 +55,17 @@ public class TodoController {
 	){
 		Long toDoId = squadToDoFacadeService.createToDoAndSquadToDo(squadId, member.getMemberId(), request);
 		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), Map.of("toDoId", toDoId));
+	}
+
+	@DeleteMapping("{toDoId}/squads/{squadId}")
+	@Operation(summary = "스쿼드에 속한 투두를 삭제한다", description = "본인의 스쿼드에 속한 투두를 삭제한다.")
+	public ApiResponse<Void> deleteToDo(
+		@Parameter(description = "투두 ID") @PathVariable Long toDoId,
+		@Parameter(description = "스쿼드 ID") @PathVariable Long squadId,
+		@Parameter(hidden = true) @Member LoginMember member
+	){
+		squadToDoFacadeService.deleteToDoAndSquadToDo(squadId, toDoId, member.getMemberId());
+		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
 }

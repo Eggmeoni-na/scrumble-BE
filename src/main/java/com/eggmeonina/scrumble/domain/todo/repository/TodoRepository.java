@@ -15,4 +15,6 @@ public interface TodoRepository extends JpaRepository<ToDo, Long> {
 		 WHERE t.id = :toDoId AND t.deletedFlag = false
 		""")
 	Optional<ToDo> findByIdAndDeletedFlagNot(Long toDoId);
+
+	boolean existsByIdAndMemberId(final Long toDoId, final Long memberId);
 }

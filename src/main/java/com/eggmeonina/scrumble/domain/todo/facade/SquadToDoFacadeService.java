@@ -1,8 +1,11 @@
 package com.eggmeonina.scrumble.domain.todo.facade;
 
+import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.eggmeonina.scrumble.common.exception.ToDoException;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoCreateRequest;
 import com.eggmeonina.scrumble.domain.todo.service.SquadTodoService;
 import com.eggmeonina.scrumble.domain.todo.service.ToDoService;
@@ -28,5 +31,18 @@ public class SquadToDoFacadeService {
 		Long toDoId = toDoService.createToDo(memberId, request);
 		squadTodoService.createSquadToDo(squadId, toDoId);
 		return toDoId;
+	}
+
+	@Transactional
+	public void deleteToDoAndSquadToDo(Long squadId, Long toDoId, Long memberId){
+		// 투두 작성자를 확인한다.
+		if(!toDoService.isWriter(memberId, toDoId)){
+			throw new ToDoException(WRITER_IS_NOT_MATCH);
+		}
+
+		// 스쿼드 투두를 삭제한다.
+		squadTodoService.deleteSquadToDo(squadId, toDoId);
+		// 자신의 투두를 삭제한다.
+		toDoService.deleteToDo(toDoId);
 	}
 }
