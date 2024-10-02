@@ -39,7 +39,9 @@ public enum ErrorCode {
 	/**
 	 * 투두
 	 */
-	TODO_NOT_FOUND(HttpStatus.BAD_REQUEST, "투두가 존재하지 않습니다.");
+	TODO_NOT_FOUND(HttpStatus.BAD_REQUEST, "투두가 존재하지 않습니다."),
+	SQUAD_TODO_NOT_FOUND(HttpStatus.BAD_REQUEST, "스쿼드에 속한 투두가 존재하지 않습니다."),
+	WRITER_IS_NOT_MATCH(HttpStatus.FORBIDDEN, "투두 작성자가 아닙니다.");
 
 	private final HttpStatus status;
 	private final String message;
