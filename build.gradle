@@ -86,7 +86,8 @@ tasks.jacocoTestReport {
                     ['**/common/*',
                      "**/dto/*",
                      "**/*Application.class",
-                     "**/*Controller.class"
+                     "**/*Controller.class",
+                     "**/Q*.class"
                     ])
         }))
     }
