@@ -48,3 +48,12 @@ jobs:
       if: always()
       with:
         files: '**/build/test-results/**/*.xml'
+
+    - name: Add coverage to PR
+      id: jacoco
+      uses: madrapps/jacoco-report@v1.7.1
+      with:
+        paths: ${{ github.workspace }}/**/build/jacocoReport/test/jacocoTestReport.xml
+        token: ${{ secrets.GITHUB_TOKEN }}
+        min-coverage-overall: 50
+        min-coverage-changed-files: 80
