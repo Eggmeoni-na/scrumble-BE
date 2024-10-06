@@ -48,3 +48,22 @@ jobs:
       if: always()
       with:
         files: '**/build/test-results/**/*.xml'
+
+    - name: Add coverage to PR
+      id: jacoco
+      uses: madrapps/jacoco-report@v1.7.1
+      with:
+        paths: ${{ github.workspace }}/**/build/reports/jacoco/test/jacocoTestReport.xml
+        token: ${{ secrets.GITHUB_TOKEN }}
+        min-coverage-overall: 50
+        min-coverage-changed-files: 80
+        pass-emoji: ':green_circle:'
+        fail-emoji: ':red_circle:'
+
+
+    - name: Fail PR if overall coverage is less than 50%
+      if: ${{ steps.jacoco.outputs.coverage-overall < 50.0 }}
+      uses: actions/github-script@v6
+      with:
+        script: |
+          core.setFailed('Overall coverage is less than 50%!')
