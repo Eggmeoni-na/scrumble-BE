@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.eggmeonina.scrumble.domain.todo.domain.ToDo;
 
-public interface TodoRepository extends JpaRepository<ToDo, Long> {
+public interface TodoRepository extends JpaRepository<ToDo, Long>, ToDoRepositoryCustom {
 
 	@Query("""
 		SELECT t
