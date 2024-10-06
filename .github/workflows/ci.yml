@@ -60,7 +60,7 @@ jobs:
         pass-emoji: ':green_circle:'
         fail-emoji: ':red_circle:'
 
-    - name: [workflow fail] jacoco 전체 커버리지 50% 이하
+    - name: Fail PR if overall coverage is less than 50%
       if: ${{ steps.jacoco.outputs.coverage-overall < 50.0 }}
       uses: actions/github-script@v6
       with:
