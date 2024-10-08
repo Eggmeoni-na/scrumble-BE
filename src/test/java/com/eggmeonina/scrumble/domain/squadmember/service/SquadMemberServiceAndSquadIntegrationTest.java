@@ -173,8 +173,8 @@ class SquadMemberServiceAndSquadIntegrationTest extends IntegrationTestHelper {
 			softly.assertThat(response.getSquadName()).isEqualTo(newSquad.getSquadName());
 			softly.assertThat(response.getSquadMembers().get(0).getMemberId()).isEqualTo(newMember1.getId());
 			softly.assertThat(response.getSquadMembers().get(0).getName()).isEqualTo(newMember1.getName());
-			softly.assertThat(response.getSquadMembers().get(0).getProfileImg())
-				.isEqualTo(newMember1.getProfileImage());
+			softly.assertThat(response.getSquadMembers().get(0).getProfileImg()).isEqualTo(newMember1.getProfileImage());
+			softly.assertThat(response.getSquadMembers().get(0).getSquadMemberRole()).isEqualTo(newSquadMember1.getSquadMemberRole());
 			softly.assertThat(response.getSquadMembers()).hasSize(2);
 		});
 	}

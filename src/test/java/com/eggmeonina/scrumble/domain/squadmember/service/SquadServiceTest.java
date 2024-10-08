@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.eggmeonina.scrumble.common.exception.SquadException;
 import com.eggmeonina.scrumble.domain.squadmember.domain.Squad;
+import com.eggmeonina.scrumble.domain.squadmember.domain.SquadMemberRole;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadCreateRequest;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadDetailResponse;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadMemberResponse;
@@ -56,7 +57,7 @@ class SquadServiceTest {
 		// given
 		Long squadId = 1L;
 		List<SquadMemberResponse> members = new ArrayList<>();
-		SquadMemberResponse memberResponse = new SquadMemberResponse(1L, "http://-", "testA");
+		SquadMemberResponse memberResponse = new SquadMemberResponse(1L, "http://-", "testA", SquadMemberRole.NORMAL);
 		members.add(memberResponse);
 
 		SquadDetailResponse mockResponse = new SquadDetailResponse(squadId, "테스트 스쿼드", members);
