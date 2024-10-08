@@ -33,7 +33,6 @@ public class AuthFacadeService {
 		if(authClient == null){
 			throw new AuthException(TYPE_NOT_SUPPORTED);
 		}
-		if(authClient != null){}
 		GoogleAuthClientResponse accessToken = authClient.getAccessToken(request.getCode(), request.getScope());
 		String token = String.format("%s %s", accessToken.getTokenType(), accessToken.getAccessToken());
 		MemberInformation foundMemberInformation = authClient.findUserProfile(token);

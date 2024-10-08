@@ -20,6 +20,8 @@ import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoCreateRequest;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoRequest;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoResponse;
+import com.eggmeonina.scrumble.domain.todo.dto.ToDoRequest;
+import com.eggmeonina.scrumble.domain.todo.dto.ToDoResponse;
 import com.eggmeonina.scrumble.domain.todo.dto.ToDoUpdateRequest;
 import com.eggmeonina.scrumble.domain.todo.facade.SquadToDoFacadeService;
 import com.eggmeonina.scrumble.domain.todo.service.SquadTodoService;
@@ -28,6 +30,7 @@ import com.eggmeonina.scrumble.domain.todo.service.ToDoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Todo 테스트", description = "todo 생성, 삭제, 조회용 API Controller")
@@ -81,6 +84,16 @@ public class TodoController {
 	){
 		toDoService.updateToDo(member.getMemberId(), toDoId, request);
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
+	}
+
+	@GetMapping("/me")
+	@Operation(summary = "나의 투두들을 조회한다", description = "내가 작성한 투두들을 조회한다.")
+	public ApiResponse<List<ToDoResponse>> getToDos(
+		@Valid @ModelAttribute ToDoRequest request,
+		@Parameter(hidden = true) @Member LoginMember member
+	){
+		List<ToDoResponse> toDos = toDoService.findToDos(member.getMemberId(), request);
+		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), toDos);
 	}
 
 }

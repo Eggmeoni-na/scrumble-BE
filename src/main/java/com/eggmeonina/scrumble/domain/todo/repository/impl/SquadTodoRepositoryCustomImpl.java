@@ -27,12 +27,14 @@ public class SquadTodoRepositoryCustomImpl implements SquadTodoRepositoryCustom 
 			)
 			.from(squadToDo)
 			.join(squadToDo.toDo)
-			.where(squadToDo.squad.id.eq(squadId)
+			.where(squadToDo.toDo.id.lt(request.getLastToDoId())
+				.and(squadToDo.squad.id.eq(squadId))
 				.and(squadToDo.deletedFlag.eq(false))
 				.and(squadToDo.toDo.member.id.eq(memberId))
 				.and(squadToDo.toDo.todoAt.between(request.getStartDate(), request.getEndDate()))
 				.and(squadToDo.toDo.deletedFlag.eq(false)))
-			.orderBy(squadToDo.toDo.todoAt.desc())
+			.limit(request.getPageSize())
+			.orderBy(squadToDo.toDo.id.asc(), squadToDo.toDo.todoAt.desc())
 			.fetch();
 	}
 }
