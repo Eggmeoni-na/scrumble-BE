@@ -10,6 +10,7 @@ import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
 import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
 import com.eggmeonina.scrumble.domain.auth.domain.MemberInformation;
+import com.eggmeonina.scrumble.domain.member.dto.MemberInvitationResponse;
 import com.eggmeonina.scrumble.domain.member.dto.MemberResponse;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
 
@@ -40,5 +41,11 @@ public class MemberService {
 		Member foundMember = memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 		foundMember.withdraw();
+	}
+
+	public MemberInvitationResponse findMember(String email){
+		Member foundMember = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+		return MemberInvitationResponse.from(foundMember);
 	}
 }
