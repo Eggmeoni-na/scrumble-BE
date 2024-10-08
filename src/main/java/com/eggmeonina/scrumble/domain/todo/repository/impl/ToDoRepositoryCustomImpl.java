@@ -26,6 +26,7 @@ public class ToDoRepositoryCustomImpl implements ToDoRepositoryCustom {
 
 	@Override
 	public List<ToDoResponse> findAll(Long memberId, ToDoRequest request) {
+
 		return query.selectFrom(toDo)
 			.join(toDo.member)
 			.join(squadToDo)
@@ -37,6 +38,7 @@ public class ToDoRepositoryCustomImpl implements ToDoRepositoryCustom {
 			.and(toDo.member.id.eq(memberId))
 				.and(toDo.todoAt.between(request.getStartDate(), request.getEndDate()))
 				.and(toDo.deletedFlag.eq(false)))
+			.limit(request.getPageSize())
 			.orderBy(toDo.todoAt.desc(), toDo.id.desc())
 			.transform(
 				groupBy(toDo.todoAt).list(

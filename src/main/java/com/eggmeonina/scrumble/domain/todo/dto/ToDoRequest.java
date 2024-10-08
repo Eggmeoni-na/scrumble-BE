@@ -3,6 +3,7 @@ package com.eggmeonina.scrumble.domain.todo.dto;
 import java.time.LocalDate;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -15,4 +16,6 @@ public class ToDoRequest {
 	private LocalDate endDate;
 	@NotNull
 	private Long lastToDoId;
+	@Positive
+	private long pageSize;
 }
