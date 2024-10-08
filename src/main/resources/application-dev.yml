@@ -3,7 +3,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     # url 끝에 database 지정
-    url: ENC(guF68Y6iOlHDaD8ZfdcwcACoAGIWz8k3g5CO2OK/JcV32rdi4vJS3AzHN+9HV61HYcCasQ3RdsY=)
+    url: ENC(mDrCYiCTIyhT9flrpkl4MLhJq3BCMu2sy+PwWmuHpXeRaK+tTaVfK908IQTcG9yszJzYcVlXA5s=)
     username: ENC(Dq0TfNx5U8TpiPtx4Rl8Luf+kStsMzpo)
     password: ENC(OYwM8ItpW3jAocG6FL3KbBIeppCejcOw)
 
