@@ -61,7 +61,7 @@ class ToDoServiceIntegrationTest extends IntegrationTestHelper {
 			todoRepository.save(newToDo);
 			squadTodoRepository.save(newSquadToDo);
 
-			ToDoRequest request = new ToDoRequest(LocalDate.now(), LocalDate.now(), 9999999L);
+			ToDoRequest request = new ToDoRequest(LocalDate.now(), LocalDate.now(), 9999999L, 50L);
 
 			// when
 			List<ToDoResponse> toDos = toDoService.findToDos(newMember.getId(), request);
@@ -88,7 +88,7 @@ class ToDoServiceIntegrationTest extends IntegrationTestHelper {
 			todoRepository.saveAll(List.of(newToDo1, newToDo2, newToDo3));
 			squadTodoRepository.saveAll(List.of(newSquadToDo1, newSquadToDo2, newSquadToDo3));
 
-			ToDoRequest request = new ToDoRequest(LocalDate.now(), LocalDate.now(), 9999999L);
+			ToDoRequest request = new ToDoRequest(LocalDate.now(), LocalDate.now(), 9999999L, 50L);
 
 			// when
 			List<ToDoResponse> toDos = toDoService.findToDos(newMember.getId(), request);
@@ -118,7 +118,7 @@ class ToDoServiceIntegrationTest extends IntegrationTestHelper {
 			todoRepository.saveAll(List.of(newToDo1, newToDo2, newToDo3));
 			squadTodoRepository.saveAll(List.of(newSquadToDo1, newSquadToDo2, newSquadToDo3));
 
-			ToDoRequest request = new ToDoRequest(LocalDate.now(), LocalDate.now(), 9999999L);
+			ToDoRequest request = new ToDoRequest(LocalDate.now(), LocalDate.now(), 9999999L, 50L);
 
 			// when
 			List<ToDoResponse> toDos = toDoService.findToDos(newMember.getId(), request);
@@ -148,7 +148,7 @@ class ToDoServiceIntegrationTest extends IntegrationTestHelper {
 			todoRepository.saveAll(List.of(newToDo1, newToDo2, newToDo3));
 			squadTodoRepository.saveAll(List.of(newSquadToDo1, newSquadToDo2, newSquadToDo3));
 
-			ToDoRequest request = new ToDoRequest(LocalDate.now().minusDays(1), LocalDate.now(), 9999999L);
+			ToDoRequest request = new ToDoRequest(LocalDate.now().minusDays(1), LocalDate.now(), 9999999L, 50L);
 
 			// when
 			List<ToDoResponse> toDos = toDoService.findToDos(newMember.getId(), request);
@@ -160,6 +160,72 @@ class ToDoServiceIntegrationTest extends IntegrationTestHelper {
 				assertThat(toDos.get(1).getToDoDetails()).hasSize(1);
 			});
 		}
+	}
+
+	@Nested
+	@DisplayName("노 오프셋 페이징 테스트")
+	class no_offset_paging{
+
+		@Test
+		@DisplayName("페이징 크기보다 많을 때 페이징 크기만큼 조회한다")
+		void whenGreaterThanPageSize_success() {
+			// given
+			Member newMember = createMember("test", "test@test.com", MemberStatus.JOIN, "123234");
+			Squad newSquad1 = createSquad("스쿼드1", false);
+			Squad newSquad2 = createSquad("두번째 스쿼드", false);
+			ToDo newToDo1 = createToDo(newMember, "여행", TodoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo2 = createToDo(newMember, "프로젝트", TodoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo3 = createToDo(newMember, "알고리즘", TodoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo4 = createToDo(newMember, "알고리즘", TodoStatus.PENDING, false, LocalDate.now());
+			SquadToDo newSquadToDo1 = createSquadTodo(newSquad1, newToDo1, false);
+			SquadToDo newSquadToDo2 = createSquadTodo(newSquad2, newToDo2, false);
+			SquadToDo newSquadToDo3 = createSquadTodo(newSquad1, newToDo3, false);
+			SquadToDo newSquadToDo4 = createSquadTodo(newSquad1, newToDo4, false);
+
+			memberRepository.save(newMember);
+			squadRepository.save(newSquad1);
+			squadRepository.save(newSquad2);
+			todoRepository.saveAll(List.of(newToDo1, newToDo2, newToDo3, newToDo4));
+			squadTodoRepository.saveAll(List.of(newSquadToDo1, newSquadToDo2, newSquadToDo3, newSquadToDo4));
+
+			int pageSize = 3;
+			ToDoRequest request = new ToDoRequest(LocalDate.now().minusDays(1), LocalDate.now(), 9999999L, pageSize);
+
+			// when
+			List<ToDoResponse> toDos = toDoService.findToDos(newMember.getId(), request);
+
+			// then
+			assertThat(toDos.get(0).getToDoDetails()).hasSize(3);
+		}
+
+		@Test
+		@DisplayName("페이징 크기보다 적을 때 페이징 크기만큼 조회한다")
+		void whenLessThanPageSize_success() {
+			// given
+			Member newMember = createMember("test", "test@test.com", MemberStatus.JOIN, "123234");
+			Squad newSquad1 = createSquad("스쿼드1", false);
+			Squad newSquad2 = createSquad("두번째 스쿼드", false);
+			ToDo newToDo1 = createToDo(newMember, "여행", TodoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo2 = createToDo(newMember, "프로젝트", TodoStatus.PENDING, false, LocalDate.now());
+			SquadToDo newSquadToDo1 = createSquadTodo(newSquad1, newToDo1, false);
+			SquadToDo newSquadToDo2 = createSquadTodo(newSquad2, newToDo2, false);
+
+			memberRepository.save(newMember);
+			squadRepository.save(newSquad1);
+			squadRepository.save(newSquad2);
+			todoRepository.saveAll(List.of(newToDo1, newToDo2));
+			squadTodoRepository.saveAll(List.of(newSquadToDo1, newSquadToDo2));
+
+			int pageSize = 3;
+			ToDoRequest request = new ToDoRequest(LocalDate.now().minusDays(1), LocalDate.now(), 9999999L, pageSize);
+
+			// when
+			List<ToDoResponse> toDos = toDoService.findToDos(newMember.getId(), request);
+
+			// then
+			assertThat(toDos.get(0).getToDoDetails()).hasSize(2);
+		}
+
 	}
 
 }
