@@ -127,4 +127,14 @@ public class SquadController {
 		squadMemberService.deleteSquad(squadId, member.getMemberId());
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
+
+	@PostMapping("/{squadId}/members/{memberId}")
+	@Operation(summary = "스쿼드 멤버를 초대(추가)한다", description = "스쿼드 멤버를 초대(추가)한다.")
+	public ApiResponse<Void> inviteMember(
+		@PathVariable("squadId") Long squadId,
+		@PathVariable("memberId") Long memberId
+	){
+		squadMemberService.inviteSquadMember(memberId, squadId);
+		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
+	}
 }
