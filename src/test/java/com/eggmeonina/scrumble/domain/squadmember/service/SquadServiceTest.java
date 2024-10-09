@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.eggmeonina.scrumble.common.exception.SquadException;
+import com.eggmeonina.scrumble.common.exception.SquadMemberException;
 import com.eggmeonina.scrumble.domain.squadmember.domain.Squad;
 import com.eggmeonina.scrumble.domain.squadmember.domain.SquadMemberRole;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadCreateRequest;
@@ -65,7 +66,7 @@ class SquadServiceTest {
 		given(squadRepository.findSquadAndMembers(anyLong())).willReturn(Optional.of(mockResponse));
 
 		// when
-		SquadDetailResponse actualResponse = squadService.findSquadAndMembers(squadId);
+		SquadDetailResponse actualResponse = squadService.findSquadAndMembers(memberResponse.getMemberId(), squadId);
 
 		// then
 		assertSoftly(softly -> {
@@ -84,8 +85,28 @@ class SquadServiceTest {
 		given(squadRepository.findSquadAndMembers(anyLong())).willReturn(Optional.empty());
 
 		// when, then
-		assertThatThrownBy(()-> squadService.findSquadAndMembers(squadId))
+		assertThatThrownBy(()-> squadService.findSquadAndMembers(1L, squadId))
 			.isInstanceOf(SquadException.class)
 			.hasMessageContaining(SQUAD_NOT_FOUND.getMessage());
+	}
+
+	@Test
+	@DisplayName("스쿼드에 속하지 않은 회원이 스쿼드를 조회한다_실패")
+	void findSquadAndMembersWhenNotExistsMemberInSquad_fail() {
+		// given
+		Long squadId = 1L;
+		Long anotherMemberId = 2L;
+		List<SquadMemberResponse> members = new ArrayList<>();
+		SquadMemberResponse memberResponse = new SquadMemberResponse(1L, "http://-", "testA", SquadMemberRole.NORMAL);
+		members.add(memberResponse);
+
+		SquadDetailResponse mockResponse = new SquadDetailResponse(squadId, "테스트 스쿼드", members);
+
+		given(squadRepository.findSquadAndMembers(anyLong())).willReturn(Optional.of(mockResponse));
+
+		// when, then
+		assertThatThrownBy(() -> squadService.findSquadAndMembers(anotherMemberId, squadId))
+			.isInstanceOf(SquadMemberException.class)
+			.hasMessageContaining(SQUADMEMBER_NOT_FOUND.getMessage());
 	}
 }

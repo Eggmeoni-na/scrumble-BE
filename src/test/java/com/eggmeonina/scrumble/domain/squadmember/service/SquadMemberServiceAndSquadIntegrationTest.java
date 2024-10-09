@@ -165,7 +165,7 @@ class SquadMemberServiceAndSquadIntegrationTest extends IntegrationTestHelper {
 		squadMemberRepository.save(newSquadMember2);
 
 		// when
-		SquadDetailResponse response = squadService.findSquadAndMembers(newSquad.getId());
+		SquadDetailResponse response = squadService.findSquadAndMembers(newMember1.getId(), newSquad.getId());
 
 		// then
 		assertSoftly(softly -> {
@@ -198,7 +198,7 @@ class SquadMemberServiceAndSquadIntegrationTest extends IntegrationTestHelper {
 		squadMemberRepository.save(newSquadMember1);
 
 		// when
-		assertThatThrownBy(() -> squadService.findSquadAndMembers(newSquad.getId()))
+		assertThatThrownBy(() -> squadService.findSquadAndMembers(newMember1.getId(), newSquad.getId()))
 			.isInstanceOf(SquadException.class)
 			.hasMessageContaining(SQUAD_NOT_FOUND.getMessage());
 	}
@@ -226,7 +226,7 @@ class SquadMemberServiceAndSquadIntegrationTest extends IntegrationTestHelper {
 		squadMemberRepository.save(newSquadMember2);
 
 		// when
-		SquadDetailResponse response = squadService.findSquadAndMembers(newSquad.getId());
+		SquadDetailResponse response = squadService.findSquadAndMembers(newMember1.getId(), newSquad.getId());
 
 		// then
 		assertThat(response.getSquadMembers()).hasSize(1);
@@ -255,7 +255,7 @@ class SquadMemberServiceAndSquadIntegrationTest extends IntegrationTestHelper {
 		squadMemberRepository.save(newSquadMember2);
 
 		// when
-		SquadDetailResponse response = squadService.findSquadAndMembers(newSquad.getId());
+		SquadDetailResponse response = squadService.findSquadAndMembers(newMember1.getId(), newSquad.getId());
 
 		// then
 		assertThat(response.getSquadMembers()).hasSize(1);
