@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.eggmeonina.scrumble.common.exception.MemberException;
 import com.eggmeonina.scrumble.common.exception.SquadMemberException;
 import com.eggmeonina.scrumble.common.exception.SquadException;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
@@ -433,13 +434,39 @@ class SquadMemberServiceTest {
 			.willReturn(Optional.ofNullable(newSquad));
 		given(memberRepository.findById(anyLong()))
 			.willReturn(Optional.ofNullable(newLeader));
-		given(squadMemberRepository.existsByMemberIdAndSquadIdAndSquadMemberStatus(anyLong(), anyLong(), any()))
+		given(squadMemberRepository.existsByMemberIdAndSquadId(anyLong(), anyLong()))
 			.willReturn(true);
 
 		// when, then
 		assertThatThrownBy(()->squadMemberService.inviteSquadMember(1L, 1L))
 			.isInstanceOf(SquadMemberException.class)
 			.hasMessageContaining(DUPLICATE_SQUADMEMBER.getMessage());
+	}
+
+	@Test
+	@DisplayName("회원을 존재하지 않는 스쿼드에 초대한다_실패")
+	void inviteSquadMemberWhenNotExistsSquad_fail() {
+		// given
+		Member newLeader = createMember("test@test.com", "testA", MemberStatus.JOIN);
+		given(memberRepository.findById(anyLong())).willReturn(Optional.ofNullable(newLeader));
+		given(squadRepository.findById(anyLong())).willReturn(Optional.empty());
+
+		// when, then
+		assertThatThrownBy(()->squadMemberService.inviteSquadMember(1L, 1L))
+			.isInstanceOf(SquadMemberException.class)
+			.hasMessageContaining(SQUAD_NOT_FOUND.getMessage());
+	}
+
+	@Test
+	@DisplayName("존재하지 않는 회원을 스쿼드에 초대한다_실패")
+	void inviteSquadMemberWhenNotExistsMember_fail() {
+		// given
+		given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
+
+		// when, then
+		assertThatThrownBy(()->squadMemberService.inviteSquadMember(1L, 1L))
+			.isInstanceOf(MemberException.class)
+			.hasMessageContaining(MEMBER_NOT_FOUND.getMessage());
 	}
 
 }
