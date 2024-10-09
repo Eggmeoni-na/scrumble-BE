@@ -9,4 +9,6 @@ public interface SquadMemberRepositoryCustom {
 	List<SquadResponse> findSquads(final Long memberId);
 
 	boolean existsBySquadMemberNotMemberId(final Long squadId, final Long memberId);
+
+	boolean existsByMemberIdAndSquadId(final Long memberId, final Long squadId);
 }

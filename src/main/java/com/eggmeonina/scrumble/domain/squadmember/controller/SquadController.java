@@ -60,9 +60,12 @@ public class SquadController {
 	}
 
 	@GetMapping("/{squadId}")
-	@Operation(summary = "스쿼드를 상세 조회한다", description = "스쿼드와 속한 멤버들을 조회한다.")
-	public ApiResponse<SquadDetailResponse> findSquad(@PathVariable Long squadId){
-		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), squadService.findSquadAndMembers(squadId));
+	@Operation(summary = "스쿼드를 상세 조회한다", description = "스쿼드와 속한 멤버들을 조회한다. (스쿼드에 속한 회원만 스쿼드를 조회할 수 있다.)")
+	public ApiResponse<SquadDetailResponse> findSquad(
+		@Parameter(hidden = true) @Member LoginMember member,
+		@PathVariable Long squadId
+	){
+		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), squadService.findSquadAndMembers(member.getMemberId(), squadId));
 	}
 
 	@PutMapping("/{squadId}")
@@ -125,6 +128,16 @@ public class SquadController {
 		@PathVariable("squadId") Long squadId
 	){
 		squadMemberService.deleteSquad(squadId, member.getMemberId());
+		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
+	}
+
+	@PostMapping("/{squadId}/members/{memberId}")
+	@Operation(summary = "스쿼드 멤버를 초대(추가)한다", description = "스쿼드 멤버를 초대(추가)한다.")
+	public ApiResponse<Void> inviteMember(
+		@PathVariable("squadId") Long squadId,
+		@PathVariable("memberId") Long memberId
+	){
+		squadMemberService.inviteSquadMember(memberId, squadId);
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 }

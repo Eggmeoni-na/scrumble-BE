@@ -50,6 +50,30 @@ public class SquadMemberService {
 		return newSquadMember.getId();
 	}
 
+	@Transactional
+	public Long inviteSquadMember(Long memberId, Long squadId){
+		Member foundMember = memberRepository.findById(memberId)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+
+		Squad foundSquad = squadRepository.findById(squadId)
+			.orElseThrow(() -> new SquadMemberException(SQUAD_NOT_FOUND));
+
+		SquadMember newSquadMember = SquadMember.create()
+			.member(foundMember)
+			.squad(foundSquad)
+			.squadMemberStatus(SquadMemberStatus.INVITING)
+			.squadMemberRole(SquadMemberRole.NORMAL)
+			.build();
+
+		// 스쿼드에 존재하는 회원이면 예외를 발생시킨다.
+		if(squadMemberRepository.existsByMemberIdAndSquadId(memberId, squadId)){
+			throw new SquadMemberException(DUPLICATE_SQUADMEMBER);
+		}
+
+		squadMemberRepository.save(newSquadMember);
+		return newSquadMember.getId();
+	}
+
 	public List<SquadResponse> findBySquads(Long memberId){
 		return squadMemberRepository.findSquads(memberId);
 	}
