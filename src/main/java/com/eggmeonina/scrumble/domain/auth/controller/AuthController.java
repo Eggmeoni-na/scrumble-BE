@@ -18,6 +18,7 @@ import com.eggmeonina.scrumble.common.domain.ApiResponse;
 import com.eggmeonina.scrumble.common.exception.AuthException;
 import com.eggmeonina.scrumble.domain.auth.controller.generator.OauthGenerator;
 import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
+import com.eggmeonina.scrumble.domain.auth.dto.LoginResponse;
 import com.eggmeonina.scrumble.domain.auth.dto.OauthRequest;
 import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
 import com.eggmeonina.scrumble.domain.auth.facade.AuthFacadeService;
@@ -61,13 +62,13 @@ public class AuthController {
 		parameters = {@Parameter(name = "oauthType", description = "oauth type || GOOGLE : 구글로그인"),
 		@Parameter(name = "code", description = "oauth 서버에서 응답된 code"),
 		@Parameter(name = "scope", description = "oauth 서버에서 응답된 scope")})
-	public ApiResponse<Void> login(
+	public ApiResponse<LoginResponse> login(
 		HttpServletRequest servletRequest, @RequestBody OauthRequest request
 	) {
 		LoginMember loginMember = authFacadeService.getToken(request);
 		HttpSession session = servletRequest.getSession(true);
 		session.setAttribute(SessionKey.LOGIN_USER.name(), loginMember);
-		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
+		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), LoginResponse.from(loginMember));
 	}
 
 	@PostMapping("/logout")
