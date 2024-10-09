@@ -1,5 +1,6 @@
 package com.eggmeonina.scrumble.common;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Profile("!prod")
 @Tag(name = "스웨거 테스트", description = "swagger 테스트용 API Controller")
 @RestController
 @RequestMapping("/api/test")
