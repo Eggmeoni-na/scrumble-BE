@@ -1,5 +1,7 @@
 package com.eggmeonina.scrumble.common.config;
 
+import static org.springframework.http.HttpMethod.*;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -22,6 +24,12 @@ public class CorsConfig implements WebMvcConfigurer {
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/api/**")
 			.allowedOrigins(corsProperties.getOriginArr())
+			.allowedMethods(
+				GET.name(),
+				HEAD.name(),
+				POST.name(),
+				PUT.name(),
+				DELETE.name())
 			.allowCredentials(true);
 	}
 }
