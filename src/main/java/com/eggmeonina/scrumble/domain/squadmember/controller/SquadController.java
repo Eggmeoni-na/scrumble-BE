@@ -18,6 +18,7 @@ import com.eggmeonina.scrumble.common.domain.ApiResponse;
 import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadCreateRequest;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadDetailResponse;
+import com.eggmeonina.scrumble.domain.squadmember.dto.SquadMemberInvitationRequest;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadResponse;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadUpdateRequest;
 import com.eggmeonina.scrumble.domain.squadmember.facade.SquadMemberFacadeService;
@@ -95,7 +96,7 @@ public class SquadController {
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
-	@DeleteMapping("/{squadId}/members/")
+	@DeleteMapping("/{squadId}/members")
 	@Operation(summary = "스쿼드를 탈퇴한다", description = "스쿼드를 탈퇴한다. 단, 리더인 경우 스쿼드 멤버가 없어야 탈퇴 가능하다.")
 	public ApiResponse<Void> leaveSquad(
 		@Parameter(hidden = true) @Member LoginMember member,
@@ -138,6 +139,17 @@ public class SquadController {
 		@PathVariable("memberId") Long memberId
 	){
 		squadMemberService.inviteSquadMember(memberId, squadId);
+		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
+	}
+
+	@PutMapping("/{squadId}/members")
+	@Operation(summary = "스쿼드 초대를 응답한다", description = "스쿼드 초대를 수락한다.")
+	public ApiResponse<Void> inviteMember(
+		@PathVariable("squadId") Long squadId,
+		@Parameter(hidden = true) @Member LoginMember member,
+		@RequestBody @Valid SquadMemberInvitationRequest request
+	){
+		squadMemberService.responseInvitation(squadId, member.getMemberId(), request.getResponseStatus());
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 }
