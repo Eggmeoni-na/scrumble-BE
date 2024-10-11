@@ -96,7 +96,7 @@ public class SquadController {
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
-	@DeleteMapping("/{squadId}/members/")
+	@DeleteMapping("/{squadId}/members")
 	@Operation(summary = "스쿼드를 탈퇴한다", description = "스쿼드를 탈퇴한다. 단, 리더인 경우 스쿼드 멤버가 없어야 탈퇴 가능하다.")
 	public ApiResponse<Void> leaveSquad(
 		@Parameter(hidden = true) @Member LoginMember member,
@@ -142,7 +142,7 @@ public class SquadController {
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
-	@PutMapping("/{squadId}/members/")
+	@PutMapping("/{squadId}/members")
 	@Operation(summary = "스쿼드 초대를 응답한다", description = "스쿼드 초대를 수락한다.")
 	public ApiResponse<Void> inviteMember(
 		@PathVariable("squadId") Long squadId,
