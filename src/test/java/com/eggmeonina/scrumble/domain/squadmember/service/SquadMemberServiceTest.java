@@ -469,4 +469,83 @@ class SquadMemberServiceTest {
 			.hasMessageContaining(MEMBER_NOT_FOUND.getMessage());
 	}
 
+	@Test
+	@DisplayName("스쿼드 멤버 초대에 수락한다_성공")
+	void acceptInvitation_success() {
+		// given
+		Member newLeader = createMember("test@test.com", "testA", MemberStatus.JOIN);
+
+		Squad newSquad = createSquad("테스트 스쿼드");
+
+		SquadMember squadMember =
+			createSquadMember(newSquad, newLeader, SquadMemberRole.NORMAL, SquadMemberStatus.INVITING);
+
+		given(squadRepository.findByIdAndDeletedFlagNot(anyLong()))
+			.willReturn(Optional.ofNullable(newSquad));
+
+		given(squadMemberRepository.findByMemberIdAndSquadIdWithInvitingStatus(anyLong(), anyLong()))
+			.willReturn(Optional.ofNullable(squadMember));
+
+		// when
+		squadMemberService.responseInvitation(1L, 1L, SquadMemberStatus.JOIN);
+
+		// then
+		assertThat(squadMember.getSquadMemberStatus()).isEqualTo(SquadMemberStatus.JOIN);
+	}
+
+	@Test
+	@DisplayName("스쿼드 멤버 초대에 거절한다_성공")
+	void rejectInvitation_success() {
+		// given
+		Member newLeader = createMember("test@test.com", "testA", MemberStatus.JOIN);
+
+		Squad newSquad = createSquad("테스트 스쿼드");
+
+		SquadMember squadMember =
+			createSquadMember(newSquad, newLeader, SquadMemberRole.NORMAL, SquadMemberStatus.INVITING);
+
+		given(squadRepository.findByIdAndDeletedFlagNot(anyLong()))
+			.willReturn(Optional.ofNullable(newSquad));
+
+		given(squadMemberRepository.findByMemberIdAndSquadIdWithInvitingStatus(anyLong(), anyLong()))
+			.willReturn(Optional.ofNullable(squadMember));
+
+		// when
+		squadMemberService.responseInvitation(1L, 1L, SquadMemberStatus.REJECT);
+
+		// then
+		assertThat(squadMember.getSquadMemberStatus()).isEqualTo(SquadMemberStatus.REJECT);
+	}
+
+	@Test
+	@DisplayName("스쿼드 초대하지 않은 회원이 응답한다_실패")
+	void responseInvitationWhenDoNotInvitedMember_success() {
+		// given
+		Squad newSquad = createSquad("테스트 스쿼드");
+
+		given(squadRepository.findByIdAndDeletedFlagNot(anyLong()))
+			.willReturn(Optional.ofNullable(newSquad));
+
+		given(squadMemberRepository.findByMemberIdAndSquadIdWithInvitingStatus(anyLong(), anyLong()))
+			.willReturn(Optional.empty());
+
+		// when, then
+		assertThatThrownBy(()->squadMemberService.responseInvitation(1L, 1L, SquadMemberStatus.JOIN))
+			.isInstanceOf(SquadException.class)
+			.hasMessageContaining(SQUADMEMBER_NOT_INVITED.getMessage());
+	}
+
+	@Test
+	@DisplayName("스쿼드 초대하지 않은 회원이 응답한다_실패")
+	void responseInvitationWhenNotExistsSquad_success() {
+		// given
+		given(squadRepository.findByIdAndDeletedFlagNot(anyLong()))
+			.willReturn(Optional.empty());
+
+		// when, then
+		assertThatThrownBy(()->squadMemberService.responseInvitation(1L, 1L, SquadMemberStatus.JOIN))
+			.isInstanceOf(SquadException.class)
+			.hasMessageContaining(SQUAD_NOT_FOUND.getMessage());
+	}
+
 }
