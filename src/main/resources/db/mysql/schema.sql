@@ -86,5 +86,3 @@ ALTER TABLE squad_todo
 ALTER TABLE squad_todo
     ADD CONSTRAINT FK_squad_TO_squad_todo_1 FOREIGN KEY (squad_id)
         REFERENCES squad (squad_id);
-
-CREATE UNIQUE INDEX idx_member_squad ON squad_member (member_id, squad_id);

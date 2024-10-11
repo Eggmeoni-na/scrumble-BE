@@ -141,6 +141,23 @@ public class SquadMemberService {
 		foundSquad.delete();
 	}
 
+	/**
+	 * 멤버 초대 응답
+	 * @param squadId
+	 * @param memberId
+	 * @param squadMemberStatus
+	 */
+	@Transactional
+	public void responseInvitation(Long squadId, Long memberId, SquadMemberStatus squadMemberStatus){
+		squadRepository.findByIdAndDeletedFlagNot(squadId)
+			.orElseThrow(() -> new SquadException(SQUAD_NOT_FOUND));
+
+		SquadMember foundSquadMember = squadMemberRepository.findByMemberIdAndSquadIdWithInvitingStatus(memberId, squadId)
+			.orElseThrow(() -> new SquadException(SQUADMEMBER_NOT_INVITED));
+
+		foundSquadMember.responseInvitation(squadMemberStatus);
+	}
+
 	private void hasAuthorization(SquadMember squadMember){
 		if(!squadMember.isLeader()){
 			throw new SquadMemberException(UNAUTHORIZED_ACTION);

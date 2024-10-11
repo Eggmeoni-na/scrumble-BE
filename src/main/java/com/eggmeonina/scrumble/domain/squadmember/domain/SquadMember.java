@@ -77,4 +77,8 @@ public class SquadMember extends BaseEntity {
 	public void leave() {
 		this.squadMemberStatus = SquadMemberStatus.LEAVE;
 	}
+
+	public void responseInvitation(SquadMemberStatus newStatus){
+		this.squadMemberStatus = newStatus;
+	}
 }

@@ -180,4 +180,48 @@ class SquadMemberTest {
 		assertThat(newSquadMember.getSquadMemberStatus()).isEqualTo(SquadMemberStatus.LEAVE);
 	}
 
+	@Test
+	@DisplayName("스쿼드를 초대를 수락한다_성공")
+	void responseInvitationWhenAccept_success() {
+		// given
+		Member newMember = new Member("test@test.com", "test", "", new OauthInformation("1234", OauthType.GOOGLE),
+			MemberStatus.JOIN, LocalDateTime.now());
+		Squad newSquad = new Squad("test group", false);
+
+		SquadMember newSquadMember = SquadMember.create()
+			.member(newMember)
+			.squadMemberRole(SquadMemberRole.NORMAL)
+			.squadMemberStatus(SquadMemberStatus.INVITING)
+			.squad(newSquad)
+			.build();
+
+		// when
+		newSquadMember.responseInvitation(SquadMemberStatus.JOIN);
+
+		// then
+		assertThat(newSquadMember.getSquadMemberStatus()).isEqualTo(SquadMemberStatus.JOIN);
+	}
+
+	@Test
+	@DisplayName("스쿼드를 초대를 거절한다_성공")
+	void responseInvitationWhenReject_success() {
+		// given
+		Member newMember = new Member("test@test.com", "test", "", new OauthInformation("1234", OauthType.GOOGLE),
+			MemberStatus.JOIN, LocalDateTime.now());
+		Squad newSquad = new Squad("test group", false);
+
+		SquadMember newSquadMember = SquadMember.create()
+			.member(newMember)
+			.squadMemberRole(SquadMemberRole.NORMAL)
+			.squadMemberStatus(SquadMemberStatus.INVITING)
+			.squad(newSquad)
+			.build();
+
+		// when
+		newSquadMember.responseInvitation(SquadMemberStatus.REJECT);
+
+		// then
+		assertThat(newSquadMember.getSquadMemberStatus()).isEqualTo(SquadMemberStatus.REJECT);
+	}
+
 }
