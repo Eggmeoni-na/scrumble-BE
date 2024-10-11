@@ -36,6 +36,7 @@ public enum ErrorCode {
 	UNAUTHORIZED_ACTION(HttpStatus.FORBIDDEN, "권한이 없는 사용자입니다."),
 	LEADER_CANNOT_LEAVE(HttpStatus.FORBIDDEN, "스쿼드의 리더는 탈퇴가 불가능합니다."),
 	DUPLICATE_SQUADMEMBER(HttpStatus.BAD_REQUEST, "이미 스쿼드에 존재하는 회원입니다."),
+	SQUADMEMBER_NOT_INVITED(HttpStatus.FORBIDDEN, "스쿼드에 최대되지 않은 회원입니다."),
 
 	/**
 	 * 투두
