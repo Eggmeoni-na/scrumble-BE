@@ -1,0 +1,39 @@
+# database 연동 설정
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # url 끝에 database 지정
+    url: ENC(mDrCYiCTIyhT9flrpkl4MLhJq3BCMu2sy+PwWmuHpXeRaK+tTaVfK908IQTcG9yszJzYcVlXA5s=)
+    username: ENC(Dq0TfNx5U8TpiPtx4Rl8Luf+kStsMzpo)
+    password: ENC(OYwM8ItpW3jAocG6FL3KbBIeppCejcOw)
+
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+
+  sql:
+    init:
+      schema-locations: classpath:db/mysql/schema.sql
+      data-locations: classpath:db/mysql/data.sql
+      mode: always                                  # 서버 재기동 마다 schema, data 새로 생성
+
+springdoc:
+  version: '@project.version@'
+  api-docs:
+    path: /api-docs
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    doc-expansion: none
+  paths-to-match:
+    - /** # /api/**로 시작하는 모든 경로가 문서화된다.
