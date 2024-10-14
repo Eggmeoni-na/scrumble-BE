@@ -3,6 +3,9 @@ package com.eggmeonina.scrumble.domain.todo.domain;
 import java.time.LocalDate;
 
 import com.eggmeonina.scrumble.common.domain.BaseEntity;
+import com.eggmeonina.scrumble.common.exception.ErrorCode;
+import com.eggmeonina.scrumble.common.exception.MemberException;
+import com.eggmeonina.scrumble.common.exception.ToDoException;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 
 import jakarta.persistence.Column;
@@ -62,6 +65,19 @@ public class ToDo extends BaseEntity {
 		this.todoAt = todoAt;
 		this.deletedFlag = deletedFlag;
 		this.member = member;
+		initValid(member, contents, toDoType);
+	}
+
+	private void initValid(Member member, String contents, ToDoType toDoType){
+		if(member == null){
+			throw new MemberException(ErrorCode.MEMBER_NOT_FOUND);
+		}
+		if(contents == null || contents.isBlank()){
+			throw new ToDoException(ErrorCode.TODO_CONTENTS_NOT_BLANK);
+		}
+		if(toDoType == null){
+			throw new ToDoException(ErrorCode.TODO_TYPE_NOT_NULL);
+		}
 	}
 
 	public void delete(){
