@@ -1,13 +1,17 @@
 package com.eggmeonina.scrumble.domain.todo.domain;
 
+import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
 import static com.eggmeonina.scrumble.fixture.SquadTodoFixture.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.SoftAssertions.*;
 
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.eggmeonina.scrumble.common.exception.MemberException;
+import com.eggmeonina.scrumble.common.exception.ToDoException;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.domain.MemberStatus;
 
@@ -43,6 +47,102 @@ class ToDoTest {
 		// then
 		assertThat(newToDo.getTodoStatus()).isEqualTo(newToDoStatus);
 		assertThat(newToDo.getContents()).isEqualTo(newContents);
+	}
+
+	@Test
+	@DisplayName("투두를 생성한다_성공")
+	void constructor_success() {
+		// given
+		Member newMember = createMember("test", "test@test.com", MemberStatus.JOIN, "123235");
+		String contents = "모각코";
+		ToDoType daily = ToDoType.DAILY;
+		TodoStatus pendingStatus = TodoStatus.PENDING;
+
+		// when
+		ToDo newToDo = ToDo.create()
+			.member(newMember)
+			.toDoType(daily)
+			.todoAt(LocalDate.now())
+			.contents(contents)
+			.todoStatus(pendingStatus)
+			.build();
+
+		// then
+		assertSoftly(softly -> {
+			softly.assertThat(newToDo.getContents()).isEqualTo(contents);
+			softly.assertThat(newToDo.getToDoType()).isEqualTo(daily);
+			softly.assertThat(newToDo.getTodoStatus()).isEqualTo(pendingStatus);
+		});
+	}
+
+	@Test
+	@DisplayName("회원 없이 투두를 생성한다_실패")
+	void constructorWhenNotExistsMember_success() {
+		// when, then
+		assertThatThrownBy(()->ToDo.create()
+			.todoAt(LocalDate.now())
+			.build())
+			.isInstanceOf(MemberException.class)
+			.hasMessageContaining(MEMBER_NOT_FOUND.getMessage());
+	}
+
+	@Test
+	@DisplayName("컨텐츠 없이 투두를 생성한다_실패")
+	void constructorWithoutContents_success() {
+		// given
+		Member newMember = createMember("test", "test@test.com", MemberStatus.JOIN, "123235");
+		ToDoType daily = ToDoType.DAILY;
+		TodoStatus pendingStatus = TodoStatus.PENDING;
+
+		// when, then
+		assertThatThrownBy(()->ToDo.create()
+			.member(newMember)
+			.toDoType(daily)
+			.todoAt(LocalDate.now())
+			.todoStatus(pendingStatus)
+			.build())
+			.isInstanceOf(ToDoException.class)
+			.hasMessageContaining(TODO_CONTENTS_NOT_BLANK.getMessage());
+	}
+
+	@Test
+	@DisplayName("컨텐츠가 blank일 때 투두를 생성한다_실패")
+	void constructorWithBlackContents_success() {
+		// given
+		Member newMember = createMember("test", "test@test.com", MemberStatus.JOIN, "123235");
+		String contents = "";
+		ToDoType daily = ToDoType.DAILY;
+		TodoStatus pendingStatus = TodoStatus.PENDING;
+
+		// when, then
+		assertThatThrownBy(()->ToDo.create()
+			.member(newMember)
+			.contents(contents)
+			.toDoType(daily)
+			.todoAt(LocalDate.now())
+			.todoStatus(pendingStatus)
+			.build())
+			.isInstanceOf(ToDoException.class)
+			.hasMessageContaining(TODO_CONTENTS_NOT_BLANK.getMessage());
+	}
+
+	@Test
+	@DisplayName("ToDoType이 없을 때 투두를 생성한다_실패")
+	void constructorWithoutToDoType_success() {
+		// given
+		Member newMember = createMember("test", "test@test.com", MemberStatus.JOIN, "123235");
+		String contents = "모각코";
+		TodoStatus pendingStatus = TodoStatus.PENDING;
+
+		// when, then
+		assertThatThrownBy(()->ToDo.create()
+			.member(newMember)
+			.contents(contents)
+			.todoAt(LocalDate.now())
+			.todoStatus(pendingStatus)
+			.build())
+			.isInstanceOf(ToDoException.class)
+			.hasMessageContaining(TODO_TYPE_NOT_NULL.getMessage());
 	}
 
 }
