@@ -118,7 +118,7 @@ public class SquadController {
 		@PathVariable("squadId") Long squadId,
 		@PathVariable("memberId") Long memberId
 	){
-		squadMemberService.kickSquadMember(member.getMemberId(), squadId, memberId);
+		squadMemberService.kickSquadMember(squadId, member.getMemberId(),memberId);
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
