@@ -2,7 +2,7 @@ package com.eggmeonina.scrumble.domain.todo.dto;
 
 import java.time.LocalDate;
 
-import com.eggmeonina.scrumble.domain.todo.domain.TodoStatus;
+import com.eggmeonina.scrumble.domain.todo.domain.ToDoStatus;
 import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.Getter;
@@ -16,16 +16,16 @@ public class ToDoDetailResponse {
 	private String squadName;
 	private String contents;
 	private LocalDate todoAt;
-	private TodoStatus todoStatus;
+	private ToDoStatus toDoStatus;
 
 	@QueryProjection
 	public ToDoDetailResponse(Long toDoId, Long squadId, String squadName, String contents, LocalDate todoAt,
-		TodoStatus todoStatus) {
+		ToDoStatus toDoStatus) {
 		this.toDoId = toDoId;
 		this.squadId = squadId;
 		this.squadName = squadName;
 		this.contents = contents;
 		this.todoAt = todoAt;
-		this.todoStatus = todoStatus;
+		this.toDoStatus = toDoStatus;
 	}
 }

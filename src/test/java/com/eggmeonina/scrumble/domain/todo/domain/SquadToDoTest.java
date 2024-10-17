@@ -23,7 +23,7 @@ class SquadToDoTest {
 		// given
 		Member newMember = createMember("testA", "test@test.com", MemberStatus.JOIN, "!23245");
 		Squad newSquad = createSquad("테스트 스쿼드", false);
-		ToDo newToDo = createToDo(newMember, "모각코", TodoStatus.PENDING, false, LocalDate.now());
+		ToDo newToDo = createToDo(newMember, "모각코", ToDoStatus.PENDING, false, LocalDate.now());
 
 		// when
 		SquadToDo newSquadToDo = SquadToDo.create()
@@ -40,7 +40,7 @@ class SquadToDoTest {
 			softly.assertThat(actualSquad.getSquadName()).isEqualTo(newSquad.getSquadName());
 			softly.assertThat(actualToDo.getToDoType()).isEqualTo(newToDo.getToDoType());
 			softly.assertThat(actualToDo.getContents()).isEqualTo(newToDo.getContents());
-			softly.assertThat(actualToDo.getTodoAt()).isEqualTo(newToDo.getTodoAt());
+			softly.assertThat(actualToDo.getToDoAt()).isEqualTo(newToDo.getToDoAt());
 		});
 	}
 
@@ -49,7 +49,7 @@ class SquadToDoTest {
 	void newSquadToDoWhenNotExistsSquad_fail() {
 		// given
 		Member newMember = createMember("testA", "test@test.com", MemberStatus.JOIN, "!23245");
-		ToDo newToDo = createToDo(newMember, "모각코", TodoStatus.PENDING, false, LocalDate.now());
+		ToDo newToDo = createToDo(newMember, "모각코", ToDoStatus.PENDING, false, LocalDate.now());
 
 		// when, then
 		assertThatThrownBy(() -> SquadToDo.create()
@@ -81,7 +81,7 @@ class SquadToDoTest {
 		// given
 		Member newMember = createMember("testA", "test@test.com", MemberStatus.JOIN, "!23245");
 		Squad newSquad = createSquad("테스트 스쿼드", false);
-		ToDo newToDo = createToDo(newMember, "모각코", TodoStatus.PENDING, false, LocalDate.now());
+		ToDo newToDo = createToDo(newMember, "모각코", ToDoStatus.PENDING, false, LocalDate.now());
 		SquadToDo newSquadToDo = createSquadTodo(newSquad, newToDo, false);
 
 		// when

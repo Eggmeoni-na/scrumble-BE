@@ -19,11 +19,9 @@ import com.eggmeonina.scrumble.domain.squadmember.domain.Squad;
 import com.eggmeonina.scrumble.domain.squadmember.repository.SquadRepository;
 import com.eggmeonina.scrumble.domain.todo.domain.SquadToDo;
 import com.eggmeonina.scrumble.domain.todo.domain.ToDo;
-import com.eggmeonina.scrumble.domain.todo.domain.TodoStatus;
+import com.eggmeonina.scrumble.domain.todo.domain.ToDoStatus;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoRequest;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoResponse;
-import com.eggmeonina.scrumble.domain.todo.dto.ToDoRequest;
-import com.eggmeonina.scrumble.domain.todo.dto.ToDoResponse;
 import com.eggmeonina.scrumble.domain.todo.repository.SquadTodoRepository;
 import com.eggmeonina.scrumble.domain.todo.repository.TodoRepository;
 import com.eggmeonina.scrumble.helper.IntegrationTestHelper;
@@ -57,9 +55,9 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 		void setUp() {
 			newMember = createMember("testA", "test@test.com", MemberStatus.JOIN, "12345567");
 			newSquad = createSquad("테스트 스쿼드", false);
-			ToDo newTodo1 = createToDo(newMember, "삭제된 투두1", TodoStatus.PENDING, true, LocalDate.now().minusDays(2));
-			ToDo newTodo2 = createToDo(newMember, "테스트 투두2", TodoStatus.PENDING, false, LocalDate.now().minusDays(1));
-			ToDo newTodo3 = createToDo(newMember, "테스트 투두3", TodoStatus.PENDING, false, LocalDate.now());
+			ToDo newTodo1 = createToDo(newMember, "삭제된 투두1", ToDoStatus.PENDING, true, LocalDate.now().minusDays(2));
+			ToDo newTodo2 = createToDo(newMember, "테스트 투두2", ToDoStatus.PENDING, false, LocalDate.now().minusDays(1));
+			ToDo newTodo3 = createToDo(newMember, "테스트 투두3", ToDoStatus.PENDING, false, LocalDate.now());
 			SquadToDo newSquadToDo1 = createSquadTodo(newSquad, newTodo1, true);
 			SquadToDo newSquadToDo2 = createSquadTodo(newSquad, newTodo2, false);
 			SquadToDo newSquadToDo3 = createSquadTodo(newSquad, newTodo3, false);
@@ -127,9 +125,9 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 			// given
 			Member newMember = createMember("test", "test@test.com", MemberStatus.JOIN, "123234");
 			Squad newSquad = createSquad("스쿼드1", false);
-			ToDo newToDo1 = createToDo(newMember, "프로젝트", TodoStatus.PENDING, false, LocalDate.now());
-			ToDo newToDo2 = createToDo(newMember, "알고리즘", TodoStatus.PENDING, false, LocalDate.now());
-			ToDo newToDo3 = createToDo(newMember, "CS", TodoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo1 = createToDo(newMember, "프로젝트", ToDoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo2 = createToDo(newMember, "알고리즘", ToDoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo3 = createToDo(newMember, "CS", ToDoStatus.PENDING, false, LocalDate.now());
 			SquadToDo newSquadToDo1 = createSquadTodo(newSquad, newToDo1, false);
 			SquadToDo newSquadToDo2 = createSquadTodo(newSquad, newToDo2, false);
 			SquadToDo newSquadToDo3 = createSquadTodo(newSquad, newToDo3, false);
@@ -158,7 +156,7 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 			// given
 			Member newMember = createMember("test", "test@test.com", MemberStatus.JOIN, "123234");
 			Squad newSquad = createSquad("스쿼드1", false);
-			ToDo newToDo1 = createToDo(newMember, "프로젝트", TodoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo1 = createToDo(newMember, "프로젝트", ToDoStatus.PENDING, false, LocalDate.now());
 			SquadToDo newSquadToDo1 = createSquadTodo(newSquad, newToDo1, false);
 
 			memberRepository.save(newMember);
@@ -185,7 +183,7 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 	void isWriter_success() {
 		// given
 		Member newMember = createMember("testA", "test@test.com", MemberStatus.JOIN, "12335346");
-		ToDo newToDo = createToDo(newMember, "모각코", TodoStatus.PENDING, false, LocalDate.now());
+		ToDo newToDo = createToDo(newMember, "모각코", ToDoStatus.PENDING, false, LocalDate.now());
 
 		memberRepository.save(newMember);
 		todoRepository.save(newToDo);
@@ -203,7 +201,7 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 		// given
 		Member newMember1 = createMember("testA", "test@test.com", MemberStatus.JOIN, "12335346");
 		Member newMember2 = createMember("testA", "test@test.com", MemberStatus.JOIN, "12335346");
-		ToDo newToDo = createToDo(newMember1, "모각코", TodoStatus.PENDING, false, LocalDate.now());
+		ToDo newToDo = createToDo(newMember1, "모각코", ToDoStatus.PENDING, false, LocalDate.now());
 
 		memberRepository.save(newMember1);
 		memberRepository.save(newMember2);

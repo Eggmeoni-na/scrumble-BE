@@ -4,8 +4,8 @@ import java.time.LocalDate;
 
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.todo.domain.ToDo;
+import com.eggmeonina.scrumble.domain.todo.domain.ToDoStatus;
 import com.eggmeonina.scrumble.domain.todo.domain.ToDoType;
-import com.eggmeonina.scrumble.domain.todo.domain.TodoStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,13 +17,13 @@ import lombok.NoArgsConstructor;
 public class SquadTodoCreateRequest {
 	private ToDoType toDoType;
 	private String contents;
-	private LocalDate todoAt;
+	private LocalDate toDoAt;
 	public static ToDo to(SquadTodoCreateRequest request, Member member){
 		return ToDo.create()
 			.toDoType(request.getToDoType())
 			.contents(request.getContents())
-			.todoStatus(TodoStatus.PENDING)
-			.todoAt(request.getTodoAt())
+			.toDoStatus(ToDoStatus.PENDING)
+			.toDoAt(request.getToDoAt())
 			.deletedFlag(false)
 			.member(member)
 			.build();
