@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @Schema(description = "스쿼드 멤버 초대 응답 객체")
 public class SquadMemberInvitationRequest {
 	@NotNull
-	@Schema(description = "스쿼드 멤버 초대 응답 상태. 수락(JOIN), 거절(REJECT)")
+	@Schema(description = "스쿼드 멤버 초대 응답 상태. 수락(JOIN)")
 	private SquadMemberStatus responseStatus;
 }
