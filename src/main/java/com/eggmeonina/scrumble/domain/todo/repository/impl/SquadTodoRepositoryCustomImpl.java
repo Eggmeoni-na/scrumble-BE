@@ -23,7 +23,7 @@ public class SquadTodoRepositoryCustomImpl implements SquadTodoRepositoryCustom 
 
 	public List<SquadTodoResponse> findSquadTodos(Long squadId, Long memberId, SquadTodoRequest request){
 		return query.select(
-			new QSquadTodoResponse(squadToDo.toDo.id, squadToDo.id, squadToDo.toDo.contents, squadToDo.toDo.todoAt, squadToDo.toDo.todoStatus)
+			new QSquadTodoResponse(squadToDo.toDo.id, squadToDo.id, squadToDo.toDo.contents, squadToDo.toDo.toDoAt, squadToDo.toDo.toDoStatus)
 			)
 			.from(squadToDo)
 			.join(squadToDo.toDo)
@@ -31,10 +31,10 @@ public class SquadTodoRepositoryCustomImpl implements SquadTodoRepositoryCustom 
 				.and(squadToDo.squad.id.eq(squadId))
 				.and(squadToDo.deletedFlag.eq(false))
 				.and(squadToDo.toDo.member.id.eq(memberId))
-				.and(squadToDo.toDo.todoAt.between(request.getStartDate(), request.getEndDate()))
+				.and(squadToDo.toDo.toDoAt.between(request.getStartDate(), request.getEndDate()))
 				.and(squadToDo.toDo.deletedFlag.eq(false)))
 			.limit(request.getPageSize())
-			.orderBy(squadToDo.toDo.id.asc(), squadToDo.toDo.todoAt.desc())
+			.orderBy(squadToDo.toDo.id.asc(), squadToDo.toDo.toDoAt.desc())
 			.fetch();
 	}
 }

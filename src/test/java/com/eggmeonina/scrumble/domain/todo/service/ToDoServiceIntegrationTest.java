@@ -19,7 +19,7 @@ import com.eggmeonina.scrumble.domain.squadmember.domain.Squad;
 import com.eggmeonina.scrumble.domain.squadmember.repository.SquadRepository;
 import com.eggmeonina.scrumble.domain.todo.domain.SquadToDo;
 import com.eggmeonina.scrumble.domain.todo.domain.ToDo;
-import com.eggmeonina.scrumble.domain.todo.domain.TodoStatus;
+import com.eggmeonina.scrumble.domain.todo.domain.ToDoStatus;
 import com.eggmeonina.scrumble.domain.todo.dto.ToDoRequest;
 import com.eggmeonina.scrumble.domain.todo.dto.ToDoResponse;
 import com.eggmeonina.scrumble.domain.todo.repository.SquadTodoRepository;
@@ -53,7 +53,7 @@ class ToDoServiceIntegrationTest extends IntegrationTestHelper {
 			// given
 			Member newMember = createMember("test", "test@test.com", MemberStatus.JOIN, "123234");
 			Squad newSquad = createSquad("스쿼드1", false);
-			ToDo newToDo = createToDo(newMember, "여행", TodoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo = createToDo(newMember, "여행", ToDoStatus.PENDING, false, LocalDate.now());
 			SquadToDo newSquadToDo = createSquadTodo(newSquad, newToDo, false);
 
 			memberRepository.save(newMember);
@@ -76,9 +76,9 @@ class ToDoServiceIntegrationTest extends IntegrationTestHelper {
 			// given
 			Member newMember = createMember("test", "test@test.com", MemberStatus.JOIN, "123234");
 			Squad newSquad = createSquad("스쿼드1", false);
-			ToDo newToDo1 = createToDo(newMember, "여행", TodoStatus.PENDING, false, LocalDate.now());
-			ToDo newToDo2 = createToDo(newMember, "프로젝트", TodoStatus.PENDING, false, LocalDate.now());
-			ToDo newToDo3 = createToDo(newMember, "알고리즘", TodoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo1 = createToDo(newMember, "여행", ToDoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo2 = createToDo(newMember, "프로젝트", ToDoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo3 = createToDo(newMember, "알고리즘", ToDoStatus.PENDING, false, LocalDate.now());
 			SquadToDo newSquadToDo1 = createSquadTodo(newSquad, newToDo1, false);
 			SquadToDo newSquadToDo2 = createSquadTodo(newSquad, newToDo2, false);
 			SquadToDo newSquadToDo3 = createSquadTodo(newSquad, newToDo3, false);
@@ -105,9 +105,9 @@ class ToDoServiceIntegrationTest extends IntegrationTestHelper {
 			Member newMember = createMember("test", "test@test.com", MemberStatus.JOIN, "123234");
 			Squad newSquad1 = createSquad("스쿼드1", false);
 			Squad newSquad2 = createSquad("두번째 스쿼드", false);
-			ToDo newToDo1 = createToDo(newMember, "여행", TodoStatus.PENDING, false, LocalDate.now());
-			ToDo newToDo2 = createToDo(newMember, "프로젝트", TodoStatus.PENDING, false, LocalDate.now());
-			ToDo newToDo3 = createToDo(newMember, "알고리즘", TodoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo1 = createToDo(newMember, "여행", ToDoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo2 = createToDo(newMember, "프로젝트", ToDoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo3 = createToDo(newMember, "알고리즘", ToDoStatus.PENDING, false, LocalDate.now());
 			SquadToDo newSquadToDo1 = createSquadTodo(newSquad1, newToDo1, false);
 			SquadToDo newSquadToDo2 = createSquadTodo(newSquad2, newToDo2, false);
 			SquadToDo newSquadToDo3 = createSquadTodo(newSquad1, newToDo3, false);
@@ -135,9 +135,9 @@ class ToDoServiceIntegrationTest extends IntegrationTestHelper {
 			Member newMember = createMember("test", "test@test.com", MemberStatus.JOIN, "123234");
 			Squad newSquad1 = createSquad("스쿼드1", false);
 			Squad newSquad2 = createSquad("두번째 스쿼드", false);
-			ToDo newToDo1 = createToDo(newMember, "여행", TodoStatus.PENDING, false, LocalDate.now().minusDays(1));
-			ToDo newToDo2 = createToDo(newMember, "프로젝트", TodoStatus.PENDING, false, LocalDate.now());
-			ToDo newToDo3 = createToDo(newMember, "알고리즘", TodoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo1 = createToDo(newMember, "여행", ToDoStatus.PENDING, false, LocalDate.now().minusDays(1));
+			ToDo newToDo2 = createToDo(newMember, "프로젝트", ToDoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo3 = createToDo(newMember, "알고리즘", ToDoStatus.PENDING, false, LocalDate.now());
 			SquadToDo newSquadToDo1 = createSquadTodo(newSquad1, newToDo1, false);
 			SquadToDo newSquadToDo2 = createSquadTodo(newSquad2, newToDo2, false);
 			SquadToDo newSquadToDo3 = createSquadTodo(newSquad1, newToDo3, false);
@@ -173,10 +173,10 @@ class ToDoServiceIntegrationTest extends IntegrationTestHelper {
 			Member newMember = createMember("test", "test@test.com", MemberStatus.JOIN, "123234");
 			Squad newSquad1 = createSquad("스쿼드1", false);
 			Squad newSquad2 = createSquad("두번째 스쿼드", false);
-			ToDo newToDo1 = createToDo(newMember, "여행", TodoStatus.PENDING, false, LocalDate.now());
-			ToDo newToDo2 = createToDo(newMember, "프로젝트", TodoStatus.PENDING, false, LocalDate.now());
-			ToDo newToDo3 = createToDo(newMember, "알고리즘", TodoStatus.PENDING, false, LocalDate.now());
-			ToDo newToDo4 = createToDo(newMember, "알고리즘", TodoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo1 = createToDo(newMember, "여행", ToDoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo2 = createToDo(newMember, "프로젝트", ToDoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo3 = createToDo(newMember, "알고리즘", ToDoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo4 = createToDo(newMember, "알고리즘", ToDoStatus.PENDING, false, LocalDate.now());
 			SquadToDo newSquadToDo1 = createSquadTodo(newSquad1, newToDo1, false);
 			SquadToDo newSquadToDo2 = createSquadTodo(newSquad2, newToDo2, false);
 			SquadToDo newSquadToDo3 = createSquadTodo(newSquad1, newToDo3, false);
@@ -205,8 +205,8 @@ class ToDoServiceIntegrationTest extends IntegrationTestHelper {
 			Member newMember = createMember("test", "test@test.com", MemberStatus.JOIN, "123234");
 			Squad newSquad1 = createSquad("스쿼드1", false);
 			Squad newSquad2 = createSquad("두번째 스쿼드", false);
-			ToDo newToDo1 = createToDo(newMember, "여행", TodoStatus.PENDING, false, LocalDate.now());
-			ToDo newToDo2 = createToDo(newMember, "프로젝트", TodoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo1 = createToDo(newMember, "여행", ToDoStatus.PENDING, false, LocalDate.now());
+			ToDo newToDo2 = createToDo(newMember, "프로젝트", ToDoStatus.PENDING, false, LocalDate.now());
 			SquadToDo newSquadToDo1 = createSquadTodo(newSquad1, newToDo1, false);
 			SquadToDo newSquadToDo2 = createSquadTodo(newSquad2, newToDo2, false);
 

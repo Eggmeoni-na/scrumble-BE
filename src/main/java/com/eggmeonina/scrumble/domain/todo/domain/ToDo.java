@@ -44,10 +44,10 @@ public class ToDo extends BaseEntity {
 
 	@Column(name = "todo_status", nullable = false)
 	@Enumerated(EnumType.STRING)
-	private TodoStatus todoStatus;
+	private ToDoStatus toDoStatus;
 
 	@Column(name = "todo_at", nullable = false)
-	private LocalDate todoAt;
+	private LocalDate toDoAt;
 
 	@Column(name = "deleted_flag")
 	private boolean deletedFlag;
@@ -57,12 +57,12 @@ public class ToDo extends BaseEntity {
 	private Member member;
 
 	@Builder(builderMethodName = "create")
-	public ToDo(ToDoType toDoType, String contents, TodoStatus todoStatus, LocalDate todoAt, boolean deletedFlag,
+	public ToDo(ToDoType toDoType, String contents, ToDoStatus toDoStatus, LocalDate toDoAt, boolean deletedFlag,
 		Member member) {
 		this.toDoType = toDoType;
 		this.contents = contents;
-		this.todoStatus = todoStatus;
-		this.todoAt = todoAt;
+		this.toDoStatus = toDoStatus;
+		this.toDoAt = toDoAt;
 		this.deletedFlag = deletedFlag;
 		this.member = member;
 		initValid(member, contents, toDoType);
@@ -84,9 +84,9 @@ public class ToDo extends BaseEntity {
 		this.deletedFlag = true;
 	}
 
-	public void update(String newContents, TodoStatus newTodoStatus, LocalDate newTodoAt){
+	public void update(String newContents, ToDoStatus newToDoStatus, LocalDate newTodoAt){
 		this.contents = newContents;
-		this.todoStatus = newTodoStatus;
-		this.todoAt = newTodoAt;
+		this.toDoStatus = newToDoStatus;
+		this.toDoAt = newTodoAt;
 	}
 }
