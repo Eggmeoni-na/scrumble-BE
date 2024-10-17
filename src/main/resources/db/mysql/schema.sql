@@ -67,6 +67,20 @@ CREATE TABLE squad
     updated_at   datetime     NULL
 );
 
+DROP TABLE IF EXISTS notification;
+
+CREATE TABLE notification
+(
+    notification_id   bigint      NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    recipient_id      bigint      NOT NULL,
+    notification_type varchar(50) NOT NULL,
+    read_flag         tinyint     NOT NULL,
+    notification_data text        NULL,
+    created_at        datetime    NULL,
+    updated_at        datetime    NULL
+);
+
+
 ALTER TABLE squad_member
     ADD CONSTRAINT FK_member_TO_squad_member_1 FOREIGN KEY (member_id)
         REFERENCES member (member_id);

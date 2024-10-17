@@ -22,3 +22,8 @@ insert into squad_todo(squad_todo_id, todo_id, squad_id, deleted_flag, created_a
 values (default, 2, 1, 0, now());
 insert into squad_todo(squad_todo_id, todo_id, squad_id, deleted_flag, created_at)
 values (default, 3, 1, 0, now());
+
+insert into notification(notification_id, recipient_id, notification_type, read_flag, notification_data, created_at, updated_at)
+values (default, 2, 'INVITE_REQUEST', true, null, now(), null);
+insert into notification(notification_id, recipient_id, notification_type, read_flag, notification_data, created_at, updated_at)
+values (default, 1, 'INVITE_ACCEPT', true, null, now(), null);
