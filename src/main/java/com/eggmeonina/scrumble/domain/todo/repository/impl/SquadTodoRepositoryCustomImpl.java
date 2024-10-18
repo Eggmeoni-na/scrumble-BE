@@ -34,7 +34,7 @@ public class SquadTodoRepositoryCustomImpl implements SquadTodoRepositoryCustom 
 				.and(squadToDo.toDo.toDoAt.between(request.getStartDate(), request.getEndDate()))
 				.and(squadToDo.toDo.deletedFlag.eq(false)))
 			.limit(request.getPageSize())
-			.orderBy(squadToDo.toDo.id.asc(), squadToDo.toDo.toDoAt.desc())
+			.orderBy(squadToDo.toDo.toDoAt.desc(), squadToDo.toDo.id.desc())
 			.fetch();
 	}
 }

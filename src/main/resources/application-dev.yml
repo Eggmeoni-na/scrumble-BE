@@ -17,12 +17,6 @@ spring:
     properties:
       hibernate.format_sql: true
 
-  sql:
-    init:
-      schema-locations: classpath:db/mysql/schema.sql
-      data-locations: classpath:db/mysql/data.sql
-      mode: always                                  # 서버 재기동 마다 schema, data 새로 생성
-
 springdoc:
   version: '@project.version@'
   api-docs:
