@@ -13,6 +13,7 @@ import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
 import com.eggmeonina.scrumble.domain.todo.domain.ToDo;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoCreateRequest;
+import com.eggmeonina.scrumble.domain.todo.dto.ToDoCommandResponse;
 import com.eggmeonina.scrumble.domain.todo.dto.ToDoRequest;
 import com.eggmeonina.scrumble.domain.todo.dto.ToDoResponse;
 import com.eggmeonina.scrumble.domain.todo.dto.ToDoUpdateRequest;
@@ -29,13 +30,13 @@ public class ToDoService {
 	private final TodoRepository todoRepository;
 
 	@Transactional
-	public Long createToDo(Long memberId, SquadTodoCreateRequest request){
+	public ToDoCommandResponse createToDo(Long memberId, SquadTodoCreateRequest request){
 		Member foundMember = memberRepository.findByIdAndMemberStatusNotJOIN(memberId)
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		ToDo newToDo = SquadTodoCreateRequest.to(request, foundMember);
 		todoRepository.save(newToDo);
-		return newToDo.getId();
+		return ToDoCommandResponse.to(newToDo);
 	}
 
 	public boolean isWriter(Long memberId, Long toDoId){
@@ -51,13 +52,14 @@ public class ToDoService {
 	}
 
 	@Transactional
-	public void updateToDo(Long memberId, Long toDoId, ToDoUpdateRequest request){
+	public ToDoCommandResponse updateToDo(Long memberId, Long toDoId, ToDoUpdateRequest request){
 		if(!isWriter(memberId, toDoId)){
 			throw new ToDoException(WRITER_IS_NOT_MATCH);
 		}
 		ToDo foundToDo = todoRepository.findByIdAndDeletedFlagNot(toDoId)
 			.orElseThrow(() -> new ToDoException(TODO_NOT_FOUND));
 		foundToDo.update(request.getContents(), request.getToDoStatus(), request.getToDoAt());
+		return ToDoCommandResponse.to(foundToDo);
 	}
 
 	public List<ToDoResponse> findToDos(Long memberId, ToDoRequest request){
