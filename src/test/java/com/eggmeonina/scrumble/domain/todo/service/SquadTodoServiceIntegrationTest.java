@@ -76,7 +76,7 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 		@DisplayName("당일 데이터만 조회할 때_성공")
 		void findSquadTodos_success() {
 			// given
-			SquadTodoRequest request = new SquadTodoRequest(LocalDate.now(), LocalDate.now(), 999999L, 10L);
+			SquadTodoRequest request = new SquadTodoRequest(LocalDate.now(), LocalDate.now(), 0L, 10L);
 
 			// when
 			List<SquadTodoResponse> squadTodos = squadTodoService.findSquadTodos(newSquad.getId(), newMember.getId(),request);
@@ -105,7 +105,7 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 			// given
 			LocalDate startDate = LocalDate.now().minusDays(1);
 			LocalDate endDate = LocalDate.now();
-			SquadTodoRequest request = new SquadTodoRequest(startDate, endDate, 999999L, 10L);
+			SquadTodoRequest request = new SquadTodoRequest(startDate, endDate, 0L, 10L);
 
 			// when
 			List<SquadTodoResponse> squadTodos = squadTodoService.findSquadTodos(newSquad.getId(), newMember.getId(),request);
@@ -140,7 +140,7 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 			LocalDate startDate = LocalDate.now().minusDays(1);
 			LocalDate endDate = LocalDate.now();
 			long pageSize = 2L;
-			SquadTodoRequest request = new SquadTodoRequest(startDate, endDate, 99999L, pageSize);
+			SquadTodoRequest request = new SquadTodoRequest(startDate, endDate, 0L, pageSize);
 
 			// when
 			List<SquadTodoResponse> squadTodos = squadTodoService.findSquadTodos(newSquad.getId(), newMember.getId(), request);
@@ -167,7 +167,7 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 			LocalDate startDate = LocalDate.now().minusDays(1);
 			LocalDate endDate = LocalDate.now();
 			long pageSize = 2L;
-			SquadTodoRequest request = new SquadTodoRequest(startDate, endDate, 99999L, pageSize);
+			SquadTodoRequest request = new SquadTodoRequest(startDate, endDate, 0L, pageSize);
 
 			// when
 			List<SquadTodoResponse> squadTodos = squadTodoService.findSquadTodos(newSquad.getId(), newMember.getId(), request);
