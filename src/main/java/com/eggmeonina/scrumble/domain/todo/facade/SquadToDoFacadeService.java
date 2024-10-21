@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.eggmeonina.scrumble.common.exception.ToDoException;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoCreateRequest;
+import com.eggmeonina.scrumble.domain.todo.dto.ToDoCommandResponse;
 import com.eggmeonina.scrumble.domain.todo.service.SquadTodoService;
 import com.eggmeonina.scrumble.domain.todo.service.ToDoService;
 
@@ -27,10 +28,10 @@ public class SquadToDoFacadeService {
 	 * @return todoId
 	 */
 	@Transactional
-	public Long createToDoAndSquadToDo(Long squadId, Long memberId, SquadTodoCreateRequest request){
-		Long toDoId = toDoService.createToDo(memberId, request);
-		squadTodoService.createSquadToDo(squadId, toDoId);
-		return toDoId;
+	public ToDoCommandResponse createToDoAndSquadToDo(Long squadId, Long memberId, SquadTodoCreateRequest request){
+		ToDoCommandResponse response = toDoService.createToDo(memberId, request);
+		squadTodoService.createSquadToDo(squadId, response.getToDoId());
+		return response;
 	}
 
 	@Transactional
