@@ -34,12 +34,12 @@ public class ToDoRepositoryCustomImpl implements ToDoRepositoryCustom {
 				.and(squadToDo.deletedFlag.eq(false)))
 			.join(squad)
 			.on(squad.id.eq(squadToDo.squad.id))
-			.where(toDo.id.lt(request.getLastToDoId())
+			.where(toDo.id.gt(request.getLastToDoId())
 			.and(toDo.member.id.eq(memberId))
 				.and(toDo.toDoAt.between(request.getStartDate(), request.getEndDate()))
 				.and(toDo.deletedFlag.eq(false)))
 			.limit(request.getPageSize())
-			.orderBy(toDo.toDoAt.desc(), toDo.id.desc())
+			.orderBy(toDo.toDoAt.desc(), toDo.id.asc())
 			.transform(
 				groupBy(toDo.toDoAt).list(
 					new QToDoResponse(toDo.toDoAt, list(
