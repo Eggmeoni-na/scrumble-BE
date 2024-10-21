@@ -61,7 +61,7 @@ class ToDoServiceIntegrationTest extends IntegrationTestHelper {
 			todoRepository.save(newToDo);
 			squadTodoRepository.save(newSquadToDo);
 
-			ToDoRequest request = new ToDoRequest(LocalDate.now(), LocalDate.now(), 9999999L, 50L);
+			ToDoRequest request = new ToDoRequest(LocalDate.now(), LocalDate.now(), 0L, 50L);
 
 			// when
 			List<ToDoResponse> toDos = toDoService.findToDos(newMember.getId(), request);
@@ -88,7 +88,7 @@ class ToDoServiceIntegrationTest extends IntegrationTestHelper {
 			todoRepository.saveAll(List.of(newToDo1, newToDo2, newToDo3));
 			squadTodoRepository.saveAll(List.of(newSquadToDo1, newSquadToDo2, newSquadToDo3));
 
-			ToDoRequest request = new ToDoRequest(LocalDate.now(), LocalDate.now(), 9999999L, 50L);
+			ToDoRequest request = new ToDoRequest(LocalDate.now(), LocalDate.now(), 0L, 50L);
 
 			// when
 			List<ToDoResponse> toDos = toDoService.findToDos(newMember.getId(), request);
@@ -118,7 +118,7 @@ class ToDoServiceIntegrationTest extends IntegrationTestHelper {
 			todoRepository.saveAll(List.of(newToDo1, newToDo2, newToDo3));
 			squadTodoRepository.saveAll(List.of(newSquadToDo1, newSquadToDo2, newSquadToDo3));
 
-			ToDoRequest request = new ToDoRequest(LocalDate.now(), LocalDate.now(), 9999999L, 50L);
+			ToDoRequest request = new ToDoRequest(LocalDate.now(), LocalDate.now(), 0L, 50L);
 
 			// when
 			List<ToDoResponse> toDos = toDoService.findToDos(newMember.getId(), request);
@@ -148,7 +148,7 @@ class ToDoServiceIntegrationTest extends IntegrationTestHelper {
 			todoRepository.saveAll(List.of(newToDo1, newToDo2, newToDo3));
 			squadTodoRepository.saveAll(List.of(newSquadToDo1, newSquadToDo2, newSquadToDo3));
 
-			ToDoRequest request = new ToDoRequest(LocalDate.now().minusDays(1), LocalDate.now(), 9999999L, 50L);
+			ToDoRequest request = new ToDoRequest(LocalDate.now().minusDays(1), LocalDate.now(), 0L, 50L);
 
 			// when
 			List<ToDoResponse> toDos = toDoService.findToDos(newMember.getId(), request);
@@ -189,7 +189,7 @@ class ToDoServiceIntegrationTest extends IntegrationTestHelper {
 			squadTodoRepository.saveAll(List.of(newSquadToDo1, newSquadToDo2, newSquadToDo3, newSquadToDo4));
 
 			int pageSize = 3;
-			ToDoRequest request = new ToDoRequest(LocalDate.now().minusDays(1), LocalDate.now(), 9999999L, pageSize);
+			ToDoRequest request = new ToDoRequest(LocalDate.now().minusDays(1), LocalDate.now(), 0L, pageSize);
 
 			// when
 			List<ToDoResponse> toDos = toDoService.findToDos(newMember.getId(), request);
@@ -217,7 +217,7 @@ class ToDoServiceIntegrationTest extends IntegrationTestHelper {
 			squadTodoRepository.saveAll(List.of(newSquadToDo1, newSquadToDo2));
 
 			int pageSize = 3;
-			ToDoRequest request = new ToDoRequest(LocalDate.now().minusDays(1), LocalDate.now(), 9999999L, pageSize);
+			ToDoRequest request = new ToDoRequest(LocalDate.now().minusDays(1), LocalDate.now(), 0L, pageSize);
 
 			// when
 			List<ToDoResponse> toDos = toDoService.findToDos(newMember.getId(), request);
