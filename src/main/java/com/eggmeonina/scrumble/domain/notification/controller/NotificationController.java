@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,7 +29,7 @@ public class NotificationController {
 	@GetMapping("/me")
 	public ApiResponse<List<NotificationResponse>> findNotifications(
 		@Parameter(hidden = true) @Member LoginMember member,
-		@RequestBody NotificationsRequest notificationsRequest
+		@ModelAttribute NotificationsRequest notificationsRequest
 	){
 		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), notificationService.findNotifications(member.getMemberId(), notificationsRequest));
 	}
