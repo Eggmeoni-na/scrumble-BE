@@ -1,4 +1,4 @@
-package com.eggmeonina.scrumble.domain.todo.notification.domain;
+package com.eggmeonina.scrumble.domain.notification.domain;
 
 public enum NotificationType {
 	INVITE_REQUEST,
