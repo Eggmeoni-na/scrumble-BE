@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Profile({"dev", "local"})
+@Profile({"dev"})
 @RequiredArgsConstructor
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
