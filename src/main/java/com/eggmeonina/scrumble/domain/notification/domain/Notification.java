@@ -1,4 +1,4 @@
-package com.eggmeonina.scrumble.domain.todo.notification.domain;
+package com.eggmeonina.scrumble.domain.notification.domain;
 
 import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
 import static jakarta.persistence.GenerationType.*;
