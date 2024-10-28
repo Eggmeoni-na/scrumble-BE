@@ -45,7 +45,7 @@ class NotificationServiceIntegrationTest extends IntegrationTestHelper {
 			new NotificationsRequest(LocalDateTime.now().minusDays(7), LocalDateTime.now(), 9999L, 10);
 
 		// when
-		List<NotificationResponse> notifications = notificationService.findNotifications(1L, request);
+		List<NotificationResponse> notifications = notificationService.findNotifications(newMember.getId(), request);
 
 		// then
 		NotificationResponse result = notifications.get(0);
@@ -74,7 +74,7 @@ class NotificationServiceIntegrationTest extends IntegrationTestHelper {
 				new NotificationsRequest(LocalDateTime.now().minusDays(7), LocalDateTime.now(), 9999L, 3);
 
 			// when
-			List<NotificationResponse> notifications = notificationService.findNotifications(1L, request);
+			List<NotificationResponse> notifications = notificationService.findNotifications(newMember.getId(), request);
 
 			// then
 			assertThat(notifications).hasSize(1);
@@ -98,7 +98,7 @@ class NotificationServiceIntegrationTest extends IntegrationTestHelper {
 				new NotificationsRequest(LocalDateTime.now().minusDays(7), LocalDateTime.now(), 9999L, pageSize);
 
 			// when
-			List<NotificationResponse> notifications = notificationService.findNotifications(1L, request);
+			List<NotificationResponse> notifications = notificationService.findNotifications(newMember.getId(), request);
 
 			// then
 			assertThat(notifications).hasSize(pageSize);
