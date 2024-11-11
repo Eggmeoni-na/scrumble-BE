@@ -15,7 +15,7 @@ public class LoginResponse {
 	@Schema(description = "닉네임")
 	private String name;
 
-	public static LoginResponse from(LoginMember member){
+	public static LoginResponse from(MemberInfo member){
 		return new LoginResponse(member.getMemberId(), member.getName());
 	}
 }

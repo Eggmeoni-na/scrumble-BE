@@ -4,8 +4,6 @@ import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.SoftAssertions.*;
 
-import java.time.LocalDateTime;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.eggmeonina.scrumble.common.exception.MemberException;
 import com.eggmeonina.scrumble.domain.auth.domain.MemberInformation;
 import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
-import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
+import com.eggmeonina.scrumble.domain.auth.dto.MemberInfo;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.domain.MemberStatus;
-import com.eggmeonina.scrumble.domain.member.domain.OauthInformation;
 import com.eggmeonina.scrumble.domain.member.dto.MemberResponse;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
 import com.eggmeonina.scrumble.helper.IntegrationTestHelper;
@@ -36,14 +33,14 @@ class MemberServiceIntegrationTest extends IntegrationTestHelper {
 		MemberInformation request = new MemberInformation("123456789", "test@naver.com", "testName", "");
 
 		// when
-		LoginMember loginMember = memberService.login(request, OauthType.GOOGLE);
+		MemberInfo memberInfo = memberService.login(request, OauthType.GOOGLE);
 
 		Member foundMember = memberRepository.findByOauthId(request.getOauthId()).get();
 
 		// then
 		assertSoftly(softly -> {
-			softly.assertThat(loginMember.getMemberId()).isEqualTo(foundMember.getId());
-			softly.assertThat(loginMember.getEmail()).isEqualTo(foundMember.getEmail());
+			softly.assertThat(memberInfo.getMemberId()).isEqualTo(foundMember.getId());
+			softly.assertThat(memberInfo.getEmail()).isEqualTo(foundMember.getEmail());
 		});
 	}
 
@@ -56,14 +53,14 @@ class MemberServiceIntegrationTest extends IntegrationTestHelper {
 		memberRepository.save(MemberInformation.to(request, OauthType.GOOGLE));
 
 		// when
-		LoginMember loginMember = memberService.login(request, OauthType.GOOGLE);
+		MemberInfo memberInfo = memberService.login(request, OauthType.GOOGLE);
 
 		Member foundMember = memberRepository.findByOauthId(request.getOauthId()).get();
 
 		// then
 		assertSoftly(softly -> {
-			softly.assertThat(loginMember.getMemberId()).isEqualTo(foundMember.getId());
-			softly.assertThat(loginMember.getEmail()).isEqualTo(foundMember.getEmail());
+			softly.assertThat(memberInfo.getMemberId()).isEqualTo(foundMember.getId());
+			softly.assertThat(memberInfo.getEmail()).isEqualTo(foundMember.getEmail());
 		});
 	}
 

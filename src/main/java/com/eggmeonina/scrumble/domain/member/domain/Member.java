@@ -61,6 +61,17 @@ public class Member extends BaseEntity {
 		this.joinedAt = joinedAt;
 	}
 
+	public Member(Long id, String email, String name, String profileImage, OauthInformation oauthInformation,
+		MemberStatus memberStatus, LocalDateTime joinedAt) {
+		this.id = id;
+		this.email = email;
+		this.name = name;
+		this.profileImage = profileImage;
+		this.oauthInformation = oauthInformation;
+		this.memberStatus = memberStatus;
+		this.joinedAt = joinedAt;
+	}
+
 	public void withdraw(){
 		if(this.memberStatus == MemberStatus.WITHDRAW){
 			throw new MemberException(MEMBER_ALREADY_WITHDRAW);

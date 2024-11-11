@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eggmeonina.scrumble.common.anotation.Member;
+import com.eggmeonina.scrumble.common.anotation.LoginMember;
 import com.eggmeonina.scrumble.common.domain.ApiResponse;
 import com.eggmeonina.scrumble.common.exception.MemberException;
-import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
+import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.dto.MemberInvitationResponse;
 import com.eggmeonina.scrumble.domain.member.dto.MemberResponse;
 import com.eggmeonina.scrumble.domain.member.service.MemberService;
@@ -34,19 +34,19 @@ public class UserController {
 
 	@GetMapping("/me")
 	@Operation(summary = "나의 회원 정보 조회", description = "나의 회원 정보를 조회한다.")
-	public ApiResponse<MemberResponse> findMember(@Parameter(hidden = true) @Member LoginMember member){
-		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), memberService.findMember(member.getMemberId()));
+	public ApiResponse<MemberResponse> findMember(@Parameter(hidden = true) @LoginMember Member member){
+		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), memberService.findMember(member.getId()));
 	}
 
 	@DeleteMapping
 	@Operation(summary = "회원 탈퇴", description = "회원 탈퇴 및 세션을 만료한다")
-	public ApiResponse<Void> withdrawMember(@Parameter(hidden = true) @Member LoginMember member,
+	public ApiResponse<Void> withdrawMember(@Parameter(hidden = true) @LoginMember Member member,
 		HttpServletRequest servletRequest){
 		HttpSession session = servletRequest.getSession(false);
 		if (session == null) {
 			throw new MemberException(UNAUTHORIZED_ACCESS);
 		}
-		memberService.withdraw(member.getMemberId());
+		memberService.withdraw(member.getId());
 		session.invalidate();
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
