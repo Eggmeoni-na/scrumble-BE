@@ -40,4 +40,10 @@ public class NotificationFixture {
 			.oauthInformation(new OauthInformation("1232345", OauthType.GOOGLE))
 			.build();
 	}
+
+	public static Member createMemberWithMemberId(Long memberId, String email, String name, MemberStatus memberStatus,
+		String oauthId){
+		return new Member(memberId, email, name, null, new OauthInformation(oauthId, OauthType.GOOGLE), memberStatus,
+			LocalDateTime.of(2024, 11, 11, 16, 6));
+	}
 }
