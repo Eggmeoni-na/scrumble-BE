@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eggmeonina.scrumble.common.anotation.Member;
+import com.eggmeonina.scrumble.common.anotation.LoginMember;
 import com.eggmeonina.scrumble.common.domain.ApiResponse;
-import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
+import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationResponse;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationsRequest;
 import com.eggmeonina.scrumble.domain.notification.service.NotificationService;
@@ -28,9 +28,10 @@ public class NotificationController {
 
 	@GetMapping("/me")
 	public ApiResponse<List<NotificationResponse>> findNotifications(
-		@Parameter(hidden = true) @Member LoginMember member,
+		@Parameter(hidden = true) @LoginMember Member member,
 		@ModelAttribute NotificationsRequest notificationsRequest
 	){
-		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), notificationService.findNotifications(member.getMemberId(), notificationsRequest));
+		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), notificationService.findNotifications(
+			member.getId(), notificationsRequest));
 	}
 }
