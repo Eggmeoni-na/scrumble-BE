@@ -20,7 +20,7 @@ import com.eggmeonina.scrumble.domain.auth.controller.generator.OauthGenerator;
 import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
 import com.eggmeonina.scrumble.domain.auth.dto.LoginResponse;
 import com.eggmeonina.scrumble.domain.auth.dto.OauthRequest;
-import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
+import com.eggmeonina.scrumble.domain.auth.dto.MemberInfo;
 import com.eggmeonina.scrumble.domain.auth.facade.AuthFacadeService;
 import com.eggmeonina.scrumble.domain.member.domain.SessionKey;
 
@@ -65,7 +65,7 @@ public class AuthController {
 	public ApiResponse<LoginResponse> login(
 		HttpServletRequest servletRequest, @RequestBody OauthRequest request
 	) {
-		LoginMember loginMember = authFacadeService.getToken(request);
+		MemberInfo loginMember = authFacadeService.getToken(request);
 		HttpSession session = servletRequest.getSession(true);
 		session.setAttribute(SessionKey.LOGIN_USER.name(), loginMember);
 		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), LoginResponse.from(loginMember));

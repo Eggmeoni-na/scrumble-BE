@@ -20,7 +20,7 @@ import com.eggmeonina.scrumble.domain.auth.client.AuthClient;
 import com.eggmeonina.scrumble.domain.auth.domain.MemberInformation;
 import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
 import com.eggmeonina.scrumble.domain.auth.dto.GoogleAuthClientResponse;
-import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
+import com.eggmeonina.scrumble.domain.auth.dto.MemberInfo;
 import com.eggmeonina.scrumble.domain.auth.dto.OauthRequest;
 import com.eggmeonina.scrumble.domain.member.service.MemberService;
 
@@ -48,20 +48,20 @@ class AuthFacadeServiceTest {
 		GoogleAuthClientResponse token
 			= new GoogleAuthClientResponse("accessToken", 1000, "tokenType", "scope", "token");
 		MemberInformation information = new MemberInformation("1233245", "test@test.com", "testA", "");
-		LoginMember mockloginMember = new LoginMember(1L, information.getEmail(), information.getName());
+		MemberInfo mockloginMemberInfo = new MemberInfo(1L, information.getEmail(), information.getName());
 
 		given(authClient.getAccessToken(any(), any())).willReturn(token);
 		given(authClient.findUserProfile(any())).willReturn(information);
-		given(memberService.login(any(), any())).willReturn(mockloginMember);
+		given(memberService.login(any(), any())).willReturn(mockloginMemberInfo);
 
 		// when
-		LoginMember actualLoginMember = authFacadeService.getToken(request);
+		MemberInfo actualLoginMember = authFacadeService.getToken(request);
 
 		// then
 		assertSoftly(softly -> {
-			softly.assertThat(actualLoginMember.getMemberId()).isEqualTo(mockloginMember.getMemberId());
-			softly.assertThat(actualLoginMember.getName()).isEqualTo(mockloginMember.getName());
-			softly.assertThat(actualLoginMember.getEmail()).isEqualTo(mockloginMember.getEmail());
+			softly.assertThat(actualLoginMember.getMemberId()).isEqualTo(mockloginMemberInfo.getMemberId());
+			softly.assertThat(actualLoginMember.getName()).isEqualTo(mockloginMemberInfo.getName());
+			softly.assertThat(actualLoginMember.getEmail()).isEqualTo(mockloginMemberInfo.getEmail());
 		});
 	}
 
