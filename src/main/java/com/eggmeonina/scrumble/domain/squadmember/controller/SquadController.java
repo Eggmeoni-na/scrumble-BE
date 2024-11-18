@@ -18,10 +18,6 @@ import com.eggmeonina.scrumble.common.domain.ApiResponse;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadCreateRequest;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadDetailResponse;
-import com.eggmeonina.scrumble.domain.squadmember.dto.SquadMemberAssignRequest;
-import com.eggmeonina.scrumble.domain.squadmember.dto.SquadMemberInvitationAcceptRequest;
-import com.eggmeonina.scrumble.domain.squadmember.dto.SquadMemberInvitationRequest;
-import com.eggmeonina.scrumble.domain.squadmember.dto.SquadMemberKickRequest;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadResponse;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadUpdateRequest;
 import com.eggmeonina.scrumble.domain.squadmember.facade.SquadMemberFacadeService;
@@ -30,7 +26,6 @@ import com.eggmeonina.scrumble.domain.squadmember.service.SquadService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -83,43 +78,13 @@ public class SquadController {
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
-	@PutMapping("/{squadId}/leader")
-	@Operation(summary = "스쿼드 리더를 위임한다", description = "스쿼드 리더가 리더를 위임한다.")
-	@Parameters({
-		@Parameter(name = "member", hidden = true),
-		@Parameter(name = "squadId", description = "스쿼드의 ID, path variable")
-	})
-	public ApiResponse<Void> assignLeader(
-		@LoginMember Member member,
-		@PathVariable("squadId") Long squadId,
-		@RequestBody @Valid SquadMemberAssignRequest request
-	){
-		squadMemberService.assignLeader(squadId, member.getId(), request.getNewLeaderId());
-		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
-	}
-
-	@DeleteMapping("/{squadId}/withdraw")
+	@DeleteMapping("/{squadId}/members")
 	@Operation(summary = "스쿼드를 탈퇴한다", description = "스쿼드를 탈퇴한다. 단, 리더인 경우 스쿼드 멤버가 없어야 탈퇴 가능하다.")
 	public ApiResponse<Void> leaveSquad(
 		@Parameter(hidden = true) @LoginMember Member member,
 		@PathVariable("squadId") Long squadId
 	){
 		squadMemberService.leaveSquad(squadId, member.getId());
-		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
-	}
-
-	@DeleteMapping("/{squadId}/kick")
-	@Parameters({
-		@Parameter(name = "member", hidden = true),
-		@Parameter(name = "squadId", description = "스쿼드의 ID, path variable")
-	})
-	@Operation(summary = "스쿼드 멤버를 강퇴한다", description = "스쿼드 멤버를 강퇴한다. 단, 리더인 경우에만 강퇴가 가능하다.")
-	public ApiResponse<Void> kickSquadMember(
-		@Parameter(hidden = true) @LoginMember Member member,
-		@PathVariable("squadId") Long squadId,
-		@RequestBody @Valid SquadMemberKickRequest request
-	){
-		squadMemberService.kickSquadMember(squadId, member.getId(), request.getKickedMemberId());
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
@@ -133,24 +98,4 @@ public class SquadController {
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
-	@PostMapping("/{squadId}/invitations")
-	@Operation(summary = "스쿼드 멤버를 초대(추가)한다", description = "스쿼드 멤버를 초대(추가)한다.")
-	public ApiResponse<Void> inviteMember(
-		@PathVariable("squadId") Long squadId,
-		@RequestBody @Valid SquadMemberInvitationRequest request
-	){
-		squadMemberService.inviteSquadMember(request.getMemberId(), squadId);
-		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
-	}
-
-	@PutMapping("/{squadId}/invitations/accept")
-	@Operation(summary = "스쿼드 초대를 응답한다", description = "스쿼드 초대를 수락한다.")
-	public ApiResponse<Void> inviteMember(
-		@PathVariable("squadId") Long squadId,
-		@Parameter(hidden = true) @LoginMember Member member,
-		@RequestBody @Valid SquadMemberInvitationAcceptRequest request
-	){
-		squadMemberService.responseInvitation(squadId, member.getId(), request.getResponseStatus());
-		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
-	}
 }
