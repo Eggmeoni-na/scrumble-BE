@@ -18,7 +18,10 @@ import com.eggmeonina.scrumble.common.domain.ApiResponse;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadCreateRequest;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadDetailResponse;
+import com.eggmeonina.scrumble.domain.squadmember.dto.SquadMemberAssignRequest;
+import com.eggmeonina.scrumble.domain.squadmember.dto.SquadMemberInvitationAcceptRequest;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadMemberInvitationRequest;
+import com.eggmeonina.scrumble.domain.squadmember.dto.SquadMemberKickRequest;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadResponse;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadUpdateRequest;
 import com.eggmeonina.scrumble.domain.squadmember.facade.SquadMemberFacadeService;
@@ -80,23 +83,22 @@ public class SquadController {
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
-	@PutMapping("/{squadId}/members/{memberId}")
+	@PutMapping("/{squadId}/leader")
 	@Operation(summary = "스쿼드 리더를 위임한다", description = "스쿼드 리더가 리더를 위임한다.")
 	@Parameters({
 		@Parameter(name = "member", hidden = true),
-		@Parameter(name = "squadId", description = "스쿼드의 ID, path variable"),
-		@Parameter(name = "memberId", description = "새로운 리더의 ID, path variable")
+		@Parameter(name = "squadId", description = "스쿼드의 ID, path variable")
 	})
 	public ApiResponse<Void> assignLeader(
-		@LoginMember  Member member,
+		@LoginMember Member member,
 		@PathVariable("squadId") Long squadId,
-		@PathVariable("memberId") Long newLeaderId
+		@RequestBody @Valid SquadMemberAssignRequest request
 	){
-		squadMemberService.assignLeader(squadId, member.getId(), newLeaderId);
+		squadMemberService.assignLeader(squadId, member.getId(), request.getNewLeaderId());
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
-	@DeleteMapping("/{squadId}/members")
+	@DeleteMapping("/{squadId}/withdraw")
 	@Operation(summary = "스쿼드를 탈퇴한다", description = "스쿼드를 탈퇴한다. 단, 리더인 경우 스쿼드 멤버가 없어야 탈퇴 가능하다.")
 	public ApiResponse<Void> leaveSquad(
 		@Parameter(hidden = true) @LoginMember Member member,
@@ -106,19 +108,18 @@ public class SquadController {
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
-	@DeleteMapping("/{squadId}/members/{memberId}")
+	@DeleteMapping("/{squadId}/kick")
 	@Parameters({
 		@Parameter(name = "member", hidden = true),
-		@Parameter(name = "squadId", description = "스쿼드의 ID, path variable"),
-		@Parameter(name = "memberId", description = "강퇴 당할 스쿼드 멤버의 ID, path variable")
+		@Parameter(name = "squadId", description = "스쿼드의 ID, path variable")
 	})
 	@Operation(summary = "스쿼드 멤버를 강퇴한다", description = "스쿼드 멤버를 강퇴한다. 단, 리더인 경우에만 강퇴가 가능하다.")
 	public ApiResponse<Void> kickSquadMember(
 		@Parameter(hidden = true) @LoginMember Member member,
 		@PathVariable("squadId") Long squadId,
-		@PathVariable("memberId") Long memberId
+		@RequestBody @Valid SquadMemberKickRequest request
 	){
-		squadMemberService.kickSquadMember(squadId, member.getId(),memberId);
+		squadMemberService.kickSquadMember(squadId, member.getId(), request.getKickedMemberId());
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
@@ -132,22 +133,22 @@ public class SquadController {
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
-	@PostMapping("/{squadId}/members/{memberId}")
+	@PostMapping("/{squadId}/invitations")
 	@Operation(summary = "스쿼드 멤버를 초대(추가)한다", description = "스쿼드 멤버를 초대(추가)한다.")
 	public ApiResponse<Void> inviteMember(
 		@PathVariable("squadId") Long squadId,
-		@PathVariable("memberId") Long memberId
+		@RequestBody @Valid SquadMemberInvitationRequest request
 	){
-		squadMemberService.inviteSquadMember(memberId, squadId);
+		squadMemberService.inviteSquadMember(request.getMemberId(), squadId);
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
-	@PutMapping("/{squadId}/members")
+	@PutMapping("/{squadId}/invitations/accept")
 	@Operation(summary = "스쿼드 초대를 응답한다", description = "스쿼드 초대를 수락한다.")
 	public ApiResponse<Void> inviteMember(
 		@PathVariable("squadId") Long squadId,
 		@Parameter(hidden = true) @LoginMember Member member,
-		@RequestBody @Valid SquadMemberInvitationRequest request
+		@RequestBody @Valid SquadMemberInvitationAcceptRequest request
 	){
 		squadMemberService.responseInvitation(squadId, member.getId(), request.getResponseStatus());
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
