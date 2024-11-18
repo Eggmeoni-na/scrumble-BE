@@ -50,7 +50,9 @@ public enum ErrorCode {
 	/**
 	 * 알림
 	 */
-	NOTIFICATION_TYPE_NOT_NULL(HttpStatus.BAD_REQUEST, "알림 타입은 비어있을 수 없습니다.");
+	NOTIFICATION_TYPE_NOT_NULL(HttpStatus.BAD_REQUEST, "알림 타입은 비어있을 수 없습니다."),
+	NOTIFICATION_TYPE_NOT_EXISTS(HttpStatus.BAD_REQUEST, "존재하지 않는 알림 타입입니다."),
+	NOTIFICATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "알림이 존재하지 않습니다.");
 
 	private final HttpStatus status;
 	private final String message;

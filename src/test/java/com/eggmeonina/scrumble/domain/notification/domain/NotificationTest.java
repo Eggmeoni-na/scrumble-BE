@@ -1,7 +1,7 @@
-package com.eggmeonina.scrumble.domain.todo.notification.domain;
+package com.eggmeonina.scrumble.domain.notification.domain;
 
 import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
-import static com.eggmeonina.scrumble.domain.todo.notification.domain.NotificationType.*;
+import static com.eggmeonina.scrumble.domain.notification.domain.NotificationType.*;
 import static com.eggmeonina.scrumble.fixture.NotificationFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -20,7 +20,7 @@ class NotificationTest {
 	@DisplayName("알림을 생성한다_성공")
 	void constructor_success() {
 		// given
-		Member newMember = createMember("test@test.com", "test", MemberStatus.JOIN);
+		Member newMember = createMember("test@test.com", "test", MemberStatus.JOIN, "1232345");
 
 		// when
 		Notification newNotification = createNotification(newMember, INVITE_REQUEST, false);
@@ -47,7 +47,7 @@ class NotificationTest {
 	@DisplayName("알림 타입 없이 알림을 생성한다_실패")
 	void constructorWithoutNotificationType_success() {
 		//given
-		Member newMember = createMember("test@test.com", "test", MemberStatus.JOIN);
+		Member newMember = createMember("test@test.com", "test", MemberStatus.JOIN, "1232345");
 
 		// when
 		assertThatThrownBy(() -> Notification.create()
@@ -63,7 +63,7 @@ class NotificationTest {
 	@DisplayName("알림 읽음 처리한다_정상")
 	void read_success() {
 		// given
-		Member newMember = createMember("test@test.com", "test", MemberStatus.JOIN);
+		Member newMember = createMember("test@test.com", "test", MemberStatus.JOIN, "1232345");
 		Notification newNotification = createNotification(newMember, INVITE_REQUEST, false);
 
 		// when
@@ -73,6 +73,17 @@ class NotificationTest {
 		assertThat(newNotification.isReadFlag()).isTrue();
 	}
 
+	@Test
+	@DisplayName("다른 회원일 때 알림 수신인 동일 여부를 확인한다_실패")
+	void checkSameRecipientWhenDifferentMember_fail() {
+		Member newMember = createMember("test@test.com", "test", MemberStatus.JOIN, "1232345");
+		Member anotherMember = createMember("anohter@test.com", "test", MemberStatus.JOIN, "54321");
+		Notification newNotification = createNotification(newMember, INVITE_REQUEST, false);
 
+		// when, then
+		assertThatThrownBy(() -> newNotification.checkSameRecipient(anotherMember))
+			.isInstanceOf(ExpectedException.class)
+			.hasMessageContaining(UNAUTHORIZED_ACCESS.getMessage());
+	}
 
 }

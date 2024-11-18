@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eggmeonina.scrumble.common.anotation.LoginMember;
 import com.eggmeonina.scrumble.common.domain.ApiResponse;
 import com.eggmeonina.scrumble.common.exception.ErrorCode;
-import com.eggmeonina.scrumble.common.exception.MemberException;
 import com.eggmeonina.scrumble.common.exception.SquadException;
 import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
-import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
+import com.eggmeonina.scrumble.domain.auth.dto.MemberInfo;
 import com.eggmeonina.scrumble.domain.auth.dto.LoginResponse;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.domain.MemberStatus;
@@ -54,7 +54,7 @@ public class SessionTestController {
 	public ApiResponse<LoginResponse> getSessionNoContents(HttpServletRequest request){
 		HttpSession session = request.getSession(true);
 		Member member = memberRepository.findById(1L).get();
-		LoginMember loginMember = new LoginMember(member.getId(), member.getEmail(), member.getName());
+		MemberInfo loginMember = new MemberInfo(member.getId(), member.getEmail(), member.getName());
 		session.setAttribute(SessionKey.LOGIN_USER.name(), loginMember);
 		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), LoginResponse.from(loginMember));
 	}
@@ -64,7 +64,7 @@ public class SessionTestController {
 	public ApiResponse<LoginResponse> getSession(@Parameter @RequestBody TestSessionMember request, HttpServletRequest servletRequest){
 		HttpSession session = servletRequest.getSession(true);
 		Member member = memberRepository.findByEmail(request.email).get();
-		LoginMember loginMember = new LoginMember(member.getId(), member.getEmail(), member.getName());
+		MemberInfo loginMember = new MemberInfo(member.getId(), member.getEmail(), member.getName());
 		session.setAttribute(SessionKey.LOGIN_USER.name(), loginMember);
 		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), LoginResponse.from(loginMember));
 	}
@@ -83,20 +83,18 @@ public class SessionTestController {
 			.memberStatus(MemberStatus.JOIN)
 			.build();
 		memberRepository.save(newMember);
-		LoginMember loginMember = new LoginMember(newMember.getId(), newMember.getEmail(), newMember.getName());
-		session.setAttribute(SessionKey.LOGIN_USER.name(), loginMember);
-		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), LoginResponse.from(loginMember));
+		MemberInfo memberInfo = new MemberInfo(newMember.getId(), newMember.getEmail(), newMember.getName());
+		session.setAttribute(SessionKey.LOGIN_USER.name(), memberInfo);
+		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), LoginResponse.from(memberInfo));
 	}
 
 	@PostMapping("/invite/{squadId}")
 	@Operation(summary = "로그인한 회원으로 스쿼드 가입", description = "스쿼드에 가입합니다.")
-	public ApiResponse<Void> join(@PathVariable Long squadId, @Parameter(hidden = true) @com.eggmeonina.scrumble.common.anotation.Member LoginMember member) {
+	public ApiResponse<Void> join(@PathVariable Long squadId, @Parameter(hidden = true) @LoginMember Member member) {
 		Squad foundSquad = squadRepository.findByIdAndDeletedFlagNot(squadId)
 			.orElseThrow(() -> new SquadException(ErrorCode.SQUAD_NOT_FOUND));
-		Member foundMember = memberRepository.findById(member.getMemberId())
-			.orElseThrow(() -> new MemberException(ErrorCode.MEMBER_NOT_FOUND));
 		SquadMember newSquadMember = SquadMember.create()
-			.member(foundMember)
+			.member(member)
 			.squad(foundSquad)
 			.squadMemberRole(SquadMemberRole.NORMAL)
 			.squadMemberStatus(SquadMemberStatus.JOIN)

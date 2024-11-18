@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.eggmeonina.scrumble.common.exception.AuthException;
 import com.eggmeonina.scrumble.domain.auth.client.AuthClient;
 import com.eggmeonina.scrumble.domain.auth.dto.GoogleAuthClientResponse;
-import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
+import com.eggmeonina.scrumble.domain.auth.dto.MemberInfo;
 import com.eggmeonina.scrumble.domain.auth.dto.OauthRequest;
 import com.eggmeonina.scrumble.domain.auth.domain.MemberInformation;
 import com.eggmeonina.scrumble.domain.member.service.MemberService;
@@ -28,7 +28,7 @@ public class AuthFacadeService {
 		this.authClients = Collections.unmodifiableMap(authClients);
 	}
 
-	public LoginMember getToken(OauthRequest request){
+	public MemberInfo getToken(OauthRequest request){
 		AuthClient authClient = authClients.get(request.getOauthType().getAuthClientName());
 		if(authClient == null){
 			throw new AuthException(TYPE_NOT_SUPPORTED);

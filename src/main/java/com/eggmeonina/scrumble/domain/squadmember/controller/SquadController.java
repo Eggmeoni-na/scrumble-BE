@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eggmeonina.scrumble.common.anotation.Member;
+import com.eggmeonina.scrumble.common.anotation.LoginMember;
 import com.eggmeonina.scrumble.common.domain.ApiResponse;
-import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
+import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadCreateRequest;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadDetailResponse;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadMemberInvitationRequest;
@@ -45,38 +45,38 @@ public class SquadController {
 	@PostMapping
 	@Operation(summary = "스쿼드를 생성한다", description = "스쿼드를 생성하면서 스쿼드장을 같이 생성한다.")
 	public ApiResponse<Map<String, Long>> createSquad(
-		@Parameter(hidden = true) @Member LoginMember member,
+		@Parameter(hidden = true) @LoginMember Member member,
 		@RequestBody @Valid SquadCreateRequest request
 	) {
-		Long squadId = squadMemberFacadeService.createSquad(member.getMemberId(), request);
+		Long squadId = squadMemberFacadeService.createSquad(member.getId(), request);
 		return ApiResponse.createSuccessResponse(HttpStatus.CREATED.value(), Map.of("squadId", squadId));
 	}
 
 	@GetMapping
 	@Operation(summary = "나의 스쿼드를 조회한다", description = "내가 속해있는 스쿼드들을 조회한다.")
 	public ApiResponse<List<SquadResponse>> findSquads(
-		@Parameter(hidden = true) @Member LoginMember member
+		@Parameter(hidden = true) @LoginMember Member member
 	) {
-		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), squadMemberService.findBySquads(member.getMemberId()));
+		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), squadMemberService.findBySquads(member.getId()));
 	}
 
 	@GetMapping("/{squadId}")
 	@Operation(summary = "스쿼드를 상세 조회한다", description = "스쿼드와 속한 멤버들을 조회한다. (스쿼드에 속한 회원만 스쿼드를 조회할 수 있다.)")
 	public ApiResponse<SquadDetailResponse> findSquad(
-		@Parameter(hidden = true) @Member LoginMember member,
+		@Parameter(hidden = true) @LoginMember Member member,
 		@PathVariable Long squadId
 	){
-		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), squadService.findSquadAndMembers(member.getMemberId(), squadId));
+		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), squadService.findSquadAndMembers(member.getId(), squadId));
 	}
 
 	@PutMapping("/{squadId}")
 	@Operation(summary = "스쿼드명을 수정한다", description = "스쿼드 리더만 스쿼드명을 수정한다.")
 	public ApiResponse<Void> updateSquad(
-		@Parameter(hidden = true) @Member LoginMember member,
+		@Parameter(hidden = true) @LoginMember Member member,
 		@PathVariable Long squadId,
 		@RequestBody @Valid SquadUpdateRequest request
 	){
-		squadMemberService.updateSquad(member.getMemberId(), squadId, request);
+		squadMemberService.updateSquad(member.getId(), squadId, request);
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
@@ -88,21 +88,21 @@ public class SquadController {
 		@Parameter(name = "memberId", description = "새로운 리더의 ID, path variable")
 	})
 	public ApiResponse<Void> assignLeader(
-		@Member LoginMember member,
+		@LoginMember  Member member,
 		@PathVariable("squadId") Long squadId,
 		@PathVariable("memberId") Long newLeaderId
 	){
-		squadMemberService.assignLeader(squadId, member.getMemberId(), newLeaderId);
+		squadMemberService.assignLeader(squadId, member.getId(), newLeaderId);
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
 	@DeleteMapping("/{squadId}/members")
 	@Operation(summary = "스쿼드를 탈퇴한다", description = "스쿼드를 탈퇴한다. 단, 리더인 경우 스쿼드 멤버가 없어야 탈퇴 가능하다.")
 	public ApiResponse<Void> leaveSquad(
-		@Parameter(hidden = true) @Member LoginMember member,
+		@Parameter(hidden = true) @LoginMember Member member,
 		@PathVariable("squadId") Long squadId
 	){
-		squadMemberService.leaveSquad(squadId,member.getMemberId());
+		squadMemberService.leaveSquad(squadId, member.getId());
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
@@ -114,21 +114,21 @@ public class SquadController {
 	})
 	@Operation(summary = "스쿼드 멤버를 강퇴한다", description = "스쿼드 멤버를 강퇴한다. 단, 리더인 경우에만 강퇴가 가능하다.")
 	public ApiResponse<Void> kickSquadMember(
-		@Parameter(hidden = true) @Member LoginMember member,
+		@Parameter(hidden = true) @LoginMember Member member,
 		@PathVariable("squadId") Long squadId,
 		@PathVariable("memberId") Long memberId
 	){
-		squadMemberService.kickSquadMember(squadId, member.getMemberId(),memberId);
+		squadMemberService.kickSquadMember(squadId, member.getId(),memberId);
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
 	@DeleteMapping("/{squadId}")
 	@Operation(summary = "스쿼드를 삭제한다", description = "스쿼드를 삭제한다. 단, 리더인 경우에만 삭제가 가능하다. 삭제 시 모든 멤버는 탈퇴된다.")
 	public ApiResponse<Void> deleteSquad(
-		@Parameter(hidden = true) @Member LoginMember member,
+		@Parameter(hidden = true) @LoginMember Member member,
 		@PathVariable("squadId") Long squadId
 	){
-		squadMemberService.deleteSquad(squadId, member.getMemberId());
+		squadMemberService.deleteSquad(squadId, member.getId());
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
@@ -146,10 +146,10 @@ public class SquadController {
 	@Operation(summary = "스쿼드 초대를 응답한다", description = "스쿼드 초대를 수락한다.")
 	public ApiResponse<Void> inviteMember(
 		@PathVariable("squadId") Long squadId,
-		@Parameter(hidden = true) @Member LoginMember member,
+		@Parameter(hidden = true) @LoginMember Member member,
 		@RequestBody @Valid SquadMemberInvitationRequest request
 	){
-		squadMemberService.responseInvitation(squadId, member.getMemberId(), request.getResponseStatus());
+		squadMemberService.responseInvitation(squadId, member.getId(), request.getResponseStatus());
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 }
