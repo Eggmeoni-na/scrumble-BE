@@ -31,13 +31,13 @@ public class NotificationFixture {
 			.readFlag(readFlag).build();
 	}
 
-	public static Member createMember(String email, String name, MemberStatus memberStatus) {
+	public static Member createMember(String email, String name, MemberStatus memberStatus, String oauthId) {
 		return Member.create()
 			.email(email)
 			.name(name)
 			.memberStatus(memberStatus)
 			.joinedAt(LocalDateTime.now())
-			.oauthInformation(new OauthInformation("1232345", OauthType.GOOGLE))
+			.oauthInformation(new OauthInformation(oauthId, OauthType.GOOGLE))
 			.build();
 	}
 

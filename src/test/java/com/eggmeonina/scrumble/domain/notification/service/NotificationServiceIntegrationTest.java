@@ -35,7 +35,7 @@ class NotificationServiceIntegrationTest extends IntegrationTestHelper {
 	@DisplayName("알림 리스트를 조회한다_성공")
 	void findNotifications_success() {
 		// given
-		Member newMember = createMember("test@test.com", "테스트유저", MemberStatus.JOIN);
+		Member newMember = createMember("test@test.com", "테스트유저", MemberStatus.JOIN, "1232345");
 		Notification notification = createNotification(newMember, NotificationType.INVITE_REQUEST, false);
 
 		memberRepository.save(newMember);
@@ -64,7 +64,7 @@ class NotificationServiceIntegrationTest extends IntegrationTestHelper {
 		@DisplayName("pageSize보다 데이터가 적을 때, 저장된 개수만큼 조회한다_성공")
 		void findNotificationsWhenLessThanPageSize_success() {
 			// given
-			Member newMember = createMember("test@test.com", "테스트유저", MemberStatus.JOIN);
+			Member newMember = createMember("test@test.com", "테스트유저", MemberStatus.JOIN, "1232345");
 			Notification notification = createNotification(newMember, NotificationType.INVITE_REQUEST, false);
 
 			memberRepository.save(newMember);
@@ -84,7 +84,7 @@ class NotificationServiceIntegrationTest extends IntegrationTestHelper {
 		@DisplayName("pageSize보다 데이터가 많을 때, pageSize만큼 조회한다_성공")
 		void findNotificationsWhenMoreThanPageSize_success() {
 			// given
-			Member newMember = createMember("test@test.com", "테스트유저", MemberStatus.JOIN);
+			Member newMember = createMember("test@test.com", "테스트유저", MemberStatus.JOIN, "1232345");
 			Notification notification1 = createNotification(newMember, NotificationType.INVITE_REQUEST, false);
 			Notification notification2 = createNotification(newMember, NotificationType.INVITE_REQUEST, false);
 			Notification notification3 = createNotification(newMember, NotificationType.INVITE_REQUEST, false);
@@ -103,6 +103,27 @@ class NotificationServiceIntegrationTest extends IntegrationTestHelper {
 			// then
 			assertThat(notifications).hasSize(pageSize);
 		}
+
+	}
+
+	@Test
+	@DisplayName("알림 읽기 여부를 변경한다_성공")
+	void readNotification_success() {
+		// given
+		Member newMember = createMember("test@test.com", "테스트유저", MemberStatus.JOIN, "1232345");
+		Member anotherMember = createMember("another@test.com", "다른테스트유저", MemberStatus.JOIN, "34543534");
+		Notification notification = createNotification(newMember, NotificationType.INVITE_REQUEST, false);
+		Notification antoherNotification = createNotification(anotherMember, NotificationType.INVITE_REQUEST, false);
+
+		memberRepository.saveAll(List.of(newMember, anotherMember));
+		notificationRepository.saveAll(List.of(notification, antoherNotification));
+
+		// when
+		notificationService.readNotification(newMember, notification.getId());
+		Notification foundNotification = notificationRepository.findById(notification.getId()).get();
+
+		// then
+		assertThat(foundNotification.isReadFlag()).isTrue();
 
 	}
 
