@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "스쿼드 멤버 초대 요청 객체")
-public class SquadMemberInvitationRequest {
+@Schema(description = "스쿼드장 위임할 멤버의 정보")
+public class SquadMemberAssignRequest {
+
 	@NotNull
-	@Schema(description = "초대될 멤버 ID")
-	private Long memberId;
+	@Schema(description = "새로운 스쿼드장 멤버 ID")
+	private Long newLeaderId;
 }
