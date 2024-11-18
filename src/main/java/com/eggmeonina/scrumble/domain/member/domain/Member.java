@@ -3,6 +3,7 @@ package com.eggmeonina.scrumble.domain.member.domain;
 import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -78,5 +79,23 @@ public class Member extends BaseEntity {
 		}
 		this.memberStatus = MemberStatus.WITHDRAW;
 		this.leavedAt = LocalDateTime.now();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Member member = (Member)o;
+		return Objects.equals(getId(), member.getId()) && Objects.equals(getEmail(), member.getEmail())
+			&& Objects.equals(getOauthInformation(), member.getOauthInformation())
+			&& getMemberStatus() == member.getMemberStatus() && Objects.equals(getJoinedAt(),
+			member.getJoinedAt());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getId(), getEmail(), getOauthInformation(), getMemberStatus(), getJoinedAt());
 	}
 }
