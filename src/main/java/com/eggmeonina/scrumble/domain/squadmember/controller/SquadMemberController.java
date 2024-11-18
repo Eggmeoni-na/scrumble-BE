@@ -74,7 +74,7 @@ public class SquadMemberController {
 		@PathVariable("squadId") Long squadId,
 		@RequestBody @Valid SquadMemberInvitationRequest request
 	) {
-		squadMemberService.inviteSquadMember(request.getMemberId(), squadId);
+		squadMemberService.inviteSquadMember(request.getNewMemberId(), squadId);
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
