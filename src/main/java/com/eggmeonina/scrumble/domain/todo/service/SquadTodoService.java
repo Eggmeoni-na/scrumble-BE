@@ -29,8 +29,8 @@ public class SquadTodoService {
 	private final SquadTodoRepository squadTodoRepository;
 	private final SquadRepository squadRepository;
 
-	public List<SquadTodoResponse> findSquadTodos(Long squadId, Long memberId, SquadTodoRequest request) {
-		return squadTodoRepository.findSquadTodos(squadId, memberId, request);
+	public List<SquadTodoResponse> findSquadTodos(Long squadMemberId, SquadTodoRequest request) {
+		return squadTodoRepository.findSquadTodos(squadMemberId, request);
 	}
 
 	@Transactional

@@ -7,5 +7,5 @@ import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoResponse;
 
 public interface SquadTodoRepositoryCustom {
 
-	List<SquadTodoResponse> findSquadTodos(Long squadId, Long memberId, SquadTodoRequest request);
+	List<SquadTodoResponse> findSquadTodos(Long squadMemberId, SquadTodoRequest request);
 }
