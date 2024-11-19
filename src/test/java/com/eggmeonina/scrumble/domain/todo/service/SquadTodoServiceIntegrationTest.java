@@ -1,5 +1,6 @@
 package com.eggmeonina.scrumble.domain.todo.service;
 
+import static com.eggmeonina.scrumble.fixture.SquadMemberFixture.*;
 import static com.eggmeonina.scrumble.fixture.SquadTodoFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -16,6 +17,8 @@ import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.domain.MemberStatus;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
 import com.eggmeonina.scrumble.domain.squadmember.domain.Squad;
+import com.eggmeonina.scrumble.domain.squadmember.domain.SquadMember;
+import com.eggmeonina.scrumble.domain.squadmember.repository.SquadMemberRepository;
 import com.eggmeonina.scrumble.domain.squadmember.repository.SquadRepository;
 import com.eggmeonina.scrumble.domain.todo.domain.SquadToDo;
 import com.eggmeonina.scrumble.domain.todo.domain.ToDo;
@@ -38,6 +41,9 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 	private SquadTodoRepository squadTodoRepository;
 
 	@Autowired
+	private SquadMemberRepository squadMemberRepository;
+
+	@Autowired
 	private MemberRepository memberRepository;
 
 	@Autowired
@@ -51,6 +57,7 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 	class FindSquadTodosTest{
 		private Squad newSquad;
 		private Member newMember;
+		private SquadMember newSquadMember;
 		@BeforeEach
 		void setUp() {
 			newMember = createMember("testA", "test@test.com", MemberStatus.JOIN, "12345567");
@@ -61,15 +68,13 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 			SquadToDo newSquadToDo1 = createSquadTodo(newSquad, newTodo1, true);
 			SquadToDo newSquadToDo2 = createSquadTodo(newSquad, newTodo2, false);
 			SquadToDo newSquadToDo3 = createSquadTodo(newSquad, newTodo3, false);
+			newSquadMember = createNormalSquadMember(newMember, newSquad);
 
 			memberRepository.save(newMember);
 			squadRepository.save(newSquad);
-			todoRepository.save(newTodo1);
-			todoRepository.save(newTodo2);
-			todoRepository.save(newTodo3);
-			squadTodoRepository.save(newSquadToDo1);
-			squadTodoRepository.save(newSquadToDo2);
-			squadTodoRepository.save(newSquadToDo3);
+			todoRepository.saveAll(List.of(newTodo1, newTodo2, newTodo3));
+			squadTodoRepository.saveAll(List.of(newSquadToDo1, newSquadToDo2, newSquadToDo3));
+			squadMemberRepository.save(newSquadMember);
 		}
 
 		@Test
@@ -79,7 +84,7 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 			SquadTodoRequest request = new SquadTodoRequest(LocalDate.now(), LocalDate.now(), 0L, 10L);
 
 			// when
-			List<SquadTodoResponse> squadTodos = squadTodoService.findSquadTodos(newSquad.getId(), newMember.getId(),request);
+			List<SquadTodoResponse> squadTodos = squadTodoService.findSquadTodos(newSquadMember.getId(),request);
 
 			// then
 			assertThat(squadTodos).hasSize(1);
@@ -93,7 +98,7 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 			SquadTodoRequest request = new SquadTodoRequest(date, date, 999999L, 10L);
 
 			// when
-			List<SquadTodoResponse> squadTodos = squadTodoService.findSquadTodos(newSquad.getId(), newMember.getId(),request);
+			List<SquadTodoResponse> squadTodos = squadTodoService.findSquadTodos(newSquadMember.getId(),request);
 
 			// then
 			assertThat(squadTodos).isEmpty();
@@ -108,11 +113,12 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 			SquadTodoRequest request = new SquadTodoRequest(startDate, endDate, 0L, 10L);
 
 			// when
-			List<SquadTodoResponse> squadTodos = squadTodoService.findSquadTodos(newSquad.getId(), newMember.getId(),request);
+			List<SquadTodoResponse> squadTodos = squadTodoService.findSquadTodos(newSquadMember.getId(),request);
 
 			// then
 			assertThat(squadTodos).hasSize(2);
 		}
+
 	}
 
 	@Nested
@@ -132,10 +138,13 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 			SquadToDo newSquadToDo2 = createSquadTodo(newSquad, newToDo2, false);
 			SquadToDo newSquadToDo3 = createSquadTodo(newSquad, newToDo3, false);
 
+			SquadMember newSquadMember = createNormalSquadMember(newMember, newSquad);
+
 			memberRepository.save(newMember);
 			squadRepository.save(newSquad);
 			todoRepository.saveAll(List.of(newToDo1, newToDo2, newToDo3));
 			squadTodoRepository.saveAll(List.of(newSquadToDo1, newSquadToDo2, newSquadToDo3));
+			squadMemberRepository.save(newSquadMember);
 
 			LocalDate startDate = LocalDate.now().minusDays(1);
 			LocalDate endDate = LocalDate.now();
@@ -143,7 +152,7 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 			SquadTodoRequest request = new SquadTodoRequest(startDate, endDate, 0L, pageSize);
 
 			// when
-			List<SquadTodoResponse> squadTodos = squadTodoService.findSquadTodos(newSquad.getId(), newMember.getId(), request);
+			List<SquadTodoResponse> squadTodos = squadTodoService.findSquadTodos(newSquadMember.getId(), request);
 
 			// then
 			assertThat(squadTodos).hasSize(2);
@@ -158,11 +167,13 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 			Squad newSquad = createSquad("스쿼드1", false);
 			ToDo newToDo1 = createToDo(newMember, "프로젝트", ToDoStatus.PENDING, false, LocalDate.now());
 			SquadToDo newSquadToDo1 = createSquadTodo(newSquad, newToDo1, false);
+			SquadMember newSquadMember = createNormalSquadMember(newMember, newSquad);
 
 			memberRepository.save(newMember);
 			squadRepository.save(newSquad);
 			todoRepository.saveAll(List.of(newToDo1));
 			squadTodoRepository.saveAll(List.of(newSquadToDo1));
+			squadMemberRepository.save(newSquadMember);
 
 			LocalDate startDate = LocalDate.now().minusDays(1);
 			LocalDate endDate = LocalDate.now();
@@ -170,7 +181,7 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 			SquadTodoRequest request = new SquadTodoRequest(startDate, endDate, 0L, pageSize);
 
 			// when
-			List<SquadTodoResponse> squadTodos = squadTodoService.findSquadTodos(newSquad.getId(), newMember.getId(), request);
+			List<SquadTodoResponse> squadTodos = squadTodoService.findSquadTodos(newSquadMember.getId(), request);
 
 			// then
 			assertThat(squadTodos).hasSize(1);
