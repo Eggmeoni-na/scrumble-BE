@@ -33,15 +33,14 @@ public class SquadToDoController {
 	private final SquadToDoFacadeService squadToDoFacadeService;
 	private final SquadTodoService squadTodoService;
 
-	@GetMapping("/squads/{squadId}/members/{memberId}")
+	@GetMapping("/squad-members/{squadMemberId}")
 	@Operation(summary = "스쿼드 투두들을 조회한다", description = "스쿼드에 속한 투두들을 조회한다.")
 	public ApiResponse<List<SquadTodoResponse>> findSquadTodos(
-		@Parameter(description = "스쿼드 ID") @PathVariable Long squadId,
-		@Parameter(description = "스쿼드 멤버 ID") @PathVariable Long memberId,
+		@Parameter(description = "스쿼드멤버 ID") @PathVariable Long squadMemberId,
 		@ModelAttribute SquadTodoRequest request
 	) {
 		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(),
-			squadTodoService.findSquadTodos(squadId, memberId, request));
+			squadTodoService.findSquadTodos(squadMemberId, request));
 	}
 
 	@DeleteMapping("/{toDoId}/squads/{squadId}")
