@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eggmeonina.scrumble.common.anotation.LoginMember;
 import com.eggmeonina.scrumble.common.domain.ApiResponse;
-import com.eggmeonina.scrumble.domain.auth.dto.MemberInfo;
+import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoRequest;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoResponse;
 import com.eggmeonina.scrumble.domain.todo.facade.SquadToDoFacadeService;
@@ -43,14 +43,15 @@ public class SquadToDoController {
 			squadTodoService.findSquadTodos(squadMemberId, request));
 	}
 
+	// TODO : squadmember의 todo를 제거하는 방향으로 수정한다. Member를 그대로 전달해서 작성자 여부를 판단하도록 변경한다.
 	@DeleteMapping("/{toDoId}/squads/{squadId}")
 	@Operation(summary = "스쿼드에 속한 투두를 삭제한다", description = "본인의 스쿼드에 속한 투두를 삭제한다.")
 	public ApiResponse<Map<String, Long>> deleteToDo(
 		@Parameter(description = "투두 ID") @PathVariable Long toDoId,
 		@Parameter(description = "스쿼드 ID") @PathVariable Long squadId,
-		@Parameter(hidden = true) @LoginMember MemberInfo loginMember
+		@Parameter(hidden = true) @LoginMember Member member
 	) {
-		squadToDoFacadeService.deleteToDoAndSquadToDo(squadId, toDoId, loginMember.getMemberId());
+		squadToDoFacadeService.deleteToDoAndSquadToDo(squadId, toDoId, member.getId());
 		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), Map.of("toDoId", toDoId));
 	}
 
