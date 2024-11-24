@@ -41,7 +41,7 @@ public class SquadRepositoryCustomImpl implements SquadRepositoryCustom {
 				groupBy(squad.id).list(
 					new QSquadDetailResponse(squad.id, squad.squadName,
 						list(
-							new QSquadMemberResponse(member.id, member.profileImage, member.name, squadMember.squadMemberRole)
+							new QSquadMemberResponse(member.id, squadMember.id, member.profileImage, member.name, squadMember.squadMemberRole)
 						))
 				)
 			);
