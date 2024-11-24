@@ -58,7 +58,7 @@ class SquadServiceTest {
 		// given
 		Long squadId = 1L;
 		List<SquadMemberResponse> members = new ArrayList<>();
-		SquadMemberResponse memberResponse = new SquadMemberResponse(1L, "http://-", "testA", SquadMemberRole.NORMAL);
+		SquadMemberResponse memberResponse = new SquadMemberResponse(1L, 1L, "http://-", "testA", SquadMemberRole.NORMAL);
 		members.add(memberResponse);
 
 		SquadDetailResponse mockResponse = new SquadDetailResponse(squadId, "테스트 스쿼드", members);
@@ -97,7 +97,7 @@ class SquadServiceTest {
 		Long squadId = 1L;
 		Long anotherMemberId = 2L;
 		List<SquadMemberResponse> members = new ArrayList<>();
-		SquadMemberResponse memberResponse = new SquadMemberResponse(1L, "http://-", "testA", SquadMemberRole.NORMAL);
+		SquadMemberResponse memberResponse = new SquadMemberResponse(1L, 1L, "http://-", "testA", SquadMemberRole.NORMAL);
 		members.add(memberResponse);
 
 		SquadDetailResponse mockResponse = new SquadDetailResponse(squadId, "테스트 스쿼드", members);

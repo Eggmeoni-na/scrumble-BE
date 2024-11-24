@@ -10,13 +10,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SquadMemberResponse {
 	private Long memberId;
+	private Long squadMemberId;
 	private String profileImg;
 	private String name;
 	private SquadMemberRole squadMemberRole;
 
 	@QueryProjection
-	public SquadMemberResponse(Long memberId, String profileImg, String name, SquadMemberRole squadMemberRole) {
+	public SquadMemberResponse(Long memberId, Long squadMemberId, String profileImg, String name,
+		SquadMemberRole squadMemberRole) {
 		this.memberId = memberId;
+		this.squadMemberId = squadMemberId;
 		this.profileImg = profileImg;
 		this.name = name;
 		this.squadMemberRole = squadMemberRole;
