@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.task.SyncTaskExecutor;
 
 import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
@@ -50,8 +49,7 @@ class NotificationListenerIntegrationTest extends IntegrationTestHelper {
 		 * executor를 동기로 변경한다.
 		 * @return
 		 */
-		@Bean
-		@Primary
+		@Bean(name = "taskExecutor")
 		public Executor executor() {
 			return new SyncTaskExecutor();
 		}
