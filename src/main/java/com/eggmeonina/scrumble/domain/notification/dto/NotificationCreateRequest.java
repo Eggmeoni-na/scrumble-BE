@@ -23,7 +23,6 @@ public class NotificationCreateRequest {
 			.notificationType(request.getNotificationType())
 			.readFlag(false)
 			.notificationData(request.getNotificationData())
-			.notificationStatus(NotificationStatus.PENDING)
 			.build();
 	}
 }

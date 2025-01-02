@@ -13,7 +13,6 @@ import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
 import com.eggmeonina.scrumble.domain.notification.domain.Notification;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationCreateRequest;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationSubScribeRequest;
-import com.eggmeonina.scrumble.domain.notification.dto.NotificationUpdateRequest;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationsRequest;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationResponse;
 import com.eggmeonina.scrumble.domain.notification.repository.NotificationRepository;
@@ -34,7 +33,7 @@ public class NotificationService {
 	}
 
 	@Transactional
-	public NotificationResponse readNotification(Member member, Long notificationId, NotificationUpdateRequest request){
+	public NotificationResponse readNotification(Member member, Long notificationId){
 		// 알림 조회
 		Notification foundNotification = notificationRepository.findByIdAndReadFlagNot(notificationId)
 			.orElseThrow(() -> new ExpectedException(ErrorCode.NOTIFICATION_NOT_FOUND));
