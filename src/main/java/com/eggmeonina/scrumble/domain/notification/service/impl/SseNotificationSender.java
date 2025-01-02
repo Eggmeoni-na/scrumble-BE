@@ -4,11 +4,9 @@ import static com.eggmeonina.scrumble.domain.notification.domain.NotificationCon
 
 import java.io.IOException;
 
-import org.springframework.data.domain.Limit;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationMessage;
@@ -64,7 +62,7 @@ public class SseNotificationSender implements NotificationSender {
 		}
 
 		try {
-			sseEmitter.send(SseEmitter.event().id(String.valueOf(memberId)).name(notificationEventName)
+			sseEmitter.send(SseEmitter.event().id(String.valueOf(memberId)).name(NOTIFICATION_EVENT_NAME)
 				.data(new ResponseEntity<>(message, HttpStatus.OK)));
 		} catch (IOException e) {
 			sseEmitterRepository.deleteById(memberId);
