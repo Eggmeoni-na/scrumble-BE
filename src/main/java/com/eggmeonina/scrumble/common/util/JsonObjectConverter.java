@@ -18,13 +18,29 @@ import lombok.experimental.UtilityClass;
  * result  : 테스트 유저님이 스크럼블 스쿼드에 참여하였습니다
  */
 @UtilityClass
-public class JsonToNotificationMessageConverter {
+public class JsonObjectConverter {
 
-	private JsonObject stringJsonDataToJson(String jsonData){
-		return new Gson().fromJson(jsonData, JsonObject.class);
+	private Gson gson = new Gson();
+
+	/**
+	 * object를 json 데이터 형태를 가진 String으로 변경한다.
+	 * @param o
+	 * @return
+	 */
+	public String objectToJsonString(Object o){
+		return gson.toJson(o);
 	}
 
-	// json 타입을 HashMap으로 변환하여 message의 placeholder와 치환한다.
+	public Object JsonToObject(String json, Class<?> clazz){
+		return gson.fromJson(json, clazz);
+	}
+
+	/**
+	 * json 타입을 HashMap으로 변환하여 message의 placeholder와 치환한다.
+	 * @param message
+	 * @param jsonData
+	 * @return
+	 */
 	public String jsonToNotificationMessage(String message, String jsonData){
 		JsonObject jsonObject = stringJsonDataToJson(jsonData);
 		StringBuilder sb = new StringBuilder(message);
@@ -40,5 +56,9 @@ public class JsonToNotificationMessageConverter {
 			}
 		}
 		return sb.toString();
+	}
+
+	private JsonObject stringJsonDataToJson(String jsonData){
+		return new Gson().fromJson(jsonData, JsonObject.class);
 	}
 }
