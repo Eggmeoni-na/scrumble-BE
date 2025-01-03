@@ -12,15 +12,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.eggmeonina.scrumble.common.exception.MemberException;
-import com.eggmeonina.scrumble.common.exception.SquadMemberException;
 import com.eggmeonina.scrumble.common.exception.SquadException;
+import com.eggmeonina.scrumble.common.exception.SquadMemberException;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.domain.MemberStatus;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
+import com.eggmeonina.scrumble.domain.squadmember.domain.Squad;
 import com.eggmeonina.scrumble.domain.squadmember.domain.SquadMember;
 import com.eggmeonina.scrumble.domain.squadmember.domain.SquadMemberRole;
 import com.eggmeonina.scrumble.domain.squadmember.domain.SquadMemberStatus;
-import com.eggmeonina.scrumble.domain.squadmember.domain.Squad;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadDetailResponse;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadResponse;
 import com.eggmeonina.scrumble.domain.squadmember.repository.SquadMemberRepository;
@@ -430,7 +430,7 @@ class SquadMemberServiceAndSquadIntegrationTest extends IntegrationTestHelper {
 		squadMemberRepository.saveAll(List.of(squadLeader, squadMember1));
 
 		// when, then
-		assertThatThrownBy(()->squadMemberService.inviteSquadMember(newMember2.getId(), newSquad.getId()))
+		assertThatThrownBy(()->squadMemberService.inviteSquadMember("testMember", newMember2.getId(), newSquad.getId()))
 			.isInstanceOf(SquadMemberException.class)
 			.hasMessageContaining(DUPLICATE_SQUADMEMBER.getMessage());
 	}
@@ -452,7 +452,7 @@ class SquadMemberServiceAndSquadIntegrationTest extends IntegrationTestHelper {
 		squadMemberRepository.saveAll(List.of(squadLeader));
 
 		// when
-		Long squadMemberId = squadMemberService.inviteSquadMember(newMember2.getId(), newSquad.getId());
+		Long squadMemberId = squadMemberService.inviteSquadMember("testMember", newMember2.getId(), newSquad.getId());
 
 		SquadMember foundSquadMember = squadMemberRepository.findById(squadMemberId).get();
 
