@@ -12,9 +12,9 @@ import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
 import com.eggmeonina.scrumble.domain.notification.domain.Notification;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationCreateRequest;
+import com.eggmeonina.scrumble.domain.notification.dto.NotificationResponse;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationSubScribeRequest;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationsRequest;
-import com.eggmeonina.scrumble.domain.notification.dto.NotificationResponse;
 import com.eggmeonina.scrumble.domain.notification.repository.NotificationRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,11 @@ public class NotificationService {
 	// TODO : Notification 생성 중 오류가 발생한다면?
 	@Transactional
 	public Long createNotification(NotificationCreateRequest request) {
-		return null;
+		Member foundMember = memberRepository.findByIdAndMemberStatusNotJOIN(request.getMemberId())
+			.orElseThrow(() -> new ExpectedException(ErrorCode.MEMBER_NOT_FOUND));
+		Notification newNotification = NotificationCreateRequest.to(request, foundMember);
+		notificationRepository.save(newNotification);
+		return newNotification.getId();
 	}
 
 	@Transactional
