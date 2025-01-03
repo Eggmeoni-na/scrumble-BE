@@ -72,9 +72,10 @@ public class SquadMemberController {
 	@Operation(summary = "스쿼드 멤버를 초대(추가)한다", description = "스쿼드 멤버를 초대(추가)한다.")
 	public ApiResponse<Void> inviteMember(
 		@PathVariable("squadId") Long squadId,
+		@Parameter(hidden = true) @LoginMember Member member,
 		@RequestBody @Valid SquadMemberInvitationRequest request
 	) {
-		squadMemberService.inviteSquadMember(request.getNewMemberId(), squadId);
+		squadMemberService.inviteSquadMember(member.getName(), request.getNewMemberId(), squadId);
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
