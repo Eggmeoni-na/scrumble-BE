@@ -86,7 +86,7 @@ class NotificationListenerIntegrationTest extends IntegrationTestHelper {
 	}
 
 	@Test
-	@DisplayName("이벤트가 발생할 때 알림 생성 중에 예외가 발생한다_실패")
+	@DisplayName("존재하지 않는 회원에 대한 초대 이벤트가 발생할 때 알림 생성 중에 예외가 발생한다_실패")
 	void handleSquadMemberInvitedEventWhenNotFoundMember_fail() {
 		// given
 		InvitedEvent event = new InvitedEvent(1L, "테스트유저", 2L, "테스트스쿼드", NotificationType.INVITE_REQUEST);
