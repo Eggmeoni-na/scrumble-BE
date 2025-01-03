@@ -1,6 +1,6 @@
 package com.eggmeonina.scrumble.domain.notification.domain;
 
-import static com.eggmeonina.scrumble.common.util.JsonToNotificationMessageConverter.*;
+import static com.eggmeonina.scrumble.common.util.JsonObjectConverter.*;
 import static com.eggmeonina.scrumble.domain.notification.domain.NotificationMessage.*;
 import static com.eggmeonina.scrumble.domain.notification.domain.NotificationType.*;
 import static org.assertj.core.api.Assertions.*;
