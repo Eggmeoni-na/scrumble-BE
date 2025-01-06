@@ -39,3 +39,4 @@ server:
       cookie:
         same-site: "none"
         secure: true
+  port: 80
