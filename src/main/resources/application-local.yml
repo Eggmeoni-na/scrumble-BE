@@ -3,7 +3,9 @@ spring:
     driver-class-name: org.h2.Driver
     url: ENC(Dd5rRT9R4dxkpzTqweLcU2mGvXZyvq/ZZAobhV7bmCjjtUXXIpOChg==)
     username: ENC(hH4nOj5Llu0PozZM30ihgw==)
-    password:                                          # H2 DB 접속 패스워드
+    password:                                          # H2 DB 접속 패스워드leak-detection-threshold:2000
+    hikari:
+      leak-detection-threshold: 2000 # 커넥션 누수 감지 (2초)
 
   h2:
     console:
@@ -13,7 +15,7 @@ spring:
         web-allow-others: true # 개발 환경에서만 사용
 
   jpa:
-    open-in-view: true
+    open-in-view: false
     hibernate:
       ddl-auto: update
       naming:
@@ -35,6 +37,10 @@ spring:
       data-locations: classpath:db/h2/data.sql
       mode: always                                  # 서버 재기동 마다 schema, data 새로 생성
 
+logging:
+  level:
+    com.zaxxer.hikari.HikariConfig: DEBUG
+    com.zaxxer.hikari: TRACE
 
 springdoc:
   version: '@project.version@'

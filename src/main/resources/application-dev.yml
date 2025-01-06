@@ -8,7 +8,7 @@ spring:
     password: ENC(OYwM8ItpW3jAocG6FL3KbBIeppCejcOw)
 
   jpa:
-    open-in-view: true
+    open-in-view: false
     hibernate:
       ddl-auto: update
       naming:
@@ -39,3 +39,4 @@ server:
       cookie:
         same-site: "none"
         secure: true
+  port: 80
