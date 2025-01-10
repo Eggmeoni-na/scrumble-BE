@@ -9,3 +9,8 @@ spring:
       hibernate.format_sql: true
   main:
     allow-bean-definition-overriding: true
+
+# 추가 설정 value
+swagger:
+  server:
+    endpoint: http://localhost:8080
