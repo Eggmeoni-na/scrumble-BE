@@ -3,9 +3,9 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     # url 끝에 database 지정
-    url: ENC(mDrCYiCTIyhT9flrpkl4MLhJq3BCMu2sy+PwWmuHpXeRaK+tTaVfK908IQTcG9yszJzYcVlXA5s=)
-    username: ENC(Dq0TfNx5U8TpiPtx4Rl8Luf+kStsMzpo)
-    password: ENC(OYwM8ItpW3jAocG6FL3KbBIeppCejcOw)
+    url: ENC(PuybOyz0adHZwDSTj0vw9ZFXT3zPMseELsEH0bzNA/0igpUg74aJp4VfIbe91A4xQtha8FDzaawXQGX89xe84vbh3BtGXP7CoLPJDoGES4d+ab5jAWc7t76exasZqlGeEvsiUdiCHiw=)
+    username: ENC(tQiHKjKn3eETPp6pLS1voc5OsOEOVDrT)
+    password: ENC(2ygN6B36r23h86E8UVj73dmkUT1wkph6)
 
   jpa:
     open-in-view: false
