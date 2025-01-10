@@ -1,14 +1,20 @@
 package com.eggmeonina.scrumble.common.config;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.License;
-
+import io.swagger.v3.oas.models.servers.Server;
 
 @Configuration
 public class SwaggerConfig {
+
+	@Value("${swagger.server.endpoint}")
+	private String endPoint;
 
 	@Bean
 	public OpenAPI openAPI() {
@@ -19,7 +25,13 @@ public class SwaggerConfig {
 			.license(new License().name("Eggmeoni-na, Git Url")
 				.url("https://github.com/Eggmeoni-na")
 			);
+
+		// 스웨거는 기본적으로 http 통신하기 때문에 https 통신 가능하도록 변경
+		Server server = new Server();
+		server.setUrl(endPoint);
+
 		return new OpenAPI()
-			.info(info);
+			.info(info)
+			.servers(List.of(server));
 	}
 }
