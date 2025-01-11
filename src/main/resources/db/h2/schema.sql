@@ -2,13 +2,14 @@ DROP TABLE IF EXISTS notification;
 
 CREATE TABLE notification
 (
-    notification_id   BIGINT      NOT NULL AUTO_INCREMENT,
-    recipient_id      BIGINT      NOT NULL,
-    notification_type VARCHAR(50) NOT NULL,
-    read_flag         TINYINT     NOT NULL,
-    notification_data CLOB        NULL,
-    created_at        TIMESTAMP   NULL,
-    updated_at        TIMESTAMP   NULL,
+    notification_id     BIGINT      NOT NULL AUTO_INCREMENT,
+    recipient_id        BIGINT      NOT NULL,
+    notification_type   VARCHAR(50) NOT NULL,
+    read_flag           TINYINT     NOT NULL,
+    notification_data   CLOB        NULL,
+    notification_status VARCHAR(50) NOT NULL,
+    created_at          TIMESTAMP   NULL,
+    updated_at          TIMESTAMP   NULL,
     PRIMARY KEY (notification_id)
 );
 
