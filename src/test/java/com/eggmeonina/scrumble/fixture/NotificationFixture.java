@@ -9,6 +9,7 @@ import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.domain.MemberStatus;
 import com.eggmeonina.scrumble.domain.member.domain.OauthInformation;
 import com.eggmeonina.scrumble.domain.notification.domain.Notification;
+import com.eggmeonina.scrumble.domain.notification.domain.NotificationStatus;
 import com.eggmeonina.scrumble.domain.notification.domain.NotificationType;
 import com.google.gson.JsonObject;
 
@@ -28,7 +29,9 @@ public class NotificationFixture {
 			.recipient(newMember)
 			.notificationData(jsonObject.toString())
 			.notificationType(notificationType)
-			.readFlag(readFlag).build();
+			.readFlag(readFlag)
+			.notificationStatus(NotificationStatus.PENDING)
+			.build();
 	}
 
 	public static Member createMember(String email, String name, MemberStatus memberStatus, String oauthId) {

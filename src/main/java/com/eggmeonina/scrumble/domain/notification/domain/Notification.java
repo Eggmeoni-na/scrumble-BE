@@ -47,13 +47,18 @@ public class Notification extends BaseEntity {
 	@Column(name = "notification_data", nullable = true)
 	private String notificationData;
 
+	@Column(name ="notification_status", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private NotificationStatus notificationStatus;
+
 	@Builder(builderMethodName = "create")
 	public Notification(Member recipient, NotificationType notificationType, boolean readFlag,
-		String notificationData) {
+		String notificationData, NotificationStatus notificationStatus) {
 		this.recipient = recipient;
 		this.notificationType = notificationType;
 		this.readFlag = readFlag;
 		this.notificationData = notificationData;
+		this.notificationStatus = notificationStatus;
 
 		initValid(recipient, notificationType);
 	}
@@ -68,13 +73,26 @@ public class Notification extends BaseEntity {
 		}
 	}
 
-	public void read(){
-		this.readFlag = true;
+	// 알림 읽기 여부와 상태를 변경한다.
+	public void updateNotification(boolean readFlag, NotificationStatus notificationStatus){
+		this.readFlag = readFlag;
+		this.notificationStatus = notificationStatus;
 	}
 
 	public void checkSameRecipient(Member member){
 		if(!getRecipient().equals(member)){
 			throw new ExpectedException(UNAUTHORIZED_ACCESS);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "Notification{" +
+			"id=" + id +
+			", notificationType=" + notificationType +
+			", readFlag=" + readFlag +
+			", notificationData='" + notificationData + '\'' +
+			", notificationStatus=" + notificationStatus +
+			'}';
 	}
 }
