@@ -5,7 +5,6 @@ import static com.eggmeonina.scrumble.domain.notification.domain.NotificationTyp
 import static com.eggmeonina.scrumble.fixture.NotificationFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -67,7 +66,7 @@ class NotificationTest {
 		Notification newNotification = createNotification(newMember, INVITE_REQUEST, false);
 
 		// when
-		newNotification.read();
+		newNotification.updateNotification(true, NotificationStatus.PENDING);
 
 		// then
 		assertThat(newNotification.isReadFlag()).isTrue();

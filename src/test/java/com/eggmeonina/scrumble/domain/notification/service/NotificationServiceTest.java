@@ -39,7 +39,7 @@ class NotificationServiceTest {
 			.willReturn(Optional.empty());
 
 		// when, then
-		assertThatThrownBy(() -> notificationService.readNotification(newMember, 1L))
+		assertThatThrownBy(() -> notificationService.updateNotification(newMember, 1L, any()))
 			.isInstanceOf(ExpectedException.class)
 			.hasMessageContaining(NOTIFICATION_NOT_FOUND.getMessage());
 

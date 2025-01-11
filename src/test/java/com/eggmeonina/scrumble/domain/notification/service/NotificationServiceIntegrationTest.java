@@ -16,8 +16,10 @@ import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.domain.MemberStatus;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
 import com.eggmeonina.scrumble.domain.notification.domain.Notification;
+import com.eggmeonina.scrumble.domain.notification.domain.NotificationStatus;
 import com.eggmeonina.scrumble.domain.notification.domain.NotificationType;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationResponse;
+import com.eggmeonina.scrumble.domain.notification.dto.NotificationUpdateRequest;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationsRequest;
 import com.eggmeonina.scrumble.domain.notification.repository.NotificationRepository;
 import com.eggmeonina.scrumble.helper.IntegrationTestHelper;
@@ -52,7 +54,7 @@ class NotificationServiceIntegrationTest extends IntegrationTestHelper {
 		assertSoftly(softly -> {
 			softly.assertThat(notifications).hasSize(1);
 			softly.assertThat(result.getNotificationId()).isEqualTo(notification.getId());
-			softly.assertThat(result.getNotificationData()).isEqualTo(notification.getNotificationData());
+			softly.assertThat(result.getNotificationData().getSquadId()).isEqualTo(notification.getId());
 			softly.assertThat(result.getNotificationType()).isEqualTo(notification.getNotificationType());
 		});
 	}
@@ -114,12 +116,13 @@ class NotificationServiceIntegrationTest extends IntegrationTestHelper {
 		Member anotherMember = createMember("another@test.com", "다른테스트유저", MemberStatus.JOIN, "34543534");
 		Notification notification = createNotification(newMember, NotificationType.INVITE_REQUEST, false);
 		Notification antoherNotification = createNotification(anotherMember, NotificationType.INVITE_REQUEST, false);
+		NotificationUpdateRequest request = new NotificationUpdateRequest(NotificationStatus.PENDING, true);
 
 		memberRepository.saveAll(List.of(newMember, anotherMember));
 		notificationRepository.saveAll(List.of(notification, antoherNotification));
 
 		// when
-		notificationService.readNotification(newMember, notification.getId());
+		notificationService.updateNotification(newMember, notification.getId(), request);
 		Notification foundNotification = notificationRepository.findById(notification.getId()).get();
 
 		// then
