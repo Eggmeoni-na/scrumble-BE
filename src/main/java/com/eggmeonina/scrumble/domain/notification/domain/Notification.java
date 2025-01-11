@@ -73,8 +73,10 @@ public class Notification extends BaseEntity {
 		}
 	}
 
-	public void read(){
-		this.readFlag = true;
+	// 알림 읽기 여부와 상태를 변경한다.
+	public void updateNotification(boolean readFlag, NotificationStatus notificationStatus){
+		this.readFlag = readFlag;
+		this.notificationStatus = notificationStatus;
 	}
 
 	public void checkSameRecipient(Member member){

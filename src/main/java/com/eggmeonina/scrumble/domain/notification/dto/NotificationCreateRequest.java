@@ -2,6 +2,7 @@ package com.eggmeonina.scrumble.domain.notification.dto;
 
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.notification.domain.Notification;
+import com.eggmeonina.scrumble.domain.notification.domain.NotificationStatus;
 import com.eggmeonina.scrumble.domain.notification.domain.NotificationType;
 
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ public class NotificationCreateRequest {
 			.notificationType(request.getNotificationType())
 			.readFlag(false)
 			.notificationData(request.getNotificationData())
+			.notificationStatus(NotificationStatus.PENDING)
 			.build();
 	}
 }
