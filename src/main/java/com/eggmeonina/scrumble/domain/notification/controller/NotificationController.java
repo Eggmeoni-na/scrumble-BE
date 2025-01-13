@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +15,7 @@ import com.eggmeonina.scrumble.common.anotation.LoginMember;
 import com.eggmeonina.scrumble.common.domain.ApiResponse;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationResponse;
+import com.eggmeonina.scrumble.domain.notification.dto.NotificationUpdateRequest;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationsRequest;
 import com.eggmeonina.scrumble.domain.notification.service.NotificationService;
 
@@ -40,12 +42,13 @@ public class NotificationController {
 	}
 
 	@PutMapping("/{notificationId}")
-	@Operation(summary = "알림 읽기 여부 변경", description = "알림에 대한 읽기 여부를 변경한다")
-	public ApiResponse<NotificationResponse> readNotification(
+	@Operation(summary = "알림 상태 변경", description = "알림 상태를 변경한다 (readFlag, notificationStatus)")
+	public ApiResponse<NotificationResponse> updateNotification(
 		@Parameter(hidden = true) @LoginMember Member member,
-		@PathVariable Long notificationId
+		@PathVariable Long notificationId,
+		@RequestBody NotificationUpdateRequest notificationUpdateRequest
 	){
 		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(),
-			notificationService.readNotification(member, notificationId));
+			notificationService.updateNotification(member, notificationId, notificationUpdateRequest));
 	}
 }
