@@ -4,9 +4,6 @@ import static org.springframework.http.HttpMethod.*;
 
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import com.eggmeonina.scrumble.common.exception.ErrorCode;
-import com.eggmeonina.scrumble.common.exception.ExpectedException;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -22,7 +19,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 		// preflight 요청은 interceptor에서 무시한다
 		if (session == null && !OPTIONS.name().equals(request.getMethod())) {
 			log.debug("미인증 사용자 요청 URI : {}", request.getRequestURI());
-			throw new ExpectedException(ErrorCode.UNAUTHORIZED_ACCESS);
+			// throw new ExpectedException(ErrorCode.UNAUTHORIZED_ACCESS);
 		}
 		return true;
 	}
