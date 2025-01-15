@@ -57,6 +57,14 @@ springdoc:
   paths-to-match:
     - /** # /api/**로 시작하는 모든 경로가 문서화된다.
 
+server:
+  servlet:
+    session:
+      cookie:
+        same-site: "none"
+        secure: true
+  port: 9090
+
 # 추가 설정 value
 swagger:
   server:
