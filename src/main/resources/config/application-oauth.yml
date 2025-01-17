@@ -1,0 +1,56 @@
+# prod
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+oauth:
+  google:
+    client-id: ENC(Axm4OtN14/bqg4GErGhc6aOV4aHnKw34sReylM5W4FBgKXwTM43rBQParFh3wCOEA4unHkxprzE2mcW5aJX7IZvoyaIqJ1xpcWwdlHlmpB8/ufMtuQv1aA==)
+    client-key: ENC(2ogGtYgdg6QzpB8hcch437ktFh+b/CPo3okFrqdwwE0czauMEDF34B0Xe0b4s4Y3)
+    redirect_uri: ENC(Ny4lsDu+Ik3M9NHDloSgfStvfgxUSxdQKFbEJs9eeI9tVlLsywxLV/Vb9jgvgWSkZIcHOsSvu29VoATxoPbs1g==)
+    response_type: code
+    scope: profile+email
+
+    request-uri: https://accounts.google.com/o/oauth2/v2/auth
+    token-uri: https://oauth2.googleapis.com/token
+    resource-uri: https://www.googleapis.com/oauth2/v2/userinfo
+
+---
+# dev
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+oauth:
+  google:
+    client-id: ENC(Axm4OtN14/bqg4GErGhc6aOV4aHnKw34sReylM5W4FBgKXwTM43rBQParFh3wCOEA4unHkxprzE2mcW5aJX7IZvoyaIqJ1xpcWwdlHlmpB8/ufMtuQv1aA==)
+    client-key: ENC(2ogGtYgdg6QzpB8hcch437ktFh+b/CPo3okFrqdwwE0czauMEDF34B0Xe0b4s4Y3)
+    redirect_uri: ENC(MrEH5hLuu0C4p4YBSM+g4aakuW3zFjiMEO7vp9w3G19lcvyNkO9bb/b9Q5CmuhdmdpAoS7jNpdQu/+a+CmLmLw==)
+    response_type: code
+    scope: profile+email
+
+    request-uri: https://accounts.google.com/o/oauth2/v2/auth
+    token-uri: https://oauth2.googleapis.com/token
+    resource-uri: https://www.googleapis.com/oauth2/v2/userinfo
+
+---
+#local
+spring:
+  config:
+    activate:
+      on-profile: local
+
+oauth:
+  google:
+    client-id: ENC(Axm4OtN14/bqg4GErGhc6aOV4aHnKw34sReylM5W4FBgKXwTM43rBQParFh3wCOEA4unHkxprzE2mcW5aJX7IZvoyaIqJ1xpcWwdlHlmpB8/ufMtuQv1aA==)
+    client-key: ENC(2ogGtYgdg6QzpB8hcch437ktFh+b/CPo3okFrqdwwE0czauMEDF34B0Xe0b4s4Y3)
+    redirect_uri: ENC(khtmPRlQz6Wk3AjRmJJ6JR/ASR0cHRRZPZCD8yPTrPthAlk8YzgK6hpsej2473TTRG9W8RGCvek=)
+    response_type: code
+    scope: profile+email
+
+    request-uri: https://accounts.google.com/o/oauth2/v2/auth
+    token-uri: https://oauth2.googleapis.com/token
+    resource-uri: https://www.googleapis.com/oauth2/v2/userinfo
+

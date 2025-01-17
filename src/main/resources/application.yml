@@ -1,3 +1,10 @@
+spring:
+  profiles:
+    group:
+      prod: cors, oauth
+      dev: cors, oauth
+      local: cors, oauth
+
 springdoc:
   version: '@project.version@'
   api-docs:
