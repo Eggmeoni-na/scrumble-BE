@@ -14,3 +14,21 @@ spring:
 swagger:
   server:
     endpoint: http://localhost:8080
+
+# oauth 설정
+oauth:
+  google:
+    client-id: test-id
+    client-key: test-key
+    redirect_uri: test-uri
+    response_type: code
+    scope: profile+email
+
+    request-uri: https://accounts.google.com/o/oauth2/v2/auth
+    token-uri: https://oauth2.googleapis.com/token
+    resource-uri: https://www.googleapis.com/oauth2/v2/userinfo
+
+# cors 설정
+cors:
+  origins:
+    - http://localhost:8080
