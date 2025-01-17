@@ -9,7 +9,7 @@ import com.eggmeonina.scrumble.ScrumbleApplication;
 @Configuration
 @PropertySource(
 	value =
-		{"classpath:/property/google-oauth.properties",
+		{"classpath:/property/google-oauth-${spring.profiles.active}.properties",
 			"classpath:/property/cors-origin.properties"},
 	ignoreResourceNotFound = true
 )
