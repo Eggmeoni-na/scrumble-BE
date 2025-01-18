@@ -8,8 +8,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,8 +19,8 @@ import com.eggmeonina.scrumble.common.exception.AuthException;
 import com.eggmeonina.scrumble.domain.auth.controller.generator.OauthGenerator;
 import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
 import com.eggmeonina.scrumble.domain.auth.dto.LoginResponse;
-import com.eggmeonina.scrumble.domain.auth.dto.OauthRequest;
 import com.eggmeonina.scrumble.domain.auth.dto.MemberInfo;
+import com.eggmeonina.scrumble.domain.auth.dto.OauthRequest;
 import com.eggmeonina.scrumble.domain.auth.facade.AuthFacadeService;
 import com.eggmeonina.scrumble.domain.member.domain.SessionKey;
 
@@ -57,15 +57,18 @@ public class AuthController {
 		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), response);
 	}
 
-	@PostMapping("/login")
+	@GetMapping("/login/{oauthType}")
 	@Operation(summary = "OAuth2 authorization_code를 받아 로그인/회원가입을 한다", description = "OAuth2 Authorization Code Grant 로그인",
 		parameters = {@Parameter(name = "oauthType", description = "oauth type || GOOGLE : 구글로그인"),
 		@Parameter(name = "code", description = "oauth 서버에서 응답된 code"),
 		@Parameter(name = "scope", description = "oauth 서버에서 응답된 scope")})
 	public ApiResponse<LoginResponse> login(
-		HttpServletRequest servletRequest, @RequestBody OauthRequest request
+		@PathVariable OauthType oauthType,
+		@RequestParam String code,
+		@RequestParam String scope,
+		HttpServletRequest servletRequest
 	) {
-		MemberInfo loginMember = authFacadeService.getToken(request);
+		MemberInfo loginMember = authFacadeService.getToken(new OauthRequest(oauthType, code, scope));
 		HttpSession session = servletRequest.getSession(true);
 		session.setAttribute(SessionKey.LOGIN_USER.name(), loginMember);
 		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), LoginResponse.from(loginMember));
