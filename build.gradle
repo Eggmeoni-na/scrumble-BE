@@ -58,6 +58,10 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
 }
 
+jar {
+    enabled = false
+}
+
 def generated = 'src/main/generated'
 
 tasks.withType(JavaCompile).configureEach {
