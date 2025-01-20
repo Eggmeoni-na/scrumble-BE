@@ -42,8 +42,8 @@ jobs:
       - name: Build And Push docker image
         run: |
           docker buildx build --platform linux/amd64 --push 
-          --tag ${{ secrets.DOCKER_USERNAME }}/scrumble:${{ vars.DOCKER_DEV_TAG }} 
-          --tag ${{ secrets.DOCKER_USERNAME }}/scrumble:latest -f Dockerfile-dev .
+          --tag ${{ vars.DOCKER_USERNAME }}/scrumble:${{ vars.DOCKER_DEV_TAG }} 
+          --tag ${{ vars.DOCKER_USERNAME }}/scrumble:latest -f Dockerfile-dev .
   deploy:
     needs: upload-image
     runs-on: ubuntu-latest
