@@ -40,7 +40,7 @@ public class NotificationService {
 	@Transactional
 	public NotificationResponse updateNotification(Member member, Long notificationId, NotificationUpdateRequest request){
 		// 알림 조회
-		Notification foundNotification = notificationRepository.findByIdAndReadFlagNot(notificationId)
+		Notification foundNotification = notificationRepository.findById(notificationId)
 			.orElseThrow(() -> new ExpectedException(ErrorCode.NOTIFICATION_NOT_FOUND));
 
 		// 알림 수신인 동일 여부 검증
