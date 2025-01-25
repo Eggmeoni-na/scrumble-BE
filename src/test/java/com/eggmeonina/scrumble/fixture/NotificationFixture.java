@@ -16,7 +16,7 @@ import com.google.gson.JsonObject;
 public class NotificationFixture {
 
 	public static Notification createNotification(Member newMember, NotificationType notificationType,
-		boolean readFlag) {
+		boolean readFlag, NotificationStatus notificationStatus) {
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("userName", newMember.getName());
 		jsonObject.addProperty("squadName", "테스트 스쿼드");
@@ -30,7 +30,7 @@ public class NotificationFixture {
 			.notificationData(jsonObject.toString())
 			.notificationType(notificationType)
 			.readFlag(readFlag)
-			.notificationStatus(NotificationStatus.PENDING)
+			.notificationStatus(notificationStatus)
 			.build();
 	}
 

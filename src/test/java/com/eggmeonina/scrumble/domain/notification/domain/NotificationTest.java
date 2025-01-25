@@ -22,7 +22,7 @@ class NotificationTest {
 		Member newMember = createMember("test@test.com", "test", MemberStatus.JOIN, "1232345");
 
 		// when
-		Notification newNotification = createNotification(newMember, INVITE_REQUEST, false);
+		Notification newNotification = createNotification(newMember, INVITE_REQUEST, false, NotificationStatus.PENDING);
 
 		// then
 		assertThat(newNotification.getNotificationType()).isEqualTo(INVITE_REQUEST);
@@ -63,7 +63,7 @@ class NotificationTest {
 	void read_success() {
 		// given
 		Member newMember = createMember("test@test.com", "test", MemberStatus.JOIN, "1232345");
-		Notification newNotification = createNotification(newMember, INVITE_REQUEST, false);
+		Notification newNotification = createNotification(newMember, INVITE_REQUEST, false, NotificationStatus.PENDING);
 
 		// when
 		newNotification.updateNotification(true, NotificationStatus.PENDING);
@@ -77,7 +77,7 @@ class NotificationTest {
 	void checkSameRecipientWhenDifferentMember_fail() {
 		Member newMember = createMember("test@test.com", "test", MemberStatus.JOIN, "1232345");
 		Member anotherMember = createMember("anohter@test.com", "test", MemberStatus.JOIN, "54321");
-		Notification newNotification = createNotification(newMember, INVITE_REQUEST, false);
+		Notification newNotification = createNotification(newMember, INVITE_REQUEST, false, NotificationStatus.PENDING);
 
 		// when, then
 		assertThatThrownBy(() -> newNotification.checkSameRecipient(anotherMember))
