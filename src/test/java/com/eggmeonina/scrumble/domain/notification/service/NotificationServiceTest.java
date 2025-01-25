@@ -35,7 +35,7 @@ class NotificationServiceTest {
 		// given
 		Member newMember = createMember("test@test.com", "test", MemberStatus.JOIN, "123435345");
 
-		given(notificationRepository.findByIdAndReadFlagNot(anyLong()))
+		given(notificationRepository.findById(anyLong()))
 			.willReturn(Optional.empty());
 
 		// when, then
