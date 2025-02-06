@@ -15,6 +15,8 @@ import com.eggmeonina.scrumble.common.anotation.LoginMember;
 import com.eggmeonina.scrumble.common.domain.ApiResponse;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationResponse;
+import com.eggmeonina.scrumble.domain.notification.dto.NotificationUnreadExistRequest;
+import com.eggmeonina.scrumble.domain.notification.dto.NotificationUnreadExistResponse;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationUpdateRequest;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationsRequest;
 import com.eggmeonina.scrumble.domain.notification.service.NotificationService;
@@ -50,5 +52,15 @@ public class NotificationController {
 	){
 		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(),
 			notificationService.updateNotification(member, notificationId, notificationUpdateRequest));
+	}
+
+	@GetMapping("/unread-exists")
+	@Operation(summary = "알림 읽지 않음 여부 조회", description = "알림 읽지 않음 여부를 조회한다")
+	public ApiResponse<NotificationUnreadExistResponse> hasUnreadNotifications(
+		@Parameter(hidden = true) @LoginMember Member member,
+		@ModelAttribute NotificationUnreadExistRequest request
+	){
+		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(),
+			notificationService.hasUnreadNotifications(request, member.getId()));
 	}
 }
