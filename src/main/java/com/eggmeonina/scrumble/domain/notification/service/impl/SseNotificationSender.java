@@ -34,7 +34,7 @@ public class SseNotificationSender implements NotificationSender {
 
 		// client에게 전달할 메세지 생성
 		NotificationMessage notificationMessage =
-			new NotificationMessage(notificationService.existsUnreadNotifications(request, request.getMemberId()));
+			new NotificationMessage(notificationService.hasUnreadNotifications(request, request.getMemberId()));
 		sendNotification(request.getMemberId(), notificationMessage);
 
 		// sseEmitter의 연결 상태에 따른 콜백 메서드

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.eggmeonina.scrumble.common.exception.ErrorCode;
@@ -14,6 +15,8 @@ import com.eggmeonina.scrumble.domain.notification.domain.Notification;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationCreateRequest;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationResponse;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationSubScribeRequest;
+import com.eggmeonina.scrumble.domain.notification.dto.NotificationUnreadExistRequest;
+import com.eggmeonina.scrumble.domain.notification.dto.NotificationUnreadExistResponse;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationUpdateRequest;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationsRequest;
 import com.eggmeonina.scrumble.domain.notification.repository.NotificationRepository;
@@ -28,7 +31,7 @@ public class NotificationService {
 	private final NotificationRepository notificationRepository;
 
 	// TODO : Notification 생성 중 오류가 발생한다면?
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Long createNotification(NotificationCreateRequest request) {
 		Member foundMember = memberRepository.findByIdAndMemberStatusNotJOIN(request.getMemberId())
 			.orElseThrow(() -> new ExpectedException(ErrorCode.MEMBER_NOT_FOUND));
@@ -38,9 +41,10 @@ public class NotificationService {
 	}
 
 	@Transactional
-	public NotificationResponse updateNotification(Member member, Long notificationId, NotificationUpdateRequest request){
+	public NotificationResponse updateNotification(Member member, Long notificationId,
+		NotificationUpdateRequest request) {
 		// 알림 조회
-		Notification foundNotification = notificationRepository.findByIdAndReadFlagNot(notificationId)
+		Notification foundNotification = notificationRepository.findById(notificationId)
 			.orElseThrow(() -> new ExpectedException(ErrorCode.NOTIFICATION_NOT_FOUND));
 
 		// 알림 수신인 동일 여부 검증
@@ -76,7 +80,7 @@ public class NotificationService {
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	public boolean existsUnreadNotifications(NotificationSubScribeRequest request, Long memberId) {
+	public boolean hasUnreadNotifications(NotificationSubScribeRequest request, Long memberId) {
 		return notificationRepository.findAllByRecipientIdAndIdLessThanAndCreatedAtBetweenOrderByIdDesc
 				(
 					memberId,
@@ -87,5 +91,24 @@ public class NotificationService {
 				)
 			.stream()
 			.anyMatch(notification -> !notification.isReadFlag());
+	}
+
+	@Transactional(readOnly = true)
+	public NotificationUnreadExistResponse hasUnreadNotifications
+		(
+			NotificationUnreadExistRequest request,
+			Long memberId
+		) {
+		return new NotificationUnreadExistResponse
+			(
+				notificationRepository.findAllByRecipientIdAndCreatedAtBetweenOrderByIdDesc
+						(
+							memberId,
+							request.getStartDateTime(),
+							request.getEndDateTime()
+						)
+					.stream()
+					.anyMatch(notification -> !notification.isReadFlag())
+			);
 	}
 }
