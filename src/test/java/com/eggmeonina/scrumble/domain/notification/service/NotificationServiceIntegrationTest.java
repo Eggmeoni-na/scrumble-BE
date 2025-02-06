@@ -19,6 +19,8 @@ import com.eggmeonina.scrumble.domain.notification.domain.Notification;
 import com.eggmeonina.scrumble.domain.notification.domain.NotificationStatus;
 import com.eggmeonina.scrumble.domain.notification.domain.NotificationType;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationResponse;
+import com.eggmeonina.scrumble.domain.notification.dto.NotificationUnreadExistRequest;
+import com.eggmeonina.scrumble.domain.notification.dto.NotificationUnreadExistResponse;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationUpdateRequest;
 import com.eggmeonina.scrumble.domain.notification.dto.NotificationsRequest;
 import com.eggmeonina.scrumble.domain.notification.repository.NotificationRepository;
@@ -77,7 +79,8 @@ class NotificationServiceIntegrationTest extends IntegrationTestHelper {
 				new NotificationsRequest(LocalDateTime.now().minusDays(7), LocalDateTime.now(), 9999L, 3);
 
 			// when
-			List<NotificationResponse> notifications = notificationService.findNotifications(newMember.getId(), request);
+			List<NotificationResponse> notifications = notificationService.findNotifications(newMember.getId(),
+				request);
 
 			// then
 			assertThat(notifications).hasSize(1);
@@ -105,7 +108,8 @@ class NotificationServiceIntegrationTest extends IntegrationTestHelper {
 				new NotificationsRequest(LocalDateTime.now().minusDays(7), LocalDateTime.now(), 9999L, pageSize);
 
 			// when
-			List<NotificationResponse> notifications = notificationService.findNotifications(newMember.getId(), request);
+			List<NotificationResponse> notifications = notificationService.findNotifications(newMember.getId(),
+				request);
 
 			// then
 			assertThat(notifications).hasSize(pageSize);
@@ -186,6 +190,69 @@ class NotificationServiceIntegrationTest extends IntegrationTestHelper {
 		assertThat(foundNotification.isReadFlag()).isTrue();
 		assertThat(foundNotification.getNotificationStatus()).isEqualTo(NotificationStatus.COMPLETED);
 
+	}
+
+	@Test
+	@DisplayName("읽지 않은 알림이 있을 때 읽지 않은 알림 여부를 조회한다_성공")
+	void existsUnreadNotificationsNoLimit_whenExistUnreadMessage_success() {
+		// given
+		Member newMember = createMember("test@test.com", "테스트유저", MemberStatus.JOIN, "1232345");
+		Notification notification = createNotification(newMember, NotificationType.INVITE_REQUEST, false,
+			NotificationStatus.PENDING);
+
+		memberRepository.save(newMember);
+		notificationRepository.save(notification);
+
+		NotificationUnreadExistRequest request =
+			new NotificationUnreadExistRequest(LocalDateTime.now().minusDays(7), LocalDateTime.now());
+
+		// when
+		NotificationUnreadExistResponse response =
+			notificationService.hasUnreadNotifications(request, newMember.getId());
+
+		// then
+		assertThat(response.isHasUnreadMessages()).isTrue();
+	}
+
+	@Test
+	@DisplayName("읽지 않은 알림이 없을 때 읽지 않은 알림 여부를 조회한다_성공")
+	void existsUnreadNotificationsNoLimit_whenNotExistUnreadMessage_success() {
+		// given
+		Member newMember = createMember("test@test.com", "테스트유저", MemberStatus.JOIN, "1232345");
+		Notification notification = createNotification(newMember, NotificationType.INVITE_REQUEST, true,
+			NotificationStatus.PENDING);
+
+		memberRepository.save(newMember);
+		notificationRepository.save(notification);
+
+		NotificationUnreadExistRequest request =
+			new NotificationUnreadExistRequest(LocalDateTime.now().minusDays(7), LocalDateTime.now());
+
+		// when
+		NotificationUnreadExistResponse response =
+			notificationService.hasUnreadNotifications(request, newMember.getId());
+
+		// then
+		assertThat(response.isHasUnreadMessages()).isFalse();
+	}
+
+	@Test
+	@DisplayName("알림이 없을 때 읽지 않은 알림 여부를 조회한다_성공")
+	void existsUnreadNotificationsNoLimit_whenNotExistMessage_success() {
+		// given
+		Member newMember = createMember("test@test.com", "테스트유저", MemberStatus.JOIN, "1232345");
+
+		memberRepository.save(newMember);
+
+		NotificationUnreadExistRequest request =
+			new NotificationUnreadExistRequest(LocalDateTime.now().minusDays(7), LocalDateTime.now());
+
+		// when
+		NotificationUnreadExistResponse response =
+			notificationService.hasUnreadNotifications(request, newMember.getId());
+
+		// then
+		assertThat(response.isHasUnreadMessages()).isFalse();
 	}
 
 }
