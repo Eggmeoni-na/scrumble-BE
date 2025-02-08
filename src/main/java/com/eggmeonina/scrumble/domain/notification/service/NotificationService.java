@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.eggmeonina.scrumble.common.exception.ErrorCode;
@@ -31,7 +30,7 @@ public class NotificationService {
 	private final NotificationRepository notificationRepository;
 
 	// TODO : Notification 생성 중 오류가 발생한다면?
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional
 	public Long createNotification(NotificationCreateRequest request) {
 		Member foundMember = memberRepository.findByIdAndMemberStatusNotJOIN(request.getMemberId())
 			.orElseThrow(() -> new ExpectedException(ErrorCode.MEMBER_NOT_FOUND));
