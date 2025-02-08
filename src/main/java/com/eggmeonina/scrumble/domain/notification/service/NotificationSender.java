@@ -16,4 +16,9 @@ public interface NotificationSender {
 	 * 알림 메세지 전송
 	 */
 	void sendNotification(Long memberId, NotificationMessage message);
+
+	/**
+	 * eventName으로 알림 메세지 전송
+	 */
+	void sendNotification(Long memberId, String eventName, Object message);
 }

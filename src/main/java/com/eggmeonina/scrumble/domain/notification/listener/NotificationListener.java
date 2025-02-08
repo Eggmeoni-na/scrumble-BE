@@ -55,7 +55,7 @@ public class NotificationListener {
 			// notification 전송
 			notificationSender.sendNotification(event.getRecipientId(), createNotificationMessage());
 		} catch (Exception e){
-			log.error("알림 이벤트 처리 실패, event = {}", event);
+			log.error("알림 이벤트 처리 실패, event = {}, e = {}", event, e.getMessage());
 		}
 	}
 
