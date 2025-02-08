@@ -1,8 +1,10 @@
 package com.eggmeonina.scrumble.common.exception;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -15,6 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+	@Value("${exception.ignored-broken-pipe-uris}")
+	private static final List<String> IGNORED_BROKEN_PIPE_URIS = List.of("/api/notifications/subscribe");
 
 	@ExceptionHandler(ExpectedException.class)
 	public ResponseEntity<ApiResponse<Void>> customHandlerException(ExpectedException e) {
@@ -32,14 +37,14 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(IOException.class)
 	public void handlerIOException(IOException e, HttpServletRequest req) {
+		String rootCauseMessage = ExceptionUtils.getRootCauseMessage(e);
 		log.debug("req.requestURI = {}, req.getMethod() = {}", req.getRequestURI(), req.getMethod());
-		if (ExceptionUtils.getRootCauseMessage(e).contains("Broken pipe") &&
-			req.getRequestURI().equals("/api/notifications/subscribe")) {
-			log.warn("broken pipe error!! client close connect = {}", ExceptionUtils.getRootCauseMessage(e));
+		// 특정 uri에서 발생하는 broken pipe 에러는 warning 레벨로 관리
+		if (rootCauseMessage.contains("Broken pipe") && IGNORED_BROKEN_PIPE_URIS.contains(req.getRequestURI())) {
+			log.warn("broken pipe error!! client close connect = {}", rootCauseMessage);
 			return;
 		}
-		log.error("IOException rootCauseMessage = {}", ExceptionUtils.getRootCauseMessage(e));
-		e.printStackTrace();
+		log.error("IOException rootCauseMessage = {}", rootCauseMessage);
 	}
 
 	private void log(ExpectedException e) {
