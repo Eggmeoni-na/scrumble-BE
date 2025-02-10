@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +16,7 @@ import com.eggmeonina.scrumble.common.domain.ApiResponse;
 import com.eggmeonina.scrumble.common.exception.MemberException;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.dto.MemberInvitationResponse;
+import com.eggmeonina.scrumble.domain.member.dto.MemberRenameRequest;
 import com.eggmeonina.scrumble.domain.member.dto.MemberResponse;
 import com.eggmeonina.scrumble.domain.member.service.MemberService;
 
@@ -52,9 +55,19 @@ public class UserController {
 	}
 
 	@GetMapping("/{email}")
-	@Operation(summary = "회원 정보 조회(초대용)", description = "회원의 정보를 조회한다.")
+	@Operation(summary = "회원 정보 조회(초대용)", description = "회원의 정보를 조회한다")
 	public ApiResponse<MemberInvitationResponse> findMember(@PathVariable String email){
 		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), memberService.findMember(email));
+	}
+
+	@PutMapping
+	@Operation(summary = "회원 이름 변경", description = "회원의 이름을 변경한다")
+	public ApiResponse<Void> renameMember(
+		@Parameter(hidden = true) @LoginMember Member member,
+		@RequestBody MemberRenameRequest request
+	){
+		memberService.rename(member.getId(), request.getNewName());
+		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
 }
