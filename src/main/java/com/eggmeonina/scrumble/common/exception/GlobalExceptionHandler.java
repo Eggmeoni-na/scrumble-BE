@@ -44,10 +44,10 @@ public class GlobalExceptionHandler {
 			log.warn("broken pipe error!! client close connect = {}", rootCauseMessage);
 			return;
 		}
-		log.error("IOException rootCauseMessage = {}", rootCauseMessage);
+		log.error("e = {}", e.toString(), e);
 	}
 
 	private void log(ExpectedException e) {
-		log.error("{}", e.toString());
+		log.warn("{}", e.toString(), e);
 	}
 }
