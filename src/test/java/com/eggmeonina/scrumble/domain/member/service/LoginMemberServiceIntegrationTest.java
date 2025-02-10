@@ -16,6 +16,7 @@ import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.domain.MemberStatus;
 import com.eggmeonina.scrumble.domain.member.dto.MemberResponse;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
+import com.eggmeonina.scrumble.fixture.MemberFixture;
 import com.eggmeonina.scrumble.helper.IntegrationTestHelper;
 
 class MemberServiceIntegrationTest extends IntegrationTestHelper {
@@ -116,4 +117,20 @@ class MemberServiceIntegrationTest extends IntegrationTestHelper {
 			.hasMessageContaining(MEMBER_NOT_FOUND.getMessage());
 	}
 
+	@Test
+	@DisplayName("회원의 이름을 변경한다_성공")
+	void renameMember_success() {
+		// given
+		String newName = "스크럼블";
+		Member newMember = MemberFixture.createJOINMember("test@test.com", "테스트멤버", "123543534");
+		memberRepository.save(newMember);
+
+		// when
+		memberService.rename(newMember.getId(), newName);
+
+		// then
+		Member foundMember = memberRepository.findById(newMember.getId()).get();
+		assertThat(foundMember.getName()).isEqualTo(newName);
+
+	}
 }

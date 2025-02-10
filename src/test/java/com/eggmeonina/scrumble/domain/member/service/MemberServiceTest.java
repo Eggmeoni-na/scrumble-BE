@@ -70,4 +70,16 @@ class MemberServiceTest {
 			.hasMessageContaining(ErrorCode.MEMBER_NOT_FOUND.getMessage());
 	}
 
+	@Test
+	@DisplayName("존재하지 않는 회원의 이름을 변경한다_실패")
+	void renameMemberWhenNotExistsMember_fail() {
+		// given
+		given(memberRepository.findByIdAndMemberStatusNotJOIN(anyLong())).willReturn(Optional.empty());
+
+		// when, then
+		assertThatThrownBy(() -> memberService.rename(1L, "새로운닉네임"))
+			.isInstanceOf(MemberException.class)
+			.hasMessageContaining(ErrorCode.MEMBER_NOT_FOUND.getMessage());
+	}
+
 }
