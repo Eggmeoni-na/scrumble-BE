@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.eggmeonina.scrumble.common.exception.MemberException;
+import com.eggmeonina.scrumble.domain.auth.domain.MemberInformation;
+import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
 import com.eggmeonina.scrumble.domain.auth.dto.MemberInfo;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
-import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
-import com.eggmeonina.scrumble.domain.auth.domain.MemberInformation;
 import com.eggmeonina.scrumble.domain.member.dto.MemberInvitationResponse;
 import com.eggmeonina.scrumble.domain.member.dto.MemberResponse;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
@@ -47,5 +47,13 @@ public class MemberService {
 		Member foundMember = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 		return MemberInvitationResponse.from(foundMember);
+	}
+
+	@Transactional
+	public void rename(Long memberId, String newName){
+		Member foundMember = memberRepository.findByIdAndMemberStatusNotJOIN(memberId)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+		// foundMember
+		foundMember.rename(newName);
 	}
 }

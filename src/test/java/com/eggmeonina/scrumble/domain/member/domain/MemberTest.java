@@ -50,4 +50,28 @@ class MemberTest {
 			.isInstanceOf(MemberException.class)
 			.hasMessageContaining(MEMBER_ALREADY_WITHDRAW.getMessage());
 	}
+
+	@Test
+	@DisplayName("회원의 이름을 변경한다")
+	void rename_success() {
+		// given
+		String newName = "새로운닉네임";
+		Member joinedMember = Member.create()
+			.name("testA")
+			.email("test@test.com")
+			.memberStatus(MemberStatus.JOIN)
+			.joinedAt(LocalDateTime.now())
+			.oauthInformation(new OauthInformation("oauthId", OauthType.GOOGLE))
+			.build();
+
+		// when
+		String oldName = joinedMember.getName();
+		joinedMember.rename(newName);
+
+		// then
+		assertThat(joinedMember.getName()).isNotEqualTo(oldName);
+		assertThat(joinedMember.getName()).isEqualTo(newName);
+
+	}
+
 }
