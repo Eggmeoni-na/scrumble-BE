@@ -34,36 +34,44 @@ public class SseNotificationSender implements NotificationSender {
 	private final ThreadPoolTaskScheduler taskScheduler;
 	private final Map<Long, ScheduledFuture<?>> scheduleRepository = new ConcurrentHashMap<>();
 
-
 	@Override
 	public SseEmitter subscribe(NotificationSubScribeRequest request) {
+		Long memberId = request.getMemberId();
+
 		// Sse 연결 설정을 포함하는 SseEmitter 생성
 		SseEmitter sseEmitter = new SseEmitter(DEFAULT_TIMEOUT);
-		sseEmitterRepository.save(request.getMemberId(), sseEmitter);
+		sseEmitterRepository.save(memberId, sseEmitter);
 
 		// client에게 전달할 메세지 생성
 		NotificationMessage notificationMessage =
-			new NotificationMessage(notificationService.hasUnreadNotifications(request, request.getMemberId()));
-		sendNotification(request.getMemberId(), NOTIFICATION_EVENT_NAME, notificationMessage);
+			new NotificationMessage(notificationService.hasUnreadNotifications(request, memberId));
+		// 메세지 전송
+		sendNotification(memberId, NOTIFICATION_EVENT_NAME, notificationMessage);
 
-		// heartbeat 발행
-		ScheduledFuture<?> future = taskScheduler.scheduleWithFixedDelay(() -> sendHeartbeat(request.getMemberId()),
+		// 저장소에 이미 등록된 future 존재하면 제거
+		ScheduledFuture<?> existingFuture = scheduleRepository.get(memberId);
+		if(existingFuture != null){
+			removeExistingSchedule(memberId);
+		}
+
+		// 스케줄러로 heartbeat 발행
+		ScheduledFuture<?> future = taskScheduler.scheduleWithFixedDelay(() -> sendHeartbeat(memberId),
 			Instant.now().plusSeconds(START_DELAY_SECONDS),
 			Duration.ofSeconds(DELAY_SECONDS));
 
-		// future를 스케줄 저장소에 등록
-		scheduleRepository.put(request.getMemberId(), future);
+		// 스케줄러 저장소에 등록
+		scheduleRepository.put(memberId, future);
 
 		// sseEmitter의 연결 상태에 따른 콜백 메서드
 		// onCompletion : 정상적으로 연결을 종료했을 때
 		// onTimeout : 타임아웃 시간에 의해 연결이 끊겼을 때
 		// onError : 클라이언트와의 연결이 비정상 종료되었을 때
 		sseEmitter.onCompletion(() -> {
-			log.debug("call onCompletion, memberId = {}", request.getMemberId());
-			removeClient(request.getMemberId());
+			log.debug("call onCompletion, memberId = {}", memberId);
+			removeClient(memberId);
 		});
 		sseEmitter.onTimeout(() -> {
-			log.debug("call onTimeout, memberId = {}", request.getMemberId());
+			log.debug("call onTimeout, memberId = {}", memberId);
 			sseEmitter.complete();
 		});
 
@@ -77,7 +85,7 @@ public class SseNotificationSender implements NotificationSender {
 	}
 
 	@Override
-	public void sendNotification(Long memberId, String eventName, Object message){
+	public void sendNotification(Long memberId, String eventName, Object message) {
 		// memberId 기준으로 저장된 SseEmitter를 조회한다.
 		SseEmitter sseEmitter = sseEmitterRepository.get(memberId);
 		if (sseEmitter == null) {
@@ -106,15 +114,18 @@ public class SseNotificationSender implements NotificationSender {
 		log.debug("call removeClient, memberId = {}", memberId);
 		SseEmitter sseEmitter = sseEmitterRepository.get(memberId);
 		if (sseEmitter != null) {
-			log.debug("removeClient sseEmitter!! memberId = {}", memberId);
 			sseEmitterRepository.deleteById(memberId);
 		}
 
 		// 스케줄러에 예정된 스케줄 취소
+		removeExistingSchedule(memberId);
+	}
+
+	private void removeExistingSchedule(Long memberId) {
 		ScheduledFuture<?> scheduledFuture = scheduleRepository.get(memberId);
 		if (scheduledFuture != null) {
-			scheduleRepository.remove(memberId);
 			scheduledFuture.cancel(true);
+			scheduleRepository.remove(memberId);
 		}
 	}
 
