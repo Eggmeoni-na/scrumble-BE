@@ -17,11 +17,9 @@ public class AuthInterceptor implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-		log.debug("authorizationInterceptor start");
 		HttpSession session = request.getSession(false);
 		// preflight 요청은 interceptor에서 무시한다
 		if (session == null && !OPTIONS.name().equals(request.getMethod())) {
-			log.debug("미인증 사용자 요청 URI : {}", request.getRequestURI());
 			throw new ExpectedException(ErrorCode.UNAUTHORIZED_ACCESS);
 		}
 		return true;
