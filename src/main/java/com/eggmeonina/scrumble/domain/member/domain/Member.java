@@ -81,6 +81,10 @@ public class Member extends BaseEntity {
 		this.leavedAt = LocalDateTime.now();
 	}
 
+	public void rename(String newName) {
+		this.name = newName;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
