@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eggmeonina.scrumble.common.anotation.LoginMember;
@@ -53,9 +54,10 @@ public class SquadController {
 	@GetMapping
 	@Operation(summary = "나의 스쿼드를 조회한다", description = "내가 속해있는 스쿼드들을 조회한다.")
 	public ApiResponse<List<SquadResponse>> findSquads(
-		@Parameter(hidden = true) @LoginMember Member member
+		@Parameter(hidden = true) @LoginMember Member member,
+		@RequestParam String role
 	) {
-		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), squadMemberService.findBySquads(member.getId()));
+		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), squadMemberService.findSquads(member.getId(), role));
 	}
 
 	@GetMapping("/{squadId}")

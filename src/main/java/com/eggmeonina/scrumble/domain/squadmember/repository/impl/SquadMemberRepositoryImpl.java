@@ -6,10 +6,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.eggmeonina.scrumble.domain.squadmember.domain.SquadMemberRole;
 import com.eggmeonina.scrumble.domain.squadmember.domain.SquadMemberStatus;
 import com.eggmeonina.scrumble.domain.squadmember.dto.QSquadResponse;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadResponse;
 import com.eggmeonina.scrumble.domain.squadmember.repository.SquadMemberRepositoryCustom;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,7 @@ public class SquadMemberRepositoryImpl implements SquadMemberRepositoryCustom {
 	private final JPAQueryFactory query;
 
 	@Override
-	public List<SquadResponse> findSquads(Long memberId) {
+	public List<SquadResponse> findSquads(Long memberId, SquadMemberRole role) {
 		// TODO : createAt desc 기준으로 index 생성하기
 		return
 			query.select(
@@ -30,9 +32,17 @@ public class SquadMemberRepositoryImpl implements SquadMemberRepositoryCustom {
 				.join(squadMember.squad)
 				.where(squadMember.member.id.eq(memberId).
 					and(squadMember.squadMemberStatus.eq(SquadMemberStatus.JOIN)).
-					and(squadMember.squad.deletedFlag.eq(false))
+					and(squadMember.squad.deletedFlag.eq(false)).
+					and(eqRole(role))
 				)
 				.fetch();
+	}
+
+	private BooleanExpression eqRole(SquadMemberRole role) {
+		if (role == null) {
+			return null;
+		}
+		return squadMember.squadMemberRole.eq(role);
 	}
 
 	@Override

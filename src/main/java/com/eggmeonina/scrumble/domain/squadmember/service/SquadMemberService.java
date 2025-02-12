@@ -83,8 +83,11 @@ public class SquadMemberService {
 		return newSquadMember.getId();
 	}
 
-	public List<SquadResponse> findBySquads(Long memberId) {
-		return squadMemberRepository.findSquads(memberId);
+	public List<SquadResponse> findSquads(Long memberId, String role) {
+		if(role == null || role.isEmpty()){
+			return squadMemberRepository.findSquads(memberId, null);
+		}
+		return squadMemberRepository.findSquads(memberId, SquadMemberRole.valueOf(role));
 	}
 
 	@Transactional
