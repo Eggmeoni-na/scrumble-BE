@@ -19,6 +19,7 @@ import com.eggmeonina.scrumble.domain.member.dto.MemberInvitationResponse;
 import com.eggmeonina.scrumble.domain.member.dto.MemberRenameRequest;
 import com.eggmeonina.scrumble.domain.member.dto.MemberResponse;
 import com.eggmeonina.scrumble.domain.member.service.MemberService;
+import com.eggmeonina.scrumble.domain.member.service.MemberWithdrawService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
 	private final MemberService memberService;
+	private final MemberWithdrawService memberWithdrawService;
 
 	@GetMapping("/me")
 	@Operation(summary = "나의 회원 정보 조회", description = "나의 회원 정보를 조회한다.")
@@ -49,7 +51,7 @@ public class UserController {
 		if (session == null) {
 			throw new MemberException(UNAUTHORIZED_ACCESS);
 		}
-		memberService.withdraw(member.getId());
+		memberWithdrawService.withdraw(member.getId());
 		session.invalidate();
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}

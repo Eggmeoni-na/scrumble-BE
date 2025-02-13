@@ -4,6 +4,7 @@ import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDateTime;
@@ -27,6 +28,7 @@ import com.eggmeonina.scrumble.domain.member.domain.SessionKey;
 import com.eggmeonina.scrumble.domain.member.dto.MemberResponse;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
 import com.eggmeonina.scrumble.domain.member.service.MemberService;
+import com.eggmeonina.scrumble.domain.member.service.MemberWithdrawService;
 import com.eggmeonina.scrumble.helper.WebMvcTestHelper;
 
 class UserControllerTest extends WebMvcTestHelper {
@@ -36,6 +38,9 @@ class UserControllerTest extends WebMvcTestHelper {
 
 	@MockBean
 	private MemberService memberService;
+
+	@MockBean
+	private MemberWithdrawService memberWithdrawService;
 
 	@MockBean
 	private MemberRepository memberRepository;
@@ -102,7 +107,7 @@ class UserControllerTest extends WebMvcTestHelper {
 		session.setAttribute(
 			SessionKey.LOGIN_USER.name(), memberInfo
 		);
-
+		doNothing().when(memberWithdrawService).withdraw(anyLong());
 		given(memberRepository.findByIdAndMemberStatusNotJOIN(anyLong())).willReturn(
 			Optional.of(
 				new Member(memberInfo.getMemberId(), memberInfo.getEmail(), memberInfo.getName(), null, null,
