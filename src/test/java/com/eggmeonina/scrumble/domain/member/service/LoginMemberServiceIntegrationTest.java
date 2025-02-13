@@ -13,7 +13,6 @@ import com.eggmeonina.scrumble.domain.auth.domain.MemberInformation;
 import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
 import com.eggmeonina.scrumble.domain.auth.dto.MemberInfo;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
-import com.eggmeonina.scrumble.domain.member.domain.MemberStatus;
 import com.eggmeonina.scrumble.domain.member.dto.MemberResponse;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
 import com.eggmeonina.scrumble.fixture.MemberFixture;
@@ -91,31 +90,6 @@ class MemberServiceIntegrationTest extends IntegrationTestHelper {
 			.hasMessageContaining(MEMBER_NOT_FOUND.getMessage());
 	}
 
-	@Test
-	@DisplayName("회원을 탈퇴한다_성공")
-	void withdraw_success() {
-		// given
-		MemberInformation request = new MemberInformation("123456789", "test@naver.com", "testName", "");
-
-		Member newMember = MemberInformation.to(request, OauthType.GOOGLE);
-		memberRepository.save(newMember);
-
-		// when
-		memberService.withdraw(newMember.getId());
-
-		Member foundMember = memberRepository.findById(newMember.getId()).get();
-
-		// then
-		assertThat(foundMember.getMemberStatus()).isEqualTo(MemberStatus.WITHDRAW);
-	}
-
-	@Test
-	@DisplayName("존재하지 않는 회원을 탈퇴 요청하면 예외가 발생한다_실패")
-	void withdraw_fail_throwsException() {
-		assertThatThrownBy(()-> memberService.withdraw(1L))
-			.isInstanceOf(MemberException.class)
-			.hasMessageContaining(MEMBER_NOT_FOUND.getMessage());
-	}
 
 	@Test
 	@DisplayName("회원의 이름을 변경한다_성공")

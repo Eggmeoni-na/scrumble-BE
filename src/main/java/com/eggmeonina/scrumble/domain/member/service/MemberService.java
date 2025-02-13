@@ -36,13 +36,6 @@ public class MemberService {
 		return MemberResponse.from(foundMember);
 	}
 
-	@Transactional
-	public void withdraw(Long memberId) {
-		Member foundMember = memberRepository.findById(memberId)
-			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
-		foundMember.withdraw();
-	}
-
 	public MemberInvitationResponse findMember(String email){
 		Member foundMember = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
