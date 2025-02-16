@@ -41,7 +41,7 @@ jobs:
 
       - name: Build And Push docker image
         run: |
-          docker buildx build --platform linux/amd64 --push --tag ${{ vars.DOCKERHUB_USERNAME }}/scrumble:${{ vars.DOCKER_DEV_TAG }} --tag ${{ vars.DOCKERHUB_USERNAME }}/scrumble:latest -f Dockerfile-dev .
+          docker buildx build --platform linux/amd64 --push --tag ${{ vars.DOCKERHUB_USERNAME }}/scrumble:${{ vars.DOCKER_PROD_TAG }} --tag ${{ vars.DOCKERHUB_USERNAME }}/scrumble:latest -f Dockerfile-dev .
   deploy:
     needs: upload-image
     runs-on: ubuntu-latest
@@ -53,8 +53,8 @@ jobs:
       - name: excuting remote ssh commands
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.AWS_REMOTE_IP }}
-          username: ${{ secrets.AWS_ACCESS_USER }}
+          host: ${{ secrets.DEV_AWS_REMOTE_IP }}
+          username: ${{ secrets.DEV_AWS_ACCESS_USER }}
           key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           port: ${{ secrets.AWS_ACCESS_PORT }}
           script_stop: true
