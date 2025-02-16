@@ -41,7 +41,7 @@ jobs:
 
       - name: Build And Push docker image
         run: |
-          docker buildx build --platform linux/amd64 --push --tag ${{ vars.DOCKERHUB_USERNAME }}/scrumble:${{ vars.DOCKER_PROD_TAG }} --tag ${{ vars.DOCKERHUB_USERNAME }}/scrumble:latest -f Dockerfile-dev .
+          docker buildx build --platform linux/amd64 --push --tag ${{ vars.DOCKERHUB_USERNAME }}/scrumble:${{ vars.DOCKER_PROD_TAG }} --tag ${{ vars.DOCKERHUB_USERNAME }}/scrumble:latest -f Dockerfile-prod .
   deploy:
     needs: upload-image
     runs-on: ubuntu-latest
