@@ -1,0 +1,6 @@
+FROM openjdk:17-slim
+# Jar 파일의 위치 선언
+ARG JAR_FILE=build/libs/*.jar
+COPY ${JAR_FILE} app.jar
+# docker run 시 실행할 필수 명령어
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-Djasypt.encryptor.password=${JASYPT_ENCRYPTOR_PASSWORD}", "-jar", "app.jar"]
