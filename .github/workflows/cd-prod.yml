@@ -1,4 +1,4 @@
-name: CD-dev
+name: CD-prod
 on:
   push:
     branches:
