@@ -6,8 +6,8 @@ spring:
 
 oauth:
   google:
-    client-id: ENC(Axm4OtN14/bqg4GErGhc6aOV4aHnKw34sReylM5W4FBgKXwTM43rBQParFh3wCOEA4unHkxprzE2mcW5aJX7IZvoyaIqJ1xpcWwdlHlmpB8/ufMtuQv1aA==)
-    client-key: ENC(2ogGtYgdg6QzpB8hcch437ktFh+b/CPo3okFrqdwwE0czauMEDF34B0Xe0b4s4Y3)
+    client-id: ENC(Xxj43cO8lPpsn27fd6x8gFC2YkzNjkhDTUX9HCGrIoMib4YfVOFgmhBPOgn7fT1vzRb4s9aUvbZGSu6nXXrSa0pGrp2cdTK0Rt8kWzJSlOy4os0IH06JKw==)
+    client-key: ENC(eOBwiPbAluKsjEddFSqwkOvKJjYYII8LTvr+s3uh98LqqDKpR6PZ1cFAaIVN7T/M)
     redirect_uri: ENC(FINYUKpOASUPiNjZ9QQ/vR8E3EA20Ho2i4kxwxcBpJtPuz4XKaQODw==)
     response_type: code
     scope: profile+email

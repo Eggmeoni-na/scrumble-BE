@@ -37,11 +37,6 @@ spring:
       data-locations: classpath:db/h2/data.sql
       mode: always                                  # 서버 재기동 마다 schema, data 새로 생성
 
-logging:
-  level:
-    com.zaxxer.hikari.HikariConfig: DEBUG
-    com.zaxxer.hikari: TRACE
-
 springdoc:
   version: '@project.version@'
   api-docs:
@@ -63,7 +58,7 @@ server:
       cookie:
         same-site: "none"
         secure: true
-  port: 9090
+#  port: 9090
 
 # 추가 설정 value
 swagger:
