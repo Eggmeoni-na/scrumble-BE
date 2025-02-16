@@ -1,5 +1,5 @@
 package com.eggmeonina.scrumble.domain.todo.domain;
 
-public enum TodoStatus {
+public enum ToDoStatus {
 	PENDING, COMPLETED
 }

@@ -2,7 +2,7 @@ package com.eggmeonina.scrumble.domain.todo.dto;
 
 import java.time.LocalDate;
 
-import com.eggmeonina.scrumble.domain.todo.domain.TodoStatus;
+import com.eggmeonina.scrumble.domain.todo.domain.ToDoStatus;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -22,7 +22,7 @@ public class ToDoUpdateRequest {
 	private String contents;
 	@NotNull
 	@Schema(description = "ToDo 상태 - PENDING(미완료), COMPLETED(완료)")
-	private TodoStatus toDoStatus;
+	private ToDoStatus toDoStatus;
 	@NotNull
 	@PastOrPresent
 	@Schema(description = "변경하고자 하는 ToDo 일자 (변경 없으면 기존 일자)")

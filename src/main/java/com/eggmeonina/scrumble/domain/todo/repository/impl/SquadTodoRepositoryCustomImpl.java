@@ -1,6 +1,6 @@
 package com.eggmeonina.scrumble.domain.todo.repository.impl;
 
-
+import static com.eggmeonina.scrumble.domain.squadmember.domain.QSquadMember.*;
 import static com.eggmeonina.scrumble.domain.todo.domain.QSquadToDo.*;
 
 import java.util.List;
@@ -21,20 +21,22 @@ public class SquadTodoRepositoryCustomImpl implements SquadTodoRepositoryCustom 
 
 	private final JPAQueryFactory query;
 
-	public List<SquadTodoResponse> findSquadTodos(Long squadId, Long memberId, SquadTodoRequest request){
+	public List<SquadTodoResponse> findSquadTodos(Long squadMemberId, SquadTodoRequest request) {
 		return query.select(
-			new QSquadTodoResponse(squadToDo.toDo.id, squadToDo.id, squadToDo.toDo.contents, squadToDo.toDo.todoAt, squadToDo.toDo.todoStatus)
+				new QSquadTodoResponse(squadToDo.toDo.id, squadToDo.id, squadToDo.toDo.contents, squadToDo.toDo.toDoAt,
+					squadToDo.toDo.toDoStatus)
 			)
-			.from(squadToDo)
-			.join(squadToDo.toDo)
-			.where(squadToDo.toDo.id.lt(request.getLastToDoId())
-				.and(squadToDo.squad.id.eq(squadId))
+			.from(squadMember)
+			.join(squadToDo)
+			.on(squadMember.squad.id.eq(squadToDo.squad.id)
+				.and(squadMember.member.id.eq(squadToDo.toDo.member.id)))
+			.where(squadMember.id.eq(squadMemberId)
+				.and(squadToDo.toDo.id.gt(request.getLastToDoId()))
 				.and(squadToDo.deletedFlag.eq(false))
-				.and(squadToDo.toDo.member.id.eq(memberId))
-				.and(squadToDo.toDo.todoAt.between(request.getStartDate(), request.getEndDate()))
+				.and(squadToDo.toDo.toDoAt.between(request.getStartDate(), request.getEndDate()))
 				.and(squadToDo.toDo.deletedFlag.eq(false)))
 			.limit(request.getPageSize())
-			.orderBy(squadToDo.toDo.id.asc(), squadToDo.toDo.todoAt.desc())
+			.orderBy(squadToDo.toDo.toDoAt.desc(), squadToDo.toDo.id.asc())
 			.fetch();
 	}
 }

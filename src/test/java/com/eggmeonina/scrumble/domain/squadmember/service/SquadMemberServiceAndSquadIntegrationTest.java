@@ -12,15 +12,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.eggmeonina.scrumble.common.exception.MemberException;
-import com.eggmeonina.scrumble.common.exception.SquadMemberException;
 import com.eggmeonina.scrumble.common.exception.SquadException;
+import com.eggmeonina.scrumble.common.exception.SquadMemberException;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.domain.MemberStatus;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
+import com.eggmeonina.scrumble.domain.squadmember.domain.Squad;
 import com.eggmeonina.scrumble.domain.squadmember.domain.SquadMember;
 import com.eggmeonina.scrumble.domain.squadmember.domain.SquadMemberRole;
 import com.eggmeonina.scrumble.domain.squadmember.domain.SquadMemberStatus;
-import com.eggmeonina.scrumble.domain.squadmember.domain.Squad;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadDetailResponse;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadResponse;
 import com.eggmeonina.scrumble.domain.squadmember.repository.SquadMemberRepository;
@@ -117,7 +117,7 @@ class SquadMemberServiceAndSquadIntegrationTest extends IntegrationTestHelper {
 		squadMemberRepository.save(newSquadMember);
 
 		// when
-		List<SquadResponse> squads = squadMemberService.findBySquads(newMember.getId());
+		List<SquadResponse> squads = squadMemberService.findSquads(newMember.getId(), null);
 
 		// then
 		assertSoftly(softly -> {
@@ -128,15 +128,91 @@ class SquadMemberServiceAndSquadIntegrationTest extends IntegrationTestHelper {
 	}
 
 	@Test
+	@DisplayName("리더일때, 내가 리더인 스쿼드들을 조회한다_성공")
+	void findSquadsByLeaderRole_whenRoleIsLeader_success() {
+		// given
+		Member newMember = createMember("testA", "test@test.com", MemberStatus.JOIN);
+
+		Squad newSquad = createSquad("테스트 스쿼드");
+
+		SquadMember newSquadMember = createSquadMember(newSquad, newMember, SquadMemberRole.LEADER,
+			SquadMemberStatus.JOIN);
+
+		memberRepository.save(newMember);
+		squadRepository.save(newSquad);
+		squadMemberRepository.save(newSquadMember);
+
+		// when
+		List<SquadResponse> squads = squadMemberService.findSquads(newMember.getId(), "LEADER");
+
+		// then
+		assertSoftly(softly -> {
+			softly.assertThat(squads).hasSize(1);
+			softly.assertThat(squads.get(0).getSquadId()).isEqualTo(newSquad.getId());
+			softly.assertThat(squads.get(0).getSquadName()).isEqualTo(newSquad.getSquadName());
+		});
+	}
+
+	@Test
+	@DisplayName("리더인 스쿼드가 없을 때, 내가 리더인 스쿼드들을 조회한다_성공")
+	void findSquadsByLeaderRole_whenRoleIsNormal_success() {
+		// given
+		Member newMember = createMember("testA", "test@test.com", MemberStatus.JOIN);
+
+		Squad newSquad = createSquad("테스트 스쿼드");
+
+		SquadMember newSquadMember = createSquadMember(newSquad, newMember, SquadMemberRole.NORMAL,
+			SquadMemberStatus.JOIN);
+
+		memberRepository.save(newMember);
+		squadRepository.save(newSquad);
+		squadMemberRepository.save(newSquadMember);
+
+		// when
+		List<SquadResponse> squads = squadMemberService.findSquads(newMember.getId(), "LEADER");
+
+		// then
+		assertThat(squads).isEmpty();
+	}
+
+	@Test
+	@DisplayName("리더인 스쿼드가 여러개일 때, 내가 리더인 스쿼드들을 조회한다_성공")
+	void findSquads_whenMultipleLeaderSquadsExist_success() {
+		// given
+		Member newMember = createMember("testA", "test@test.com", MemberStatus.JOIN);
+
+		Squad newSquad1 = createSquad("테스트 스쿼드1");
+		Squad newSquad2 = createSquad("테스트 스쿼드2");
+		Squad newSquad3 = createSquad("테스트 스쿼드3");
+
+		SquadMember newSquadMember1 = createSquadMember(newSquad2, newMember, SquadMemberRole.NORMAL,
+			SquadMemberStatus.JOIN);
+		SquadMember newSquadMember2 = createSquadMember(newSquad2, newMember, SquadMemberRole.LEADER,
+			SquadMemberStatus.JOIN);
+		SquadMember newSquadMember3 = createSquadMember(newSquad2, newMember, SquadMemberRole.LEADER,
+			SquadMemberStatus.JOIN);
+
+		memberRepository.save(newMember);
+		squadRepository.saveAll(List.of(newSquad1, newSquad2, newSquad3));
+		squadMemberRepository.saveAll(List.of(newSquadMember1, newSquadMember2, newSquadMember3));
+
+		// when
+		List<SquadResponse> squads = squadMemberService.findSquads(newMember.getId(), "LEADER");
+
+		// then
+		assertThat(squads).hasSize(2);
+	}
+
+	@Test
 	@DisplayName("나의 스쿼드들을 조회한다_0개")
-	void findBySquads_empty_returnEmptyList() {
+	void findSquads_empty_returnEmptyList() {
 		// given
 		Member newMember = createMember("testA", "test@test.com", MemberStatus.JOIN);
 
 		memberRepository.save(newMember);
 
 		// when
-		List<SquadResponse> squads = squadMemberService.findBySquads(newMember.getId());
+		List<SquadResponse> squads = squadMemberService.findSquads(newMember.getId(), null);
 
 		// then
 		assertThat(squads).isEmpty();
@@ -430,7 +506,7 @@ class SquadMemberServiceAndSquadIntegrationTest extends IntegrationTestHelper {
 		squadMemberRepository.saveAll(List.of(squadLeader, squadMember1));
 
 		// when, then
-		assertThatThrownBy(()->squadMemberService.inviteSquadMember(newMember2.getId(), newSquad.getId()))
+		assertThatThrownBy(()->squadMemberService.inviteSquadMember("testMember", newMember2.getId(), newSquad.getId()))
 			.isInstanceOf(SquadMemberException.class)
 			.hasMessageContaining(DUPLICATE_SQUADMEMBER.getMessage());
 	}
@@ -452,7 +528,7 @@ class SquadMemberServiceAndSquadIntegrationTest extends IntegrationTestHelper {
 		squadMemberRepository.saveAll(List.of(squadLeader));
 
 		// when
-		Long squadMemberId = squadMemberService.inviteSquadMember(newMember2.getId(), newSquad.getId());
+		Long squadMemberId = squadMemberService.inviteSquadMember("testMember", newMember2.getId(), newSquad.getId());
 
 		SquadMember foundSquadMember = squadMemberRepository.findById(squadMemberId).get();
 

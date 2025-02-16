@@ -22,7 +22,7 @@ import com.eggmeonina.scrumble.domain.member.domain.MemberStatus;
 import com.eggmeonina.scrumble.domain.squadmember.domain.Squad;
 import com.eggmeonina.scrumble.domain.todo.domain.SquadToDo;
 import com.eggmeonina.scrumble.domain.todo.domain.ToDo;
-import com.eggmeonina.scrumble.domain.todo.domain.TodoStatus;
+import com.eggmeonina.scrumble.domain.todo.domain.ToDoStatus;
 import com.eggmeonina.scrumble.domain.todo.repository.SquadTodoRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,7 +40,7 @@ class SquadTodoServiceTest {
 		// given
 		Member newMember = createMember("testA", "test@test.com", MemberStatus.JOIN, "!@335435");
 		Squad newSquad = createSquad("테스트 스쿼드", false);
-		ToDo newToDo = createToDo(newMember, "contents", TodoStatus.PENDING, false, LocalDate.now());
+		ToDo newToDo = createToDo(newMember, "contents", ToDoStatus.PENDING, false, LocalDate.now());
 		SquadToDo newSquadToDo = createSquadTodo(newSquad, newToDo, false);
 		given(squadTodoRepository.findByToDoIdAndSquadIdAndDeletedFlagNot(anyLong(), anyLong()))
 			.willReturn(Optional.ofNullable(newSquadToDo));

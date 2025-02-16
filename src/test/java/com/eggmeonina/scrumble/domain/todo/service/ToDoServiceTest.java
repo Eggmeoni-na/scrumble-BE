@@ -22,8 +22,8 @@ import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.domain.MemberStatus;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
 import com.eggmeonina.scrumble.domain.todo.domain.ToDo;
+import com.eggmeonina.scrumble.domain.todo.domain.ToDoStatus;
 import com.eggmeonina.scrumble.domain.todo.domain.ToDoType;
-import com.eggmeonina.scrumble.domain.todo.domain.TodoStatus;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoCreateRequest;
 import com.eggmeonina.scrumble.domain.todo.dto.ToDoUpdateRequest;
 import com.eggmeonina.scrumble.domain.todo.repository.TodoRepository;
@@ -73,7 +73,7 @@ class ToDoServiceTest {
 	void deleteToDo_success() {
 		// given
 		Member newMember = createMember("userA", "test@test.com", MemberStatus.JOIN, "!2234235");
-		ToDo newToDo = createToDo(newMember, "모각코", TodoStatus.PENDING, false, LocalDate.now());
+		ToDo newToDo = createToDo(newMember, "모각코", ToDoStatus.PENDING, false, LocalDate.now());
 
 		given(todoRepository.findByIdAndDeletedFlagNot(anyLong()))
 			.willReturn(Optional.ofNullable(newToDo));
@@ -103,9 +103,9 @@ class ToDoServiceTest {
 	void updateToDo_success() {
 		// given
 		Member newMember = createMember("userA", "test@test.com", MemberStatus.JOIN, "!2234235");
-		ToDo newToDo = createToDo(newMember, "모각코", TodoStatus.PENDING, false, LocalDate.now());
+		ToDo newToDo = createToDo(newMember, "모각코", ToDoStatus.PENDING, false, LocalDate.now());
 
-		ToDoUpdateRequest request = new ToDoUpdateRequest("수정된 투두 내용", TodoStatus.COMPLETED, LocalDate.now());
+		ToDoUpdateRequest request = new ToDoUpdateRequest("수정된 투두 내용", ToDoStatus.COMPLETED, LocalDate.now());
 
 		given(todoRepository.existsByIdAndMemberId(anyLong(), anyLong()))
 			.willReturn(true);
@@ -118,8 +118,8 @@ class ToDoServiceTest {
 		// then
 		assertSoftly(softly -> {
 			softly.assertThat(newToDo.getContents()).isEqualTo(request.getContents());
-			softly.assertThat(newToDo.getTodoStatus()).isEqualTo(request.getToDoStatus());
-			softly.assertThat(newToDo.getTodoAt()).isEqualTo(request.getToDoAt());
+			softly.assertThat(newToDo.getToDoStatus()).isEqualTo(request.getToDoStatus());
+			softly.assertThat(newToDo.getToDoAt()).isEqualTo(request.getToDoAt());
 		});
 	}
 
@@ -127,7 +127,7 @@ class ToDoServiceTest {
 	@DisplayName("삭제된 투두를 수정한다_실패")
 	void updateToDoWhenDeletedToDo_fail() {
 		// given
-		ToDoUpdateRequest request = new ToDoUpdateRequest("수정된 투두 내용", TodoStatus.COMPLETED, LocalDate.now());
+		ToDoUpdateRequest request = new ToDoUpdateRequest("수정된 투두 내용", ToDoStatus.COMPLETED, LocalDate.now());
 
 		given(todoRepository.existsByIdAndMemberId(anyLong(), anyLong()))
 			.willReturn(true);
@@ -144,7 +144,7 @@ class ToDoServiceTest {
 	@DisplayName("작성자가 아닌 회원이 투두를 수정한다_실패")
 	void updateToDoWhenIsNotWriter_fail() {
 		// given
-		ToDoUpdateRequest request = new ToDoUpdateRequest("수정된 투두 내용", TodoStatus.COMPLETED, LocalDate.now());
+		ToDoUpdateRequest request = new ToDoUpdateRequest("수정된 투두 내용", ToDoStatus.COMPLETED, LocalDate.now());
 
 		given(todoRepository.existsByIdAndMemberId(anyLong(), anyLong()))
 			.willReturn(false);

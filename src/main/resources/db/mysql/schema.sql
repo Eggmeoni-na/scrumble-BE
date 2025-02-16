@@ -1,3 +1,18 @@
+DROP TABLE IF EXISTS notification;
+
+CREATE TABLE notification
+(
+    notification_id     BIGINT      NOT NULL AUTO_INCREMENT,
+    recipient_id        BIGINT      NOT NULL,
+    notification_type   VARCHAR(50) NOT NULL,
+    read_flag           TINYINT     NOT NULL,
+    notification_data   CLOB        NULL,
+    notification_status VARCHAR(50) NOT NULL,
+    created_at          TIMESTAMP   NULL,
+    updated_at          TIMESTAMP   NULL,
+    PRIMARY KEY (notification_id)
+);
+
 DROP TABLE IF EXISTS squad_todo;
 
 CREATE TABLE squad_todo
@@ -66,6 +81,11 @@ CREATE TABLE squad
     created_at   datetime     NULL,
     updated_at   datetime     NULL
 );
+
+
+ALTER TABLE notification
+    ADD CONSTRAINT FK_member_TO_notification_1 FOREIGN KEY (recipient_id)
+        REFERENCES member (member_id);
 
 ALTER TABLE squad_member
     ADD CONSTRAINT FK_member_TO_squad_member_1 FOREIGN KEY (member_id)

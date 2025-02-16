@@ -3,6 +3,9 @@ package com.eggmeonina.scrumble.domain.todo.domain;
 import java.time.LocalDate;
 
 import com.eggmeonina.scrumble.common.domain.BaseEntity;
+import com.eggmeonina.scrumble.common.exception.ErrorCode;
+import com.eggmeonina.scrumble.common.exception.MemberException;
+import com.eggmeonina.scrumble.common.exception.ToDoException;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 
 import jakarta.persistence.Column;
@@ -41,10 +44,10 @@ public class ToDo extends BaseEntity {
 
 	@Column(name = "todo_status", nullable = false)
 	@Enumerated(EnumType.STRING)
-	private TodoStatus todoStatus;
+	private ToDoStatus toDoStatus;
 
 	@Column(name = "todo_at", nullable = false)
-	private LocalDate todoAt;
+	private LocalDate toDoAt;
 
 	@Column(name = "deleted_flag")
 	private boolean deletedFlag;
@@ -54,23 +57,36 @@ public class ToDo extends BaseEntity {
 	private Member member;
 
 	@Builder(builderMethodName = "create")
-	public ToDo(ToDoType toDoType, String contents, TodoStatus todoStatus, LocalDate todoAt, boolean deletedFlag,
+	public ToDo(ToDoType toDoType, String contents, ToDoStatus toDoStatus, LocalDate toDoAt, boolean deletedFlag,
 		Member member) {
 		this.toDoType = toDoType;
 		this.contents = contents;
-		this.todoStatus = todoStatus;
-		this.todoAt = todoAt;
+		this.toDoStatus = toDoStatus;
+		this.toDoAt = toDoAt;
 		this.deletedFlag = deletedFlag;
 		this.member = member;
+		initValid(member, contents, toDoType);
+	}
+
+	private void initValid(Member member, String contents, ToDoType toDoType){
+		if(member == null){
+			throw new MemberException(ErrorCode.MEMBER_NOT_FOUND);
+		}
+		if(contents == null || contents.isBlank()){
+			throw new ToDoException(ErrorCode.TODO_CONTENTS_NOT_BLANK);
+		}
+		if(toDoType == null){
+			throw new ToDoException(ErrorCode.TODO_TYPE_NOT_NULL);
+		}
 	}
 
 	public void delete(){
 		this.deletedFlag = true;
 	}
 
-	public void update(String newContents, TodoStatus newTodoStatus, LocalDate newTodoAt){
+	public void update(String newContents, ToDoStatus newToDoStatus, LocalDate newTodoAt){
 		this.contents = newContents;
-		this.todoStatus = newTodoStatus;
-		this.todoAt = newTodoAt;
+		this.toDoStatus = newToDoStatus;
+		this.toDoAt = newTodoAt;
 	}
 }

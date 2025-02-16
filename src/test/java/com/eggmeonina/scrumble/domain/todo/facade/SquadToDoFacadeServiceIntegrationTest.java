@@ -21,9 +21,10 @@ import com.eggmeonina.scrumble.domain.squadmember.domain.Squad;
 import com.eggmeonina.scrumble.domain.squadmember.repository.SquadRepository;
 import com.eggmeonina.scrumble.domain.todo.domain.SquadToDo;
 import com.eggmeonina.scrumble.domain.todo.domain.ToDo;
+import com.eggmeonina.scrumble.domain.todo.domain.ToDoStatus;
 import com.eggmeonina.scrumble.domain.todo.domain.ToDoType;
-import com.eggmeonina.scrumble.domain.todo.domain.TodoStatus;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoCreateRequest;
+import com.eggmeonina.scrumble.domain.todo.dto.ToDoCommandResponse;
 import com.eggmeonina.scrumble.domain.todo.repository.SquadTodoRepository;
 import com.eggmeonina.scrumble.domain.todo.repository.TodoRepository;
 import com.eggmeonina.scrumble.helper.IntegrationTestHelper;
@@ -79,14 +80,15 @@ class SquadToDoFacadeServiceIntegrationTest extends IntegrationTestHelper {
 		SquadTodoCreateRequest request = new SquadTodoCreateRequest(ToDoType.DAILY, "테스트 작성하기", LocalDate.now());
 
 		// when
-		Long newTodoId = squadToDoFacadeService.createToDoAndSquadToDo(newSquad.getId(), newMember.getId(), request);
-		ToDo foundToDo = todoRepository.findById(newTodoId).get();
+		ToDoCommandResponse response = squadToDoFacadeService.createToDoAndSquadToDo(newSquad.getId(),
+			newMember.getId(), request);
+		ToDo foundToDo = todoRepository.findById(response.getToDoId()).get();
 
 		// then
 		assertSoftly(softly -> {
 			softly.assertThat(foundToDo.getContents()).isEqualTo(request.getContents());
 			softly.assertThat(foundToDo.getToDoType()).isEqualTo(request.getToDoType());
-			softly.assertThat(foundToDo.getTodoAt()).isEqualTo(request.getTodoAt());
+			softly.assertThat(foundToDo.getToDoAt()).isEqualTo(request.getToDoAt());
 		});
 
 	}
@@ -118,7 +120,7 @@ class SquadToDoFacadeServiceIntegrationTest extends IntegrationTestHelper {
 		// given
 		Member newMember = createMember("memberA", "test@test.com", MemberStatus.WITHDRAW, "12345677");
 		Squad newSquad = createSquad("테스트 스쿼드", false);
-		ToDo newToDo = createToDo(newMember, "모각코", TodoStatus.PENDING, false, LocalDate.now());
+		ToDo newToDo = createToDo(newMember, "모각코", ToDoStatus.PENDING, false, LocalDate.now());
 		SquadToDo newSquadToDo = createSquadTodo(newSquad, newToDo, false);
 
 		memberRepository.save(newMember);
@@ -144,7 +146,7 @@ class SquadToDoFacadeServiceIntegrationTest extends IntegrationTestHelper {
 		// given
 		Member newMember = createMember("memberA", "test@test.com", MemberStatus.WITHDRAW, "12345677");
 		Squad newSquad = createSquad("테스트 스쿼드", false);
-		ToDo newToDo = createToDo(newMember, "모각코", TodoStatus.PENDING, true, LocalDate.now());
+		ToDo newToDo = createToDo(newMember, "모각코", ToDoStatus.PENDING, true, LocalDate.now());
 		SquadToDo newSquadToDo = createSquadTodo(newSquad, newToDo, false);
 
 		memberRepository.save(newMember);

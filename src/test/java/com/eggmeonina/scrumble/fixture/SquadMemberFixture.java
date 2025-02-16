@@ -21,6 +21,14 @@ public class SquadMemberFixture {
 			.squadMemberStatus(status)
 			.build();
 	}
+	public static SquadMember createNormalSquadMember(Member newMember, Squad squad) {
+		return SquadMember.create()
+			.member(newMember)
+			.squad(squad)
+			.squadMemberStatus(SquadMemberStatus.JOIN)
+			.squadMemberRole(SquadMemberRole.NORMAL)
+			.build();
+	}
 
 	public static Squad createSquad(String squadName) {
 		return Squad.create()

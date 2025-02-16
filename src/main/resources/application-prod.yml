@@ -1,0 +1,16 @@
+# database 연동 설정
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # url 끝에 database 지정
+    url: ENC(9SylrOYHuWwVfUpHTxoBMJcjRi1fezWD0VFw1z2ABpntMY3sGyjvE6QH6Rt+NEQ/jUqi6zBCQjCPajqaNg7kvEV69HlFCyewl5xnr15ppUhp70DF9aBsNYgBZAPfdtsZG7Aly66M5do=)
+    username: ENC(WfE6s2WPSjP8+u7q9elrtW1rN1s/DTdj)
+    password: ENC(kudBlgE/b/5f2ZIaXnh3l62SsXMuaTAO)
+
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl

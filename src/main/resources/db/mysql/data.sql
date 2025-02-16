@@ -22,3 +22,10 @@ insert into squad_todo(squad_todo_id, todo_id, squad_id, deleted_flag, created_a
 values (default, 2, 1, 0, now());
 insert into squad_todo(squad_todo_id, todo_id, squad_id, deleted_flag, created_at)
 values (default, 3, 1, 0, now());
+
+insert into notification(notification_id, recipient_id, notification_type, read_flag, notification_data, notification_status, created_at, updated_at)
+values (default, 2, 'INVITE_REQUEST', false, '{"memberName": "testA", "squadName": "테스트 스쿼드", "squadId": "1"}', 'PENDING',  now(), null);
+insert into notification(notification_id, recipient_id, notification_type, read_flag, notification_data, notification_status, created_at, updated_at)
+values (default, 1, 'INVITE_REQUEST', false, '{"memberName": "scrumble", "squadName": "테스트 스쿼드1", "squadId": "2"}', 'PENDING',  now(), null);
+insert into notification(notification_id, recipient_id, notification_type, read_flag, notification_data, notification_status, created_at, updated_at)
+values (default, 1, 'INVITE_REQUEST', true, '{"memberName": "scrumble", "squadName": "테스트 스쿼드2", "squadId": "3"}', 'PENDING', now(), null);

@@ -4,7 +4,11 @@ import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,10 +21,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.eggmeonina.scrumble.common.exception.MemberException;
 import com.eggmeonina.scrumble.domain.auth.domain.OauthType;
-import com.eggmeonina.scrumble.domain.auth.dto.LoginMember;
+import com.eggmeonina.scrumble.domain.auth.dto.MemberInfo;
+import com.eggmeonina.scrumble.domain.member.domain.Member;
+import com.eggmeonina.scrumble.domain.member.domain.MemberStatus;
 import com.eggmeonina.scrumble.domain.member.domain.SessionKey;
 import com.eggmeonina.scrumble.domain.member.dto.MemberResponse;
+import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
 import com.eggmeonina.scrumble.domain.member.service.MemberService;
+import com.eggmeonina.scrumble.domain.member.service.MemberWithdrawService;
 import com.eggmeonina.scrumble.helper.WebMvcTestHelper;
 
 class UserControllerTest extends WebMvcTestHelper {
@@ -31,16 +39,28 @@ class UserControllerTest extends WebMvcTestHelper {
 	@MockBean
 	private MemberService memberService;
 
+	@MockBean
+	private MemberWithdrawService memberWithdrawService;
+
+	@MockBean
+	private MemberRepository memberRepository;
+
 	@Test
 	@DisplayName("회원 조회 시, 회원을 응답한다.")
 	void findMember_success_returnsMember() throws Exception {
 		// given
 		MemberResponse response = new MemberResponse(OauthType.GOOGLE, "test@test.com");
-		given(memberService.findMember(1L)).willReturn(response);
+		given(memberService.findMember(anyLong())).willReturn(response);
+		given(memberRepository.findByIdAndMemberStatusNotJOIN(anyLong())).willReturn(
+			Optional.of(
+				new Member(1L, response.getEmail(), "test", null, null,
+					MemberStatus.JOIN,
+					LocalDateTime.now()
+				)));
 
 		MockHttpSession session = new MockHttpSession();
 		session.setAttribute(
-			SessionKey.LOGIN_USER.name(), new LoginMember(1L, response.getEmail(), "test")
+			SessionKey.LOGIN_USER.name(), new MemberInfo(1L, response.getEmail(), "test")
 		);
 
 		// when, then
@@ -58,10 +78,16 @@ class UserControllerTest extends WebMvcTestHelper {
 		// given
 		MemberResponse response = new MemberResponse(OauthType.GOOGLE, "test@test.com");
 		given(memberService.findMember(1L)).willThrow(new MemberException(MEMBER_NOT_FOUND));
+		given(memberRepository.findByIdAndMemberStatusNotJOIN(anyLong())).willReturn(
+			Optional.of(
+				new Member(1L, response.getEmail(), "test", null, null,
+					MemberStatus.JOIN,
+					LocalDateTime.now()
+				)));
 
 		MockHttpSession session = new MockHttpSession();
 		session.setAttribute(
-			SessionKey.LOGIN_USER.name(), new LoginMember(1L, response.getEmail(), "test")
+			SessionKey.LOGIN_USER.name(), new MemberInfo(1L, response.getEmail(), "test")
 		);
 
 		// when, then
@@ -77,10 +103,18 @@ class UserControllerTest extends WebMvcTestHelper {
 	void withdrawMember_success_InvalidSession() throws Exception {
 		// given
 		MockHttpSession session = new MockHttpSession();
+		MemberInfo memberInfo = new MemberInfo(1L, "test@test.com", "test");
 		session.setAttribute(
-			SessionKey.LOGIN_USER.name(), new LoginMember(1L, "test@test.com", "test")
+			SessionKey.LOGIN_USER.name(), memberInfo
 		);
-		
+		doNothing().when(memberWithdrawService).withdraw(anyLong());
+		given(memberRepository.findByIdAndMemberStatusNotJOIN(anyLong())).willReturn(
+			Optional.of(
+				new Member(memberInfo.getMemberId(), memberInfo.getEmail(), memberInfo.getName(), null, null,
+					MemberStatus.JOIN,
+					LocalDateTime.now()
+				)));
+
 		// when, then
 		mockMvc.perform(delete("/api/users").session(session))
 			.andExpect(request().sessionAttributeDoesNotExist(SessionKey.LOGIN_USER.name())) // 세션 만료 확인

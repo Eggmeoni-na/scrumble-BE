@@ -1,0 +1,42 @@
+# prod
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+cors:
+  origins:
+    - ENC(JHteOGgJ17NLguTpDWcyAD0hQaCDQqlvMWiWI4koNfM=) # client
+    - ENC(3/xZ1I7xfs+rqxJGtOPwqPk8hvnzDyX4BxFyLlktFbQV5IdggxZFtA==) # prod
+
+---
+# dev
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+cors:
+  origins:
+    - ENC(JHteOGgJ17NLguTpDWcyAD0hQaCDQqlvMWiWI4koNfM=) # client
+    - ENC(FQF73FFMlclhd8MVj3SrivvrIf9WIk4JdHcMwRmEmcBv7zv/lQkraQ==) # egg vercel
+    - ENC(UaOOZdrEgEFfndfozuIVdkAEzy9PH7onEMNYeWbbajR4KUsIgQZyv6x1J7EQO2oOxHYcNuWW4XkBJqT17LcymjJozRi+4gHK) # name vercel
+    - ENC(rr4e0rwpkxmtSlBXSRWzIvCagca6sBfJrYJJxIiEUfBhwDL0asWsPY3tlshMyOW2) # ngrok
+    - ENC(P3xSjkkVBqDpocU+n5Zm9PYUX0zIT+R4fOp+eJtMbJdRYXUVibev2A==) # dev api
+    - ENC(V1JEdaU8RhpnMbDSY5g19dUJ2aFYn3+pU+XbqKCHlKLmvcMJ4qiErQ==) # port forwarding
+    - ENC(t46UzvBOnq3aqfLcPqmsv0DfC480QWxFf1nWrEHFW68=) # dev client
+
+---
+#local
+spring:
+  config:
+    activate:
+      on-profile: local
+
+cors:
+  origins:
+    - ENC(w5cHr1Slt5acayRM+QuGNySespdufwC3owjP+sa6eZs=) # client
+    - ENC(V1JEdaU8RhpnMbDSY5g19dUJ2aFYn3+pU+XbqKCHlKLmvcMJ4qiErQ==) # port forwarding
+    - https://scrumble-k-jeonghee-kimjeonghees-projects.vercel.app
+    - ENC(rr4e0rwpkxmtSlBXSRWzIvCagca6sBfJrYJJxIiEUfBhwDL0asWsPY3tlshMyOW2) # ngrok
+

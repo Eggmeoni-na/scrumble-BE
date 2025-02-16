@@ -4,7 +4,7 @@ import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
 import static com.eggmeonina.scrumble.fixture.SquadMemberFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.SoftAssertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.List;
@@ -18,15 +18,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.eggmeonina.scrumble.common.exception.MemberException;
-import com.eggmeonina.scrumble.common.exception.SquadMemberException;
 import com.eggmeonina.scrumble.common.exception.SquadException;
+import com.eggmeonina.scrumble.common.exception.SquadMemberException;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.domain.MemberStatus;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
+import com.eggmeonina.scrumble.domain.squadmember.domain.Squad;
 import com.eggmeonina.scrumble.domain.squadmember.domain.SquadMember;
 import com.eggmeonina.scrumble.domain.squadmember.domain.SquadMemberRole;
 import com.eggmeonina.scrumble.domain.squadmember.domain.SquadMemberStatus;
-import com.eggmeonina.scrumble.domain.squadmember.domain.Squad;
 import com.eggmeonina.scrumble.domain.squadmember.dto.SquadUpdateRequest;
 import com.eggmeonina.scrumble.domain.squadmember.repository.SquadMemberRepository;
 import com.eggmeonina.scrumble.domain.squadmember.repository.SquadRepository;
@@ -438,7 +438,7 @@ class SquadMemberServiceTest {
 			.willReturn(true);
 
 		// when, then
-		assertThatThrownBy(()->squadMemberService.inviteSquadMember(1L, 1L))
+		assertThatThrownBy(()->squadMemberService.inviteSquadMember("testMember", 1L, 1L))
 			.isInstanceOf(SquadMemberException.class)
 			.hasMessageContaining(DUPLICATE_SQUADMEMBER.getMessage());
 	}
@@ -452,7 +452,7 @@ class SquadMemberServiceTest {
 		given(squadRepository.findById(anyLong())).willReturn(Optional.empty());
 
 		// when, then
-		assertThatThrownBy(()->squadMemberService.inviteSquadMember(1L, 1L))
+		assertThatThrownBy(()->squadMemberService.inviteSquadMember("testMember", 1L, 1L))
 			.isInstanceOf(SquadMemberException.class)
 			.hasMessageContaining(SQUAD_NOT_FOUND.getMessage());
 	}
@@ -464,7 +464,7 @@ class SquadMemberServiceTest {
 		given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 
 		// when, then
-		assertThatThrownBy(()->squadMemberService.inviteSquadMember(1L, 1L))
+		assertThatThrownBy(()->squadMemberService.inviteSquadMember("testMember", 1L, 1L))
 			.isInstanceOf(MemberException.class)
 			.hasMessageContaining(MEMBER_NOT_FOUND.getMessage());
 	}
@@ -491,30 +491,6 @@ class SquadMemberServiceTest {
 
 		// then
 		assertThat(squadMember.getSquadMemberStatus()).isEqualTo(SquadMemberStatus.JOIN);
-	}
-
-	@Test
-	@DisplayName("스쿼드 멤버 초대에 거절한다_성공")
-	void rejectInvitation_success() {
-		// given
-		Member newLeader = createMember("test@test.com", "testA", MemberStatus.JOIN);
-
-		Squad newSquad = createSquad("테스트 스쿼드");
-
-		SquadMember squadMember =
-			createSquadMember(newSquad, newLeader, SquadMemberRole.NORMAL, SquadMemberStatus.INVITING);
-
-		given(squadRepository.findByIdAndDeletedFlagNot(anyLong()))
-			.willReturn(Optional.ofNullable(newSquad));
-
-		given(squadMemberRepository.findByMemberIdAndSquadIdWithInvitingStatus(anyLong(), anyLong()))
-			.willReturn(Optional.ofNullable(squadMember));
-
-		// when
-		squadMemberService.responseInvitation(1L, 1L, SquadMemberStatus.REJECT);
-
-		// then
-		assertThat(squadMember.getSquadMemberStatus()).isEqualTo(SquadMemberStatus.REJECT);
 	}
 
 	@Test

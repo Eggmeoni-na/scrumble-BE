@@ -11,17 +11,17 @@ import com.eggmeonina.scrumble.domain.squadmember.domain.Squad;
 import com.eggmeonina.scrumble.domain.todo.domain.SquadToDo;
 import com.eggmeonina.scrumble.domain.todo.domain.ToDo;
 import com.eggmeonina.scrumble.domain.todo.domain.ToDoType;
-import com.eggmeonina.scrumble.domain.todo.domain.TodoStatus;
+import com.eggmeonina.scrumble.domain.todo.domain.ToDoStatus;
 
 public class SquadTodoFixture {
 
-	public static ToDo createToDo(Member newMember, String contents, TodoStatus todoStatus, boolean deletedFlag,
+	public static ToDo createToDo(Member newMember, String contents, ToDoStatus toDoStatus, boolean deletedFlag,
 		LocalDate todoAt) {
 		return ToDo.create()
 			.toDoType(ToDoType.DAILY)
 			.contents(contents)
-			.todoStatus(todoStatus)
-			.todoAt(todoAt)
+			.toDoStatus(toDoStatus)
+			.toDoAt(todoAt)
 			.deletedFlag(deletedFlag)
 			.member(newMember)
 			.build();
