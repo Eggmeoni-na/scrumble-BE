@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -18,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-	@Value("${exception.ignored-broken-pipe-uris}")
+	// @Value("${exception.ignored-broken-pipe-uris}")
 	private static final List<String> IGNORED_BROKEN_PIPE_URIS = List.of("/api/notifications/subscribe");
 
 	@ExceptionHandler(ExpectedException.class)

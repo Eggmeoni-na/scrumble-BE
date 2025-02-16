@@ -2,7 +2,7 @@ name: CD-dev
 on:
   push:
     branches:
-      - dev-cd
+      - main
   workflow_dispatch:
 jobs:
   upload-image:
@@ -53,8 +53,8 @@ jobs:
       - name: excuting remote ssh commands
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.DEV_AWS_REMOTE_IP }}
-          username: ${{ secrets.DEV_AWS_ACCESS_USER }}
+          host: ${{ secrets.PROD_AWS_REMOTE_IP }}
+          username: ${{ secrets.PROD_AWS_ACCESS_USER }}
           key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           port: ${{ secrets.AWS_ACCESS_PORT }}
           script_stop: true
