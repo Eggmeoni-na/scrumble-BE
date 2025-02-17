@@ -113,14 +113,37 @@ public class SquadMemberService {
 		foundMember.assignLeader();
 	}
 
+	/**
+	 * 스쿼드 탈퇴
+	 * 일반 스쿼드원 - 탈퇴 가능
+	 * 리더 - 팀원이 없으면 탈퇴/스쿼드 삭제
+	 *       팀원이 있으면 탈퇴 불가
+	 * @param squadId
+	 * @param memberId
+	 */
 	@Transactional
 	public void leaveSquad(Long squadId, Long memberId) {
+
+		Squad foundSquad = squadRepository.findByIdAndDeletedFlagNot(squadId)
+			.orElseThrow(() -> new SquadException(SQUAD_NOT_FOUND));
+
 		SquadMember foundSquadMember = squadMemberRepository.findByMemberIdAndSquadId(memberId, squadId)
 			.orElseThrow(() -> new SquadMemberException(SQUADMEMBER_NOT_FOUND));
-		// 스쿼드에 인원이 있는 스쿼드 리더는 위임하거나 삭제만 가능하다.
-		if (foundSquadMember.isLeader() && squadMemberRepository.existsBySquadMemberNotMemberId(squadId, memberId)) {
+
+		boolean isLeader = foundSquadMember.isLeader();
+		boolean hasOtherMembers = squadMemberRepository.existsBySquadMemberNotMemberId(squadId, memberId);
+
+		// 멤버 있는 스쿼드 리더는 탈퇴가 불가능하다.
+		// 스쿼드 위임 및 삭제만 가능하다.
+		if (isLeader && hasOtherMembers) {
 			throw new SquadMemberException(LEADER_CANNOT_LEAVE);
 		}
+
+		// 스쿼드 리더가 탈퇴 시 스쿼드는 실시간 삭제된다.
+		if(isLeader){
+			foundSquad.delete();
+		}
+
 		foundSquadMember.leave();
 	}
 

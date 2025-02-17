@@ -356,9 +356,11 @@ class SquadMemberServiceAndSquadIntegrationTest extends IntegrationTestHelper {
 		squadMemberService.leaveSquad(newSquad.getId(), newMember.getId());
 
 		SquadMember foundMember = squadMemberRepository.findById(newSquadMember.getId()).get();
+		Squad foundSquad = squadRepository.findById(newSquad.getId()).get();
 
 		// then
 		assertThat(foundMember.getSquadMemberStatus()).isEqualTo(SquadMemberStatus.LEAVE);
+		assertThat(foundSquad.isDeletedFlag()).isTrue();
 	}
 
 	@Test
@@ -387,9 +389,11 @@ class SquadMemberServiceAndSquadIntegrationTest extends IntegrationTestHelper {
 		squadMemberService.leaveSquad(newSquad.getId(), newMember1.getId());
 
 		SquadMember foundMember = squadMemberRepository.findById(newSquadMember1.getId()).get();
+		Squad foundSquad = squadRepository.findById(newSquad.getId()).get();
 
 		// then
 		assertThat(foundMember.getSquadMemberStatus()).isEqualTo(SquadMemberStatus.LEAVE);
+		assertThat(foundSquad.isDeletedFlag()).isTrue();
 	}
 
 	@Test
