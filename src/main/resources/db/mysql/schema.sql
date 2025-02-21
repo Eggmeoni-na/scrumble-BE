@@ -6,7 +6,7 @@ CREATE TABLE notification
     recipient_id        BIGINT      NOT NULL,
     notification_type   VARCHAR(50) NOT NULL,
     read_flag           TINYINT     NOT NULL,
-    notification_data   CLOB        NULL,
+    notification_data   TEXT        NULL,
     notification_status VARCHAR(50) NOT NULL,
     created_at          TIMESTAMP   NULL,
     updated_at          TIMESTAMP   NULL,
