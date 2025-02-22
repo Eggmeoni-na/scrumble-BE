@@ -1,3 +1,18 @@
+DROP TABLE IF EXISTS event;
+
+CREATE TABLE event
+(
+    event_id       BIGINT      NOT NULL AUTO_INCREMENT,
+    domain_type    VARCHAR(50) NOT NULL,
+    event_type     VARCHAR(50) NOT NULL,
+    payload        TEXT        NULL,
+    published_at   TIMESTAMP   NOT NULL,
+    published_flag TINYINT     NOT NULL,
+    created_at     TIMESTAMP   NOT NULL,
+    updated_at     TIMESTAMP   NOT NULL,
+    PRIMARY KEY (event_id)
+);
+
 DROP TABLE IF EXISTS notification;
 
 CREATE TABLE notification
