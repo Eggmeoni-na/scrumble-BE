@@ -1,4 +1,4 @@
-package com.eggmeonina.scrumble.common.domain;
+package com.eggmeonina.scrumble.domain.notification.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
