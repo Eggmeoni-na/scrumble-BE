@@ -198,6 +198,8 @@ class SquadMemberServiceTest {
 		SquadMember squadMember = createSquadMember(newSquad, newLeader, SquadMemberRole.NORMAL,
 			SquadMemberStatus.JOIN);
 
+		given(squadRepository.findByIdAndDeletedFlagNot(anyLong()))
+			.willReturn(Optional.ofNullable(newSquad));
 		given(squadMemberRepository.findByMemberIdAndSquadId(anyLong(), anyLong()))
 			.willReturn(Optional.ofNullable(squadMember));
 
@@ -220,6 +222,9 @@ class SquadMemberServiceTest {
 		SquadMember squadMember = createSquadMember(newSquad, newLeader, SquadMemberRole.LEADER,
 			SquadMemberStatus.JOIN);
 
+
+		given(squadRepository.findByIdAndDeletedFlagNot(anyLong()))
+			.willReturn(Optional.ofNullable(newSquad));
 		given(squadMemberRepository.findByMemberIdAndSquadId(anyLong(), anyLong()))
 			.willReturn(Optional.ofNullable(squadMember));
 		given(squadMemberRepository.existsBySquadMemberNotMemberId(anyLong(), anyLong()))
@@ -231,6 +236,7 @@ class SquadMemberServiceTest {
 		// then
 		assert squadMember != null;
 		assertThat(squadMember.getSquadMemberStatus()).isEqualTo(SquadMemberStatus.LEAVE);
+		assertThat(newSquad.isDeletedFlag()).isTrue();
 	}
 
 	@Test
@@ -244,6 +250,8 @@ class SquadMemberServiceTest {
 		SquadMember squadMember = createSquadMember(newSquad, newLeader, SquadMemberRole.LEADER,
 			SquadMemberStatus.JOIN);
 
+		given(squadRepository.findByIdAndDeletedFlagNot(anyLong()))
+			.willReturn(Optional.ofNullable(newSquad));
 		given(squadMemberRepository.findByMemberIdAndSquadId(anyLong(), anyLong()))
 			.willReturn(Optional.ofNullable(squadMember));
 		given(squadMemberRepository.existsBySquadMemberNotMemberId(anyLong(), anyLong()))
@@ -259,8 +267,13 @@ class SquadMemberServiceTest {
 	@DisplayName("존재하지 않는 스쿼드 멤버가 탈퇴 요청한다_실패")
 	void leaveSquadWhenMemberNotInSquad_fail() {
 		// given
+		Squad newSquad = createSquad("테스트 스쿼드");
+
+		given(squadRepository.findByIdAndDeletedFlagNot(anyLong()))
+			.willReturn(Optional.ofNullable(newSquad));
 		given(squadMemberRepository.findByMemberIdAndSquadId(anyLong(), anyLong()))
 			.willReturn(Optional.empty());
+
 		// when, then
 		assertThatThrownBy(() -> squadMemberService.leaveSquad(1L, 1L))
 			.isInstanceOf(SquadMemberException.class)

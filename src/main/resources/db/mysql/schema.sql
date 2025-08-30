@@ -1,3 +1,17 @@
+DROP TABLE IF EXISTS event;
+
+CREATE TABLE event
+(
+    event_id       BIGINT AUTO_INCREMENT PRIMARY KEY,
+    domain_type    VARCHAR(50) NOT NULL,
+    event_type     VARCHAR(50) NOT NULL,
+    payload        TEXT        NULL,
+    published_at   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    published_flag TINYINT     NOT NULL DEFAULT 0,
+    created_at     TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at     TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 DROP TABLE IF EXISTS notification;
 
 CREATE TABLE notification
@@ -6,10 +20,10 @@ CREATE TABLE notification
     recipient_id        BIGINT      NOT NULL,
     notification_type   VARCHAR(50) NOT NULL,
     read_flag           TINYINT     NOT NULL,
-    notification_data   CLOB        NULL,
+    notification_data   TEXT        NULL,
     notification_status VARCHAR(50) NOT NULL,
-    created_at          TIMESTAMP   NULL,
-    updated_at          TIMESTAMP   NULL,
+    created_at          datetime    NULL,
+    updated_at          datetime    NULL,
     PRIMARY KEY (notification_id)
 );
 
