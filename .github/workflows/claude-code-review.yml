@@ -16,7 +16,7 @@ jobs:
     # if: |
     #   github.event.pull_request.user.login == 'external-contributor' ||
     #   github.event.pull_request.user.login == 'new-developer' ||
-    #   github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
+    # github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
     
     runs-on: ubuntu-latest
     permissions:
@@ -37,16 +37,20 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           prompt: |
-            Please review this pull request and provide feedback on:
-            - Code quality and best practices
-            - Potential bugs or issues
-            - Performance considerations
-            - Security concerns
-            - Test coverage
+            이 Pull Request를 한국어로 검토해주세요. 다음 항목들에 대해 피드백을 제공해주세요:
             
-            Use the repository's CLAUDE.md for guidance on style and conventions. Be constructive and helpful in your feedback.
-
-            Use `gh pr comment` with your Bash tool to leave your review as a comment on the PR.
+            - 코드 품질 및 모범 사례
+            - 잠재적 버그나 문제점
+            - 성능 고려사항
+            - 보안 우려사항
+            - 테스트 커버리지
+            
+            저장소의 CLAUDE.md 파일이 있다면 스타일 및 컨벤션 가이드로 참고해주세요.
+            건설적이고 도움이 되는 피드백을 제공해주세요.
+            
+            **중요: 모든 리뷰 코멘트는 반드시 한국어로 작성해주세요.**
+            
+            `gh pr comment` 명령어를 사용하여 PR에 리뷰 코멘트를 남겨주세요.
           
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://docs.anthropic.com/en/docs/claude-code/sdk#command-line for available options
