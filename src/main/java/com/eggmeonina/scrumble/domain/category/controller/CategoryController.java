@@ -1,6 +1,7 @@
 package com.eggmeonina.scrumble.domain.category.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,14 +27,15 @@ public class CategoryController {
 
 	private final CategoryService categoryService;
 
-	@PutMapping
+	@PutMapping("{categoryId}")
 	@Operation(summary = "카테고리명, 컬러를 수정한다")
 	@Parameter(name = "member", hidden = true)
 	public ApiResponse<Void> updateCategory(
 		@LoginMember Member member,
+		@PathVariable Long categoryId,
 		@RequestBody @Valid CategoryUpdateRequest request
 	){
-		categoryService.changeCategory(member.getId(), request);
+		categoryService.changeCategory(member.getId(), categoryId, request);
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 

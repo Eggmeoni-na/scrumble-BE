@@ -17,9 +17,16 @@ import lombok.RequiredArgsConstructor;
 public class CategoryService {
 
 	private final CategoryRepository categoryRepository;
+
+	/**
+	 * 카테고리 수정
+	 * @param memberId
+	 * @param categoryId
+	 * @param request
+	 */
 	@Transactional
-	public void changeCategory(Long memberId, CategoryUpdateRequest request){
-		Category foundCategory = categoryRepository.findById(request.getCategoryId())
+	public void changeCategory(Long memberId, Long categoryId, CategoryUpdateRequest request){
+		Category foundCategory = categoryRepository.findById(categoryId)
 			.orElseThrow(() -> new ExpectedException(CATEGORY_NOT_FOUND));
 
 		foundCategory.updateCategory(memberId, request.getCategoryName(), request.getColor());

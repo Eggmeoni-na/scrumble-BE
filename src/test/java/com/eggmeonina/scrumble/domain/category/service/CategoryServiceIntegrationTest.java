@@ -31,10 +31,10 @@ class CategoryServiceIntegrationTest extends IntegrationTestHelper {
 			.memberId(1L)
 			.build());
 
-		CategoryUpdateRequest request = new CategoryUpdateRequest(savedCategory.getId(), "집안일", "FFFFFF");
+		CategoryUpdateRequest request = new CategoryUpdateRequest("집안일", "FFFFFF");
 
 		// when
-		categoryService.changeCategory(1L, request);
+		categoryService.changeCategory(1L, savedCategory.getId(), request);
 
 		// then
 		Category updatedCategory = categoryRepository.findById(savedCategory.getId()).get();
@@ -52,10 +52,10 @@ class CategoryServiceIntegrationTest extends IntegrationTestHelper {
 			.memberId(1L)
 			.build());
 
-		CategoryUpdateRequest request = new CategoryUpdateRequest(savedCategory.getId(), "집안일", "FFFFFF");
+		CategoryUpdateRequest request = new CategoryUpdateRequest("집안일", "FFFFFF");
 
 		// when & then
-		assertThatThrownBy(() -> categoryService.changeCategory(2L, request))
+		assertThatThrownBy(() -> categoryService.changeCategory(2L, savedCategory.getId(), request))
 			.isInstanceOf(ExpectedException.class)
 			.hasMessageContaining(CATEGORY_ACCESS_DENIED.getMessage());
 	}
@@ -64,10 +64,10 @@ class CategoryServiceIntegrationTest extends IntegrationTestHelper {
 	@DisplayName("카테고리 수정_존재하지 않는 카테고리_실패")
 	void changeCategory_category_not_found_fail() {
 		// given
-		CategoryUpdateRequest request = new CategoryUpdateRequest(999L, "집안일", "FFFFFF");
+		CategoryUpdateRequest request = new CategoryUpdateRequest("집안일", "FFFFFF");
 
 		// when & then
-		assertThatThrownBy(() -> categoryService.changeCategory(1L, request))
+		assertThatThrownBy(() -> categoryService.changeCategory(1L, 1L, request))
 			.isInstanceOf(ExpectedException.class)
 			.hasMessageContaining(CATEGORY_NOT_FOUND.getMessage());
 	}
