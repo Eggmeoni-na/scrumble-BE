@@ -7,4 +7,6 @@ import com.eggmeonina.scrumble.domain.category.domain.Category;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
+
+	public boolean existsByCategoryNameAndMemberId(String categoryName, Long memberId);
 }
