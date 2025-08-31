@@ -58,7 +58,8 @@ public enum ErrorCode {
 	 * 카테고리
 	 */
 	CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "카테고리가 존재하지 않습니다."),
-	CATEGORY_ACCESS_DENIED(HttpStatus.FORBIDDEN, "카테고리 수정 권한이 없습니다.");
+	CATEGORY_ACCESS_DENIED(HttpStatus.FORBIDDEN, "카테고리 수정 권한이 없습니다."),
+	CATEGORY_DUPLICATED(HttpStatus.BAD_REQUEST, "이미 존재하는 카테고리입니다.");
 
 	private final HttpStatus status;
 	private final String message;

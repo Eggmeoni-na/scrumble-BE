@@ -41,6 +41,11 @@ public class CategoryService {
 	@Transactional
 	public void createCategory(Long memberId, CategoryCreateRequest request){
 		Category newCategory = CategoryCreateRequest.to(memberId, request);
+		boolean isDuplicatedCategory = categoryRepository.existsByCategoryNameAndMemberId(newCategory.getCategoryName(),
+			newCategory.getMemberId());
+		if(isDuplicatedCategory){
+			throw new ExpectedException(CATEGORY_DUPLICATED);
+		}
 		categoryRepository.save(newCategory);
 	}
 }
