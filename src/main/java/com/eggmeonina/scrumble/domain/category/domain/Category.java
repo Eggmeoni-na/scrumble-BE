@@ -34,14 +34,18 @@ public class Category {
 	@Column(name = "color")
 	private String color;
 
-	@Column(name = "member_id")
+	@Column(name = "member_id", nullable = false)
 	private Long memberId;
+
+	@Column(name = "deleted_flag", nullable = false)
+	private boolean deletedFlag;
 
 	@Builder(builderMethodName = "create")
 	public Category(String categoryName, String color, Long memberId) {
 		this.categoryName = categoryName;
 		this.color = color;
 		this.memberId = memberId;
+		this.deletedFlag = false;
 	}
 
 	public void updateCategory(Long requesterId, String newCategoryName, String newColor){

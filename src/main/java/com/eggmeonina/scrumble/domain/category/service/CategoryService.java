@@ -2,12 +2,15 @@ package com.eggmeonina.scrumble.domain.category.service;
 
 import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.eggmeonina.scrumble.common.exception.ExpectedException;
 import com.eggmeonina.scrumble.domain.category.domain.Category;
 import com.eggmeonina.scrumble.domain.category.dto.CategoryCreateRequest;
+import com.eggmeonina.scrumble.domain.category.dto.CategoryResponse;
 import com.eggmeonina.scrumble.domain.category.dto.CategoryUpdateRequest;
 import com.eggmeonina.scrumble.domain.category.repository.CategoryRepository;
 
@@ -47,5 +50,13 @@ public class CategoryService {
 			throw new ExpectedException(CATEGORY_DUPLICATED);
 		}
 		categoryRepository.save(newCategory);
+	}
+
+	@Transactional(readOnly = true)
+	public List<CategoryResponse> findCategories(Long memberId){
+		return categoryRepository.findAllByMemberIdAndDeletedFlagNot(memberId)
+			.stream()
+			.map(category -> new CategoryResponse(category.getId(), category.getCategoryName(), category.getColor()))
+			.toList();
 	}
 }
