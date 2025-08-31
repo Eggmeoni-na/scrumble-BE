@@ -2,6 +2,7 @@ package com.eggmeonina.scrumble.domain.category.service;
 
 import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.SoftAssertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,8 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.eggmeonina.scrumble.common.exception.ExpectedException;
 import com.eggmeonina.scrumble.domain.category.domain.Category;
+import com.eggmeonina.scrumble.domain.category.dto.CategoryCreateRequest;
 import com.eggmeonina.scrumble.domain.category.dto.CategoryUpdateRequest;
 import com.eggmeonina.scrumble.domain.category.repository.CategoryRepository;
+import com.eggmeonina.scrumble.domain.member.domain.Member;
+import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
+import com.eggmeonina.scrumble.fixture.MemberFixture;
 import com.eggmeonina.scrumble.helper.IntegrationTestHelper;
 
 class CategoryServiceIntegrationTest extends IntegrationTestHelper {
@@ -20,6 +25,9 @@ class CategoryServiceIntegrationTest extends IntegrationTestHelper {
 
 	@Autowired
 	private CategoryRepository categoryRepository;
+
+	@Autowired
+	private MemberRepository memberRepository;
 
 	@Test
 	@DisplayName("카테고리 수정_정상")
@@ -70,5 +78,25 @@ class CategoryServiceIntegrationTest extends IntegrationTestHelper {
 		assertThatThrownBy(() -> categoryService.changeCategory(1L, 1L, request))
 			.isInstanceOf(ExpectedException.class)
 			.hasMessageContaining(CATEGORY_NOT_FOUND.getMessage());
+	}
+
+	@Test
+	@DisplayName("카테고리 생성_성공")
+	void createCategory_success() {
+		// given
+		CategoryCreateRequest request = new CategoryCreateRequest("카테고리1", "#FFFFFF");
+		Member testMember = MemberFixture.createJOINMember("test@test.com", "test", "123324");
+		memberRepository.save(testMember);
+
+		// when
+		categoryService.createCategory(testMember.getId(), request);
+
+		// then
+		Category newCategory = categoryRepository.findAll().get(0);
+
+		assertSoftly(softly -> {
+			softly.assertThat(newCategory.getCategoryName()).isEqualTo(request.categoryName());
+			softly.assertThat(newCategory.getColor()).isEqualTo(request.color());
+		});
 	}
 }
