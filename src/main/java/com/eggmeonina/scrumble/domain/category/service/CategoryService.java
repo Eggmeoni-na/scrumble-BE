@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.eggmeonina.scrumble.common.exception.ExpectedException;
 import com.eggmeonina.scrumble.domain.category.domain.Category;
+import com.eggmeonina.scrumble.domain.category.dto.CategoryCreateRequest;
 import com.eggmeonina.scrumble.domain.category.dto.CategoryUpdateRequest;
 import com.eggmeonina.scrumble.domain.category.repository.CategoryRepository;
 
@@ -30,5 +31,16 @@ public class CategoryService {
 			.orElseThrow(() -> new ExpectedException(CATEGORY_NOT_FOUND));
 
 		foundCategory.updateCategory(memberId, request.getCategoryName(), request.getColor());
+	}
+
+	/**
+	 * 카테고리 등록
+	 * @param memberId
+	 * @param request
+	 */
+	@Transactional
+	public void createCategory(Long memberId, CategoryCreateRequest request){
+		Category newCategory = CategoryCreateRequest.to(memberId, request);
+		categoryRepository.save(newCategory);
 	}
 }

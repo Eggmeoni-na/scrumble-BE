@@ -2,6 +2,7 @@ package com.eggmeonina.scrumble.domain.category.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eggmeonina.scrumble.common.anotation.LoginMember;
 import com.eggmeonina.scrumble.common.domain.ApiResponse;
+import com.eggmeonina.scrumble.domain.category.dto.CategoryCreateRequest;
 import com.eggmeonina.scrumble.domain.category.dto.CategoryUpdateRequest;
 import com.eggmeonina.scrumble.domain.category.service.CategoryService;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
@@ -36,6 +38,17 @@ public class CategoryController {
 		@RequestBody @Valid CategoryUpdateRequest request
 	){
 		categoryService.changeCategory(member.getId(), categoryId, request);
+		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
+	}
+
+	@PostMapping
+	@Operation(summary = "카테고리를 새로 등록한다")
+	@Parameter(name = "member", hidden = true)
+	public ApiResponse<Void> createCategory(
+		@LoginMember Member member,
+		@RequestBody @Valid CategoryCreateRequest request
+	){
+		categoryService.createCategory(member.getId(), request);
 		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
