@@ -99,4 +99,21 @@ class CategoryServiceIntegrationTest extends IntegrationTestHelper {
 			softly.assertThat(newCategory.getColor()).isEqualTo(request.color());
 		});
 	}
+
+	@Test
+	@DisplayName("중복 카테고리명으로 생성_실패")
+	void createCategory_duplicated_fail(){
+		// given
+		CategoryCreateRequest request = new CategoryCreateRequest("카테고리1", "#FFFFFF");
+		Member testMember = MemberFixture.createJOINMember("test@test.com", "test", "123324");
+		memberRepository.save(testMember);
+		categoryService.createCategory(testMember.getId(), request);
+
+		CategoryCreateRequest duplicatedCategory = new CategoryCreateRequest("카테고리1", "#000000");
+
+		assertThatThrownBy(()->
+			categoryService.createCategory(testMember.getId(), duplicatedCategory))
+			.isInstanceOf(ExpectedException.class)
+			.hasMessageContaining(CATEGORY_DUPLICATED.getMessage());
+	}
 }
