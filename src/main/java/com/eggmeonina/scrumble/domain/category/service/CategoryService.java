@@ -52,6 +52,11 @@ public class CategoryService {
 		categoryRepository.save(newCategory);
 	}
 
+	/**
+	 * 카테고리 목록 조회
+	 * @param memberId
+	 * @return
+	 */
 	@Transactional(readOnly = true)
 	public List<CategoryResponse> findCategories(Long memberId){
 		return categoryRepository.findAllByMemberIdAndDeletedFlagNot(memberId)
