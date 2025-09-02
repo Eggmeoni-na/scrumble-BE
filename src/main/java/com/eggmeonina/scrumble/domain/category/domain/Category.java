@@ -4,6 +4,7 @@ import static com.eggmeonina.scrumble.common.exception.ErrorCode.*;
 
 import java.util.Objects;
 
+import com.eggmeonina.scrumble.common.domain.BaseEntity;
 import com.eggmeonina.scrumble.common.exception.ExpectedException;
 
 import jakarta.persistence.Column;
@@ -21,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "category")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Category {
+public class Category extends BaseEntity {
 
 	@Id
 	@Column(name = "category_id")
