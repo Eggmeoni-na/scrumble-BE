@@ -1,3 +1,15 @@
+DROP TABLE category;
+
+CREATE TABLE category (
+    category_id	    BIGINT	        NOT NULL AUTO_INCREMENT,
+    category_name	VARCHAR(100)	NOT NULL,
+    color	        VARCHAR(10)  	NOT NULL,
+    member_id	    BIGINT	        NOT NULL,
+    deleted_flag	TINYINT	        NOT NULL	DEFAULT 0,
+    created_at      TIMESTAMP       NOT NULL,
+    updated_at      TIMESTAMP       NOT NULL,
+);
+
 DROP TABLE IF EXISTS event;
 
 CREATE TABLE event
@@ -100,6 +112,8 @@ CREATE TABLE member
     oauth_id      VARCHAR(100),
     PRIMARY KEY (member_id)
 );
+
+
 
 
 ALTER TABLE notification

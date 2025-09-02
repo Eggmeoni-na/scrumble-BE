@@ -116,4 +116,82 @@ class CategoryServiceIntegrationTest extends IntegrationTestHelper {
 			.isInstanceOf(ExpectedException.class)
 			.hasMessageContaining(CATEGORY_DUPLICATED.getMessage());
 	}
+
+	@Test
+	@DisplayName("카테고리 목록 조회_정상")
+	void findCategories_success() {
+		// given
+		Member testMember = MemberFixture.createJOINMember("test@test.com", "test", "123324");
+		memberRepository.save(testMember);
+
+		Category category1 = categoryRepository.save(Category.create()
+			.categoryName("회사업무")
+			.color("#FF0000")
+			.memberId(testMember.getId())
+			.build());
+
+		Category category2 = categoryRepository.save(Category.create()
+			.categoryName("개인업무")
+			.color("#00FF00")
+			.memberId(testMember.getId())
+			.build());
+
+		// when
+		var result = categoryService.findCategories(testMember.getId());
+
+		// then
+		assertThat(result).hasSize(2);
+		assertSoftly(softly -> {
+			softly.assertThat(result.get(0).categoryId()).isEqualTo(category1.getId());
+			softly.assertThat(result.get(0).categoryName()).isEqualTo("회사업무");
+			softly.assertThat(result.get(0).color()).isEqualTo("#FF0000");
+			
+			softly.assertThat(result.get(1).categoryId()).isEqualTo(category2.getId());
+			softly.assertThat(result.get(1).categoryName()).isEqualTo("개인업무");
+			softly.assertThat(result.get(1).color()).isEqualTo("#00FF00");
+		});
+	}
+
+	@Test
+	@DisplayName("카테고리 목록 조회_다른 회원의 카테고리는 조회되지 않음")
+	void findCategories_only_returns_own_categories() {
+		// given
+		Member testMember1 = MemberFixture.createJOINMember("test1@test.com", "test1", "123324");
+		Member testMember2 = MemberFixture.createJOINMember("test2@test.com", "test2", "123325");
+		memberRepository.save(testMember1);
+		memberRepository.save(testMember2);
+
+		categoryRepository.save(Category.create()
+			.categoryName("회원1카테고리")
+			.color("#FF0000")
+			.memberId(testMember1.getId())
+			.build());
+
+		categoryRepository.save(Category.create()
+			.categoryName("회원2카테고리")
+			.color("#00FF00")
+			.memberId(testMember2.getId())
+			.build());
+
+		// when
+		var result = categoryService.findCategories(testMember1.getId());
+
+		// then
+		assertThat(result).hasSize(1);
+		assertThat(result.get(0).categoryName()).isEqualTo("회원1카테고리");
+	}
+
+	@Test
+	@DisplayName("카테고리 목록 조회_빈 결과")
+	void findCategories_empty_result() {
+		// given
+		Member testMember = MemberFixture.createJOINMember("test@test.com", "test", "123324");
+		memberRepository.save(testMember);
+
+		// when
+		var result = categoryService.findCategories(testMember.getId());
+
+		// then
+		assertThat(result).isEmpty();
+	}
 }
