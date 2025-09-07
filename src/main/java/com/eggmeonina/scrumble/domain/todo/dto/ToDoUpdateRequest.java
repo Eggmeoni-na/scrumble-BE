@@ -27,4 +27,7 @@ public class ToDoUpdateRequest {
 	@PastOrPresent
 	@Schema(description = "변경하고자 하는 ToDo 일자 (변경 없으면 기존 일자)")
 	private LocalDate toDoAt;
+	@NotNull(message = "카테고리 Id는 null일 수 없습니다")
+	@Schema(description = "Todo 카테고리 Id")
+	private Long categoryId;
 }

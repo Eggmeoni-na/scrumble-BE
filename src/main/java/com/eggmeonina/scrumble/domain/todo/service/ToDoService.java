@@ -58,7 +58,7 @@ public class ToDoService {
 		}
 		ToDo foundToDo = todoRepository.findByIdAndDeletedFlagNot(toDoId)
 			.orElseThrow(() -> new ToDoException(TODO_NOT_FOUND));
-		foundToDo.update(request.getContents(), request.getToDoStatus(), request.getToDoAt());
+		foundToDo.update(request.getContents(), request.getToDoStatus(), request.getToDoAt(), request.getCategoryId());
 		return ToDoCommandResponse.to(foundToDo);
 	}
 
