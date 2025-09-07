@@ -42,7 +42,7 @@ class ToDoTest {
 		ToDoStatus newToDoStatus = ToDoStatus.COMPLETED;
 
 		// when
-		newToDo.update(newContents, newToDoStatus, newToDo.getToDoAt());
+		newToDo.update(newContents, newToDoStatus, newToDo.getToDoAt(), 1L);
 
 		// then
 		assertThat(newToDo.getToDoStatus()).isEqualTo(newToDoStatus);

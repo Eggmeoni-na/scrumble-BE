@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -46,7 +49,15 @@ public class GlobalExceptionHandler {
 		log.error("e = {}", e.toString(), e);
 	}
 
-	private void log(ExpectedException e) {
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<ApiResponse<Void>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
+		ObjectError error = e.getBindingResult().getAllErrors().get(0);
+		this.log(e);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+			.body(ApiResponse.createErrorResponse(HttpStatus.BAD_REQUEST.value(), error.getDefaultMessage()));
+	}
+
+	private void log(Exception e){
 		log.warn("{}", e.toString(), e);
 	}
 }
