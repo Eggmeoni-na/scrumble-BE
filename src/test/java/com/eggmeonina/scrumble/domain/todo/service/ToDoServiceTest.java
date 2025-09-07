@@ -16,8 +16,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.eggmeonina.scrumble.common.exception.ExpectedException;
 import com.eggmeonina.scrumble.common.exception.MemberException;
 import com.eggmeonina.scrumble.common.exception.ToDoException;
+import com.eggmeonina.scrumble.domain.category.service.CategoryService;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.domain.MemberStatus;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
@@ -37,6 +39,8 @@ class ToDoServiceTest {
 	private MemberRepository memberRepository;
 	@Mock
 	private TodoRepository todoRepository;
+	@Mock
+	private CategoryService categoryService;
 
 	@Test
 	@DisplayName("투두를 등록한다_정상")
@@ -153,6 +157,39 @@ class ToDoServiceTest {
 		assertThatThrownBy(() -> toDoService.updateToDo(1L, 1L, request))
 			.isInstanceOf(ToDoException.class)
 			.hasMessageContaining(WRITER_IS_NOT_MATCH.getMessage());
+	}
+
+	@Test
+	@DisplayName("타인의 카테고리로 투두를 등록한다_실패")
+	void createToDoWithInvalidCategory_fail() {
+		// given
+		Member newMember = createMember("testA", "test@test.com", MemberStatus.JOIN, "1234564");
+		SquadTodoCreateRequest request = new SquadTodoCreateRequest(ToDoType.DAILY, "오늘의 할 일", LocalDate.now(), 1L);
+
+		given(memberRepository.findByIdAndMemberStatusNotJOIN(anyLong())).willReturn(Optional.ofNullable(newMember));
+		doThrow(new ExpectedException(CATEGORY_ACCESS_DENIED)).when(categoryService).validateCategoryAccess(anyLong(), anyLong());
+
+		// when, then
+		assertThatThrownBy(() -> toDoService.createToDo(1L, request))
+			.isInstanceOf(ExpectedException.class)
+			.hasMessageContaining(CATEGORY_ACCESS_DENIED.getMessage());
+	}
+
+	@Test
+	@DisplayName("타인의 카테고리로 투두를 수정한다_실패")
+	void updateToDoWithInvalidCategory_fail() {
+		// given
+		Member newMember = createMember("userA", "test@test.com", MemberStatus.JOIN, "!2234235");
+		ToDo newToDo = createToDo(newMember, "모각코", ToDoStatus.PENDING, false, LocalDate.now());
+		ToDoUpdateRequest request = new ToDoUpdateRequest("수정된 투두 내용", ToDoStatus.COMPLETED, LocalDate.now(), 1L);
+
+		given(todoRepository.existsByIdAndMemberId(anyLong(), anyLong())).willReturn(true);
+		doThrow(new ExpectedException(CATEGORY_ACCESS_DENIED)).when(categoryService).validateCategoryAccess(anyLong(), anyLong());
+
+		// when, then
+		assertThatThrownBy(() -> toDoService.updateToDo(1L, 1L, request))
+			.isInstanceOf(ExpectedException.class)
+			.hasMessageContaining(CATEGORY_ACCESS_DENIED.getMessage());
 	}
 
 }
