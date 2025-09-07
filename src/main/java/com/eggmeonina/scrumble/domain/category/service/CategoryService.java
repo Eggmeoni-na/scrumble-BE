@@ -59,7 +59,7 @@ public class CategoryService {
 	 */
 	@Transactional(readOnly = true)
 	public List<CategoryResponse> findCategories(Long memberId){
-		return categoryRepository.findAllByMemberIdAndDeletedFlagNot(memberId)
+		return categoryRepository.findAllByMemberIdAndDeletedFlagFalse(memberId)
 			.stream()
 			.map(category -> new CategoryResponse(category.getId(), category.getCategoryName(), category.getColor()))
 			.toList();
