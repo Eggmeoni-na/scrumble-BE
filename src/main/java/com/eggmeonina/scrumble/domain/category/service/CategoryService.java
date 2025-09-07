@@ -30,7 +30,7 @@ public class CategoryService {
 	 */
 	@Transactional
 	public void changeCategory(Long memberId, Long categoryId, CategoryUpdateRequest request){
-		Category foundCategory = categoryRepository.findById(categoryId)
+		Category foundCategory = categoryRepository.findByIdAndDeletedFlagFalse(categoryId)
 			.orElseThrow(() -> new ExpectedException(CATEGORY_NOT_FOUND));
 
 		foundCategory.updateCategory(memberId, request.getCategoryName(), request.getColor());
@@ -63,5 +63,21 @@ public class CategoryService {
 			.stream()
 			.map(category -> new CategoryResponse(category.getId(), category.getCategoryName(), category.getColor()))
 			.toList();
+	}
+
+	/**
+	 * 카테고리 삭제
+	 * @param memberId
+	 * @param categoryId
+	 */
+	@Transactional
+	public void deleteCategory(Long memberId, Long categoryId){
+		Category foundCategory = categoryRepository.findByIdAndDeletedFlagFalse(categoryId)
+			.orElseThrow(() -> new ExpectedException(CATEGORY_NOT_FOUND));
+
+		if(!foundCategory.isOwnedBy(memberId))
+			throw new ExpectedException(CATEGORY_ACCESS_DENIED);
+
+		foundCategory.delete();
 	}
 }

@@ -60,4 +60,8 @@ public class Category extends BaseEntity {
 	public boolean isOwnedBy(Long memberId) {
 		return Objects.equals(this.memberId, memberId);
 	}
+
+	public void delete(){
+		this.deletedFlag = true;
+	}
 }
