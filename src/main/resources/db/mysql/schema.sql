@@ -76,6 +76,7 @@ CREATE TABLE todo
     todo_at      date        NOT NULL COMMENT '투두 실행일',
     deleted_flag tinyint     NOT NULL DEFAULT 0,
     member_id    bigint      NOT NULL COMMENT '작성자',
+    category_id  bigint      NULL,
     created_at   datetime    NULL,
     updated_at   datetime    NULL
 );

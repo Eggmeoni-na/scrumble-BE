@@ -1,5 +1,6 @@
 package com.eggmeonina.scrumble.domain.todo.repository.impl;
 
+import static com.eggmeonina.scrumble.domain.category.domain.QCategory.*;
 import static com.eggmeonina.scrumble.domain.squadmember.domain.QSquad.*;
 import static com.eggmeonina.scrumble.domain.todo.domain.QSquadToDo.*;
 import static com.eggmeonina.scrumble.domain.todo.domain.QToDo.*;
@@ -34,6 +35,8 @@ public class ToDoRepositoryCustomImpl implements ToDoRepositoryCustom {
 				.and(squadToDo.deletedFlag.eq(false)))
 			.join(squad)
 			.on(squad.id.eq(squadToDo.squad.id))
+			.leftJoin(category)
+			.on(category.id.eq(toDo.categoryId))
 			.where(toDo.id.gt(request.getLastToDoId())
 			.and(toDo.member.id.eq(memberId))
 				.and(toDo.toDoAt.between(request.getStartDate(), request.getEndDate()))
@@ -43,7 +46,8 @@ public class ToDoRepositoryCustomImpl implements ToDoRepositoryCustom {
 			.transform(
 				groupBy(toDo.toDoAt).list(
 					new QToDoResponse(toDo.toDoAt, list(
-						new QToDoDetailResponse(toDo.id, squad.id, squad.squadName, toDo.contents, toDo.toDoAt, toDo.toDoStatus)
+						new QToDoDetailResponse(toDo.id, squad.id, squad.squadName, toDo.contents, toDo.toDoAt, toDo.toDoStatus, category.id,
+							category.categoryName, category.color)
 					))
 				)
 			);

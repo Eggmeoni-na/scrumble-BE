@@ -241,4 +241,98 @@ class CategoryServiceIntegrationTest extends IntegrationTestHelper {
 			.hasMessageContaining(CATEGORY_NOT_FOUND.getMessage())
 			.isInstanceOf(ExpectedException.class);
 	}
+
+	@Test
+	@DisplayName("카테고리 권한 검증_본인 카테고리_성공")
+	void validateCategoryAccess_own_category_success() {
+		// given
+		Member testMember = MemberFixture.createJOINMember("test@test.com", "test", "123324");
+		memberRepository.save(testMember);
+		
+		Category category = categoryRepository.save(Category.create()
+			.categoryName("내 카테고리")
+			.color("#FF0000")
+			.memberId(testMember.getId())
+			.build());
+
+		// when & then - 예외 발생하지 않음
+		assertThatNoException().isThrownBy(() -> 
+			categoryService.validateCategoryAccess(testMember.getId(), category.getId())
+		);
+	}
+
+	@Test
+	@DisplayName("카테고리 권한 검증_타인의 카테고리_실패")
+	void validateCategoryAccess_others_category_fail() {
+		// given
+		Member owner = MemberFixture.createJOINMember("owner@test.com", "owner", "123324");
+		Member other = MemberFixture.createJOINMember("other@test.com", "other", "123325");
+		memberRepository.save(owner);
+		memberRepository.save(other);
+
+		Category ownerCategory = categoryRepository.save(Category.create()
+			.categoryName("소유자 카테고리")
+			.color("#FF0000")
+			.memberId(owner.getId())
+			.build());
+
+		// when & then
+		assertThatThrownBy(() -> 
+			categoryService.validateCategoryAccess(other.getId(), ownerCategory.getId())
+		)
+			.isInstanceOf(ExpectedException.class)
+			.hasMessageContaining(CATEGORY_ACCESS_DENIED.getMessage());
+	}
+
+	@Test
+	@DisplayName("카테고리 권한 검증_존재하지 않는 카테고리_실패")
+	void validateCategoryAccess_category_not_found_fail() {
+		// given
+		Member testMember = MemberFixture.createJOINMember("test@test.com", "test", "123324");
+		memberRepository.save(testMember);
+
+		// when & then
+		assertThatThrownBy(() -> 
+			categoryService.validateCategoryAccess(testMember.getId(), 999L)
+		)
+			.isInstanceOf(ExpectedException.class)
+			.hasMessageContaining(CATEGORY_NOT_FOUND.getMessage());
+	}
+
+	@Test
+	@DisplayName("카테고리 권한 검증_카테고리 ID가 null_성공")
+	void validateCategoryAccess_null_category_id_success() {
+		// given
+		Member testMember = MemberFixture.createJOINMember("test@test.com", "test", "123324");
+		memberRepository.save(testMember);
+
+		// when & then - 예외 발생하지 않음
+		assertThatNoException().isThrownBy(() -> 
+			categoryService.validateCategoryAccess(testMember.getId(), null)
+		);
+	}
+
+	@Test
+	@DisplayName("카테고리 권한 검증_삭제된 카테고리_실패")
+	void validateCategoryAccess_deleted_category_fail() {
+		// given
+		Member testMember = MemberFixture.createJOINMember("test@test.com", "test", "123324");
+		memberRepository.save(testMember);
+
+		Category category = categoryRepository.save(Category.create()
+			.categoryName("삭제될 카테고리")
+			.color("#FF0000")
+			.memberId(testMember.getId())
+			.build());
+
+		// 카테고리 삭제
+		categoryService.deleteCategory(testMember.getId(), category.getId());
+
+		// when & then
+		assertThatThrownBy(() -> 
+			categoryService.validateCategoryAccess(testMember.getId(), category.getId())
+		)
+			.isInstanceOf(ExpectedException.class)
+			.hasMessageContaining(CATEGORY_NOT_FOUND.getMessage());
+	}
 }

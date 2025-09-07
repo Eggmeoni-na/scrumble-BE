@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.eggmeonina.scrumble.common.exception.MemberException;
 import com.eggmeonina.scrumble.common.exception.SquadException;
 import com.eggmeonina.scrumble.common.exception.ToDoException;
+import com.eggmeonina.scrumble.domain.category.repository.CategoryRepository;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.domain.MemberStatus;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
@@ -27,6 +28,7 @@ import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoCreateRequest;
 import com.eggmeonina.scrumble.domain.todo.dto.ToDoCommandResponse;
 import com.eggmeonina.scrumble.domain.todo.repository.SquadTodoRepository;
 import com.eggmeonina.scrumble.domain.todo.repository.TodoRepository;
+import com.eggmeonina.scrumble.fixture.CategoryFixture;
 import com.eggmeonina.scrumble.helper.IntegrationTestHelper;
 
 class SquadToDoFacadeServiceIntegrationTest extends IntegrationTestHelper {
@@ -46,6 +48,9 @@ class SquadToDoFacadeServiceIntegrationTest extends IntegrationTestHelper {
 	@Autowired
 	private TodoRepository todoRepository;
 
+	@Autowired
+	private CategoryRepository categoryRepository;
+
 	@Test
 	@DisplayName("스쿼드가 존재하지 않는 투두를 등록한다_실패")
 	void createToDoWhenNotExistsSquad_fail() {
@@ -56,7 +61,10 @@ class SquadToDoFacadeServiceIntegrationTest extends IntegrationTestHelper {
 		memberRepository.save(newMember);
 		squadRepository.save(newSquad);
 
-		SquadTodoCreateRequest request = new SquadTodoCreateRequest(ToDoType.DAILY, "테스트 작성하기", LocalDate.now());
+		var newCategory = CategoryFixture.createCategory(newMember.getId());
+		categoryRepository.save(newCategory);
+
+		SquadTodoCreateRequest request = new SquadTodoCreateRequest(ToDoType.DAILY, "테스트 작성하기", LocalDate.now(), newCategory.getId());
 
 		// when, then
 		assertThatThrownBy(
@@ -77,7 +85,10 @@ class SquadToDoFacadeServiceIntegrationTest extends IntegrationTestHelper {
 		memberRepository.save(newMember);
 		squadRepository.save(newSquad);
 
-		SquadTodoCreateRequest request = new SquadTodoCreateRequest(ToDoType.DAILY, "테스트 작성하기", LocalDate.now());
+		var newCategory = CategoryFixture.createCategory(newMember.getId());
+		categoryRepository.save(newCategory);
+
+		SquadTodoCreateRequest request = new SquadTodoCreateRequest(ToDoType.DAILY, "테스트 작성하기", LocalDate.now(), newCategory.getId());
 
 		// when
 		ToDoCommandResponse response = squadToDoFacadeService.createToDoAndSquadToDo(newSquad.getId(),
@@ -103,7 +114,10 @@ class SquadToDoFacadeServiceIntegrationTest extends IntegrationTestHelper {
 		memberRepository.save(newMember);
 		squadRepository.save(newSquad);
 
-		SquadTodoCreateRequest request = new SquadTodoCreateRequest(ToDoType.DAILY, "테스트 작성하기", LocalDate.now());
+		var newCategory = CategoryFixture.createCategory(newMember.getId());
+		categoryRepository.save(newCategory);
+
+		SquadTodoCreateRequest request = new SquadTodoCreateRequest(ToDoType.DAILY, "테스트 작성하기", LocalDate.now(), newCategory.getId());
 
 		// when, then
 		assertThatThrownBy(
