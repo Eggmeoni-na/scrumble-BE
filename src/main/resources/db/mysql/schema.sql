@@ -7,7 +7,7 @@ CREATE TABLE category (
     member_id	    BIGINT	        NOT NULL,
     deleted_flag	TINYINT	        NOT NULL	DEFAULT 0,
     created_at      TIMESTAMP       NOT NULL,
-    updated_at      TIMESTAMP       NOT NULL,
+    updated_at      TIMESTAMP       NOT NULL
 );
 
 DROP TABLE IF EXISTS event;

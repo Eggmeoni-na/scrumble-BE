@@ -15,6 +15,7 @@ import com.eggmeonina.scrumble.domain.category.dto.CategoryUpdateRequest;
 import com.eggmeonina.scrumble.domain.category.repository.CategoryRepository;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
+import com.eggmeonina.scrumble.fixture.CategoryFixture;
 import com.eggmeonina.scrumble.fixture.MemberFixture;
 import com.eggmeonina.scrumble.helper.IntegrationTestHelper;
 
@@ -193,5 +194,51 @@ class CategoryServiceIntegrationTest extends IntegrationTestHelper {
 
 		// then
 		assertThat(result).isEmpty();
+	}
+
+	@Test
+	@DisplayName("카테고리 삭제_정상")
+	void delete_success() {
+		// given
+		Member testMember = MemberFixture.createJOINMember("test@test.com", "test", "123324");
+		memberRepository.save(testMember);
+		Category createCategory = CategoryFixture.createCategory(testMember.getId());
+		categoryRepository.save(createCategory);
+
+		// when
+		categoryService.deleteCategory(testMember.getId(), createCategory.getId());
+
+		// then
+		Category foundCategory = categoryRepository.findById(createCategory.getId()).get();
+		assertThat(foundCategory.isDeletedFlag()).isTrue();
+	}
+
+	@Test
+	@DisplayName("타인의 카테고리 삭제_실패")
+	void delete_not_owner_fail() {
+		// given
+		Member testMember = MemberFixture.createJOINMember("test@test.com", "test", "123324");
+		memberRepository.save(testMember);
+		Category createCategory = CategoryFixture.createCategory(testMember.getId());
+		categoryRepository.save(createCategory);
+
+		Member anotherMember = MemberFixture.createJOINMember("test2@test.com", "test2", "1233324");
+		memberRepository.save(anotherMember);
+
+		assertThatThrownBy(() -> categoryService.deleteCategory(anotherMember.getId(), createCategory.getId()))
+			.hasMessageContaining(CATEGORY_ACCESS_DENIED.getMessage())
+			.isInstanceOf(ExpectedException.class);
+	}
+
+	@Test
+	@DisplayName("존재하지 않는 카테고리 삭제_실패")
+	void delete_not_found_fail() {
+		// given
+		Member testMember = MemberFixture.createJOINMember("test@test.com", "test", "123324");
+		memberRepository.save(testMember);
+
+		assertThatThrownBy(()-> categoryService.deleteCategory(testMember.getId(), 1L))
+			.hasMessageContaining(CATEGORY_NOT_FOUND.getMessage())
+			.isInstanceOf(ExpectedException.class);
 	}
 }

@@ -3,6 +3,7 @@ package com.eggmeonina.scrumble.domain.category.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,7 +34,7 @@ public class CategoryController {
 
 	private final CategoryService categoryService;
 
-	@PutMapping("{categoryId}")
+	@PutMapping("/{categoryId}")
 	@Operation(summary = "카테고리명, 컬러를 수정한다")
 	@Parameter(name = "member", hidden = true)
 	public ApiResponse<Void> updateCategory(
@@ -61,6 +62,14 @@ public class CategoryController {
 	@Parameter(name = "member", hidden = true)
 	public ApiResponse<List<CategoryResponse>> findCategories(@LoginMember Member member) {
 		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), categoryService.findCategories(member.getId()));
+	}
+
+	@DeleteMapping("/{categoryId}")
+	@Operation(summary = "카테고리를 삭제한다")
+	@Parameter(name = "member", hidden = true)
+	public ApiResponse<Void> deleteCategory(@LoginMember Member member, @PathVariable Long categoryId){
+		categoryService.deleteCategory(member.getId(), categoryId);
+		return ApiResponse.createSuccessWithNoContentResponse(HttpStatus.OK.value());
 	}
 
 }
