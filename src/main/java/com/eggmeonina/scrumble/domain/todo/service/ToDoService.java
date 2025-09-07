@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.eggmeonina.scrumble.common.exception.MemberException;
 import com.eggmeonina.scrumble.common.exception.ToDoException;
+import com.eggmeonina.scrumble.domain.category.service.CategoryService;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
 import com.eggmeonina.scrumble.domain.member.repository.MemberRepository;
 import com.eggmeonina.scrumble.domain.todo.domain.ToDo;
@@ -28,11 +29,15 @@ public class ToDoService {
 
 	private final MemberRepository memberRepository;
 	private final TodoRepository todoRepository;
+	private final CategoryService categoryService;
 
 	@Transactional
 	public ToDoCommandResponse createToDo(Long memberId, SquadTodoCreateRequest request){
 		Member foundMember = memberRepository.findByIdAndMemberStatusNotJOIN(memberId)
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+
+		// 카테고리 권한 검증
+		categoryService.validateCategoryAccess(memberId, request.getCategoryId());
 
 		ToDo newToDo = SquadTodoCreateRequest.to(request, foundMember);
 		todoRepository.save(newToDo);
@@ -56,8 +61,13 @@ public class ToDoService {
 		if(!isWriter(memberId, toDoId)){
 			throw new ToDoException(WRITER_IS_NOT_MATCH);
 		}
+
+		// 카테고리 권한 검증
+		categoryService.validateCategoryAccess(memberId, request.getCategoryId());
+
 		ToDo foundToDo = todoRepository.findByIdAndDeletedFlagNot(toDoId)
 			.orElseThrow(() -> new ToDoException(TODO_NOT_FOUND));
+
 		foundToDo.update(request.getContents(), request.getToDoStatus(), request.getToDoAt(), request.getCategoryId());
 		return ToDoCommandResponse.to(foundToDo);
 	}

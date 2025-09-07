@@ -80,4 +80,22 @@ public class CategoryService {
 
 		foundCategory.delete();
 	}
+
+	/**
+	 * 카테고리 권한 검증 - 해당 사용자가 카테고리에 접근할 수 있는지 확인
+	 * @param memberId
+	 * @param categoryId
+	 */
+	@Transactional(readOnly = true)
+	public void validateCategoryAccess(Long memberId, Long categoryId){
+		if(categoryId == null) return;
+		
+		Category foundCategory = categoryRepository.findByIdAndDeletedFlagFalse(categoryId)
+			.orElseThrow(() -> new ExpectedException(CATEGORY_NOT_FOUND));
+
+		if(!foundCategory.isOwnedBy(memberId)){
+			throw new ExpectedException(CATEGORY_ACCESS_DENIED);
+		}
+	}
+
 }
