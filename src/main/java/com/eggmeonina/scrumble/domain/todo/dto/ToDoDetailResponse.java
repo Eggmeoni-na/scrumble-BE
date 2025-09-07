@@ -17,15 +17,21 @@ public class ToDoDetailResponse {
 	private String contents;
 	private LocalDate todoAt;
 	private ToDoStatus toDoStatus;
+	private Long categoryId;
+	private String categoryName;
+	private String categoryColor;
 
 	@QueryProjection
 	public ToDoDetailResponse(Long toDoId, Long squadId, String squadName, String contents, LocalDate todoAt,
-		ToDoStatus toDoStatus) {
+		ToDoStatus toDoStatus, Long categoryId, String categoryName, String categoryColor) {
 		this.toDoId = toDoId;
 		this.squadId = squadId;
 		this.squadName = squadName;
 		this.contents = contents;
 		this.todoAt = todoAt;
 		this.toDoStatus = toDoStatus;
+		this.categoryId = categoryId;
+		this.categoryName = categoryName;
+		this.categoryColor = categoryColor;
 	}
 }

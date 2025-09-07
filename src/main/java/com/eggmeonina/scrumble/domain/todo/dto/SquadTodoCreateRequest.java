@@ -18,6 +18,7 @@ public class SquadTodoCreateRequest {
 	private ToDoType toDoType;
 	private String contents;
 	private LocalDate toDoAt;
+	private Long categoryId;
 	public static ToDo to(SquadTodoCreateRequest request, Member member){
 		return ToDo.create()
 			.toDoType(request.getToDoType())
@@ -26,6 +27,7 @@ public class SquadTodoCreateRequest {
 			.toDoAt(request.getToDoAt())
 			.deletedFlag(false)
 			.member(member)
+			.categoryId(request.getCategoryId())
 			.build();
 	}
 }
