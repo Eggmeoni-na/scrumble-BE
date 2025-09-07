@@ -43,7 +43,7 @@ class ToDoServiceTest {
 	void createToDo_success() {
 		// given
 		Member newMember = createMember("testA", "test@test.com", MemberStatus.JOIN, "1234564");
-		SquadTodoCreateRequest request = new SquadTodoCreateRequest(ToDoType.DAILY, "오늘의 할 일", LocalDate.now());
+		SquadTodoCreateRequest request = new SquadTodoCreateRequest(ToDoType.DAILY, "오늘의 할 일", LocalDate.now(), 1L);
 
 		given(memberRepository.findByIdAndMemberStatusNotJOIN(anyLong())).willReturn(Optional.ofNullable(newMember));
 
@@ -58,7 +58,7 @@ class ToDoServiceTest {
 	@DisplayName("탈퇴한 회원이 투두를 등록한다_실패")
 	void createToDoWhenWithdrawMember_fail() {
 		// given
-		SquadTodoCreateRequest request = new SquadTodoCreateRequest(ToDoType.DAILY, "오늘의 할 일", LocalDate.now());
+		SquadTodoCreateRequest request = new SquadTodoCreateRequest(ToDoType.DAILY, "오늘의 할 일", LocalDate.now(), 1L);
 
 		given(memberRepository.findByIdAndMemberStatusNotJOIN(anyLong())).willReturn(Optional.empty());
 
@@ -105,7 +105,7 @@ class ToDoServiceTest {
 		Member newMember = createMember("userA", "test@test.com", MemberStatus.JOIN, "!2234235");
 		ToDo newToDo = createToDo(newMember, "모각코", ToDoStatus.PENDING, false, LocalDate.now());
 
-		ToDoUpdateRequest request = new ToDoUpdateRequest("수정된 투두 내용", ToDoStatus.COMPLETED, LocalDate.now());
+		ToDoUpdateRequest request = new ToDoUpdateRequest("수정된 투두 내용", ToDoStatus.COMPLETED, LocalDate.now(), 1L);
 
 		given(todoRepository.existsByIdAndMemberId(anyLong(), anyLong()))
 			.willReturn(true);
@@ -127,7 +127,7 @@ class ToDoServiceTest {
 	@DisplayName("삭제된 투두를 수정한다_실패")
 	void updateToDoWhenDeletedToDo_fail() {
 		// given
-		ToDoUpdateRequest request = new ToDoUpdateRequest("수정된 투두 내용", ToDoStatus.COMPLETED, LocalDate.now());
+		ToDoUpdateRequest request = new ToDoUpdateRequest("수정된 투두 내용", ToDoStatus.COMPLETED, LocalDate.now(), 1L);
 
 		given(todoRepository.existsByIdAndMemberId(anyLong(), anyLong()))
 			.willReturn(true);
@@ -144,7 +144,7 @@ class ToDoServiceTest {
 	@DisplayName("작성자가 아닌 회원이 투두를 수정한다_실패")
 	void updateToDoWhenIsNotWriter_fail() {
 		// given
-		ToDoUpdateRequest request = new ToDoUpdateRequest("수정된 투두 내용", ToDoStatus.COMPLETED, LocalDate.now());
+		ToDoUpdateRequest request = new ToDoUpdateRequest("수정된 투두 내용", ToDoStatus.COMPLETED, LocalDate.now(), 1L);
 
 		given(todoRepository.existsByIdAndMemberId(anyLong(), anyLong()))
 			.willReturn(false);
