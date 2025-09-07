@@ -56,7 +56,7 @@ public class ToDo extends BaseEntity {
 	@JoinColumn(name = "member_id", nullable = false)
 	private Member member;
 
-	@Column(name = "categoryId", nullable = true)
+	@Column(name = "category_id", nullable = true)
 	private Long categoryId;
 
 	@Builder(builderMethodName = "create")
