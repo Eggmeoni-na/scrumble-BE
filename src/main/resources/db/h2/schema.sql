@@ -78,6 +78,7 @@ CREATE TABLE todo
     todo_at      DATE        NOT NULL,
     deleted_flag TINYINT     NOT NULL,
     member_id    BIGINT      NOT NULL,
+    category_id  BIGINT      NULL,
     created_at   TIMESTAMP   NULL,
     updated_at   TIMESTAMP   NULL,
     PRIMARY KEY (todo_id)
