@@ -1,4 +1,4 @@
-DROP TABLE category;
+DROP TABLE IF EXISTS category;
 
 CREATE TABLE category (
     category_id	    BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
