@@ -2,6 +2,8 @@ name: Claude Code Review
 
 on:
   pull_request:
+    branches:
+      - dev
     types: [opened, synchronize]
     # Optional: Only run on specific file changes
     # paths:
