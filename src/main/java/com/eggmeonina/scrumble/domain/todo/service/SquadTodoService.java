@@ -13,6 +13,8 @@ import com.eggmeonina.scrumble.domain.squadmember.domain.Squad;
 import com.eggmeonina.scrumble.domain.squadmember.repository.SquadRepository;
 import com.eggmeonina.scrumble.domain.todo.domain.SquadToDo;
 import com.eggmeonina.scrumble.domain.todo.domain.ToDo;
+import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoCountRequest;
+import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoCountResponse;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoRequest;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoResponse;
 import com.eggmeonina.scrumble.domain.todo.repository.SquadTodoRepository;
@@ -57,4 +59,8 @@ public class SquadTodoService {
 		foundSquadToDo.delete();
 	}
 
+	@Transactional(readOnly = true)
+	public List<SquadTodoCountResponse> getSquadTodoCountSummary(Long memberId, Long squadMemberId, SquadTodoCountRequest request) {
+		return squadTodoRepository.getSquadTodoCountSummary(memberId, squadMemberId, request);
+	}
 }

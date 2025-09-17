@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.eggmeonina.scrumble.common.anotation.LoginMember;
 import com.eggmeonina.scrumble.common.domain.ApiResponse;
 import com.eggmeonina.scrumble.domain.member.domain.Member;
+import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoCountRequest;
+import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoCountResponse;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoRequest;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoResponse;
 import com.eggmeonina.scrumble.domain.todo.facade.SquadToDoFacadeService;
@@ -53,6 +55,16 @@ public class SquadToDoController {
 	) {
 		squadToDoFacadeService.deleteToDoAndSquadToDo(squadId, toDoId, member.getId());
 		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), Map.of("toDoId", toDoId));
+	}
+
+	@GetMapping("/squad-members/{squadMemberId}/count")
+	@Operation(summary = "스쿼드 투두의 카운트를 조회한다", description = "스쿼드 투두의 전체/성공 카운트를 조회한다")
+	public ApiResponse<List<SquadTodoCountResponse>> getSquadTodoCountSummary(
+		@Parameter(hidden = true) @LoginMember Member member,
+		@Parameter(description = "스쿼드멤버 ID") @PathVariable Long squadMemberId,
+		@ModelAttribute SquadTodoCountRequest request
+	){
+		return ApiResponse.createSuccessResponse(HttpStatus.OK.value(), squadTodoService.getSquadTodoCountSummary(member.getId(), squadMemberId, request));
 	}
 
 }
