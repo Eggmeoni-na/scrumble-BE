@@ -16,13 +16,22 @@ public class SquadTodoResponse {
 	private String contents;
 	private LocalDate toDoAt;
 	private ToDoStatus toDoStatus;
+	private Long categoryId;
+	private String categoryName;
+	private String categoryColor;
 
 	@QueryProjection
-	public SquadTodoResponse(Long toDoId, Long squadToDoId, String contents, LocalDate toDoAt, ToDoStatus toDoStatus) {
+	public SquadTodoResponse(Long toDoId, Long squadToDoId, String contents, LocalDate toDoAt, ToDoStatus toDoStatus,
+		Long categoryId,
+		String categoryName,
+		String categoryColor) {
 		this.toDoId = toDoId;
 		this.squadToDoId = squadToDoId;
 		this.contents = contents;
 		this.toDoAt = toDoAt;
 		this.toDoStatus = toDoStatus;
+		this.categoryId = categoryId;
+		this.categoryName = categoryName;
+		this.categoryColor = categoryColor;
 	}
 }

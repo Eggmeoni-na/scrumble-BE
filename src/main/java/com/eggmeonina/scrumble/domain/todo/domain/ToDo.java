@@ -49,22 +49,26 @@ public class ToDo extends BaseEntity {
 	@Column(name = "todo_at", nullable = false)
 	private LocalDate toDoAt;
 
-	@Column(name = "deleted_flag")
+	@Column(name = "deleted_flag", nullable = false)
 	private boolean deletedFlag;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id")
+	@JoinColumn(name = "member_id", nullable = false)
 	private Member member;
+
+	@Column(name = "category_id", nullable = true)
+	private Long categoryId;
 
 	@Builder(builderMethodName = "create")
 	public ToDo(ToDoType toDoType, String contents, ToDoStatus toDoStatus, LocalDate toDoAt, boolean deletedFlag,
-		Member member) {
+		Member member, Long categoryId) {
 		this.toDoType = toDoType;
 		this.contents = contents;
 		this.toDoStatus = toDoStatus;
 		this.toDoAt = toDoAt;
 		this.deletedFlag = deletedFlag;
 		this.member = member;
+		this.categoryId = categoryId;
 		initValid(member, contents, toDoType);
 	}
 
@@ -84,9 +88,10 @@ public class ToDo extends BaseEntity {
 		this.deletedFlag = true;
 	}
 
-	public void update(String newContents, ToDoStatus newToDoStatus, LocalDate newTodoAt){
+	public void update(String newContents, ToDoStatus newToDoStatus, LocalDate newTodoAt, Long categoryId){
 		this.contents = newContents;
 		this.toDoStatus = newToDoStatus;
 		this.toDoAt = newTodoAt;
+		this.categoryId = categoryId;
 	}
 }

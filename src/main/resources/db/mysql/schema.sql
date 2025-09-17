@@ -1,3 +1,15 @@
+DROP TABLE IF EXISTS category;
+
+CREATE TABLE category (
+    category_id	    BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    category_name	VARCHAR(100)	NOT NULL,
+    color	        VARCHAR(10)  	NOT NULL,
+    member_id	    BIGINT	        NOT NULL,
+    deleted_flag	TINYINT	        NOT NULL	DEFAULT 0,
+    created_at      TIMESTAMP       NOT NULL,
+    updated_at      TIMESTAMP       NOT NULL
+);
+
 DROP TABLE IF EXISTS event;
 
 CREATE TABLE event
@@ -64,6 +76,7 @@ CREATE TABLE todo
     todo_at      date        NOT NULL COMMENT '투두 실행일',
     deleted_flag tinyint     NOT NULL DEFAULT 0,
     member_id    bigint      NOT NULL COMMENT '작성자',
+    category_id  bigint      NULL,
     created_at   datetime    NULL,
     updated_at   datetime    NULL
 );
