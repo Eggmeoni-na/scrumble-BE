@@ -16,6 +16,8 @@ import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoCountResponse;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoRequest;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoResponse;
 import com.eggmeonina.scrumble.domain.todo.repository.SquadTodoRepositoryCustom;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -48,14 +50,19 @@ public class SquadTodoRepositoryCustomImpl implements SquadTodoRepositoryCustom 
 	}
 
 	@Override
-	public List<SquadTodoCountResponse> getSquadTodoCountSummary(Long memberId, Long squadMemberId, SquadTodoCountRequest request) {
+	public List<SquadTodoCountResponse> getSquadTodoCountSummary(Long memberId, Long squadMemberId,
+		SquadTodoCountRequest request) {
 		return query.select(
-			new QSquadTodoCountResponse(
-				squadToDo.toDo.toDoAt
-				, squadToDo.toDo.count()
-				, squadToDo.toDo.toDoStatus.eq(ToDoStatus.COMPLETED).countDistinct()
+				new QSquadTodoCountResponse(
+					squadToDo.toDo.toDoAt
+					, squadToDo.toDo.countDistinct()
+					, new CaseBuilder()
+					.when(squadToDo.toDo.toDoStatus.eq(ToDoStatus.COMPLETED))
+					.then(squadToDo.toDo.id)
+					.otherwise((Expression<Long>) null)
+					.count()
+				)
 			)
-		)
 			.from(squadMember)
 			.join(squadToDo)
 			.on(squadMember.squad.id.eq(squadToDo.squad.id)
@@ -68,6 +75,5 @@ public class SquadTodoRepositoryCustomImpl implements SquadTodoRepositoryCustom 
 			.groupBy(squadToDo.toDo.toDoAt)
 			.orderBy(squadToDo.toDo.toDoAt.desc())
 			.fetch();
-
 	}
 }
