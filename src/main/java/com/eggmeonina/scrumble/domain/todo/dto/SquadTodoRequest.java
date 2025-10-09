@@ -19,6 +19,9 @@ public class SquadTodoRequest {
 	@Schema(description = "종료일자")
 	private LocalDate endDate;
 	@NotNull
+	@Schema(description = "투두 타입")
+	private String toDoType;
+	@NotNull
 	@Schema(description = "마지막 조회 toDoId, 최초는 99999999")
 	private Long lastToDoId;
 	@Positive

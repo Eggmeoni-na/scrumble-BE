@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.eggmeonina.scrumble.domain.todo.domain.ToDoType;
 import com.eggmeonina.scrumble.domain.todo.dto.QToDoDetailResponse;
 import com.eggmeonina.scrumble.domain.todo.dto.QToDoResponse;
 import com.eggmeonina.scrumble.domain.todo.dto.ToDoRequest;
@@ -40,7 +41,8 @@ public class ToDoRepositoryCustomImpl implements ToDoRepositoryCustom {
 			.where(toDo.id.gt(request.getLastToDoId())
 			.and(toDo.member.id.eq(memberId))
 				.and(toDo.toDoAt.between(request.getStartDate(), request.getEndDate()))
-				.and(toDo.deletedFlag.eq(false)))
+				.and(toDo.deletedFlag.eq(false))
+				.and(toDo.toDoType.eq(ToDoType.valueOf(request.getToDoType()))))
 			.limit(request.getPageSize())
 			.orderBy(toDo.toDoAt.desc(), toDo.id.asc())
 			.transform(

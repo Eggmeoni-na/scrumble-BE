@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.eggmeonina.scrumble.domain.todo.domain.ToDoStatus;
+import com.eggmeonina.scrumble.domain.todo.domain.ToDoType;
 import com.eggmeonina.scrumble.domain.todo.dto.QSquadTodoCountResponse;
 import com.eggmeonina.scrumble.domain.todo.dto.QSquadTodoResponse;
 import com.eggmeonina.scrumble.domain.todo.dto.SquadTodoCountRequest;
@@ -43,7 +44,8 @@ public class SquadTodoRepositoryCustomImpl implements SquadTodoRepositoryCustom 
 				.and(squadToDo.toDo.id.gt(request.getLastToDoId()))
 				.and(squadToDo.deletedFlag.eq(false))
 				.and(squadToDo.toDo.toDoAt.between(request.getStartDate(), request.getEndDate()))
-				.and(squadToDo.toDo.deletedFlag.eq(false)))
+				.and(squadToDo.toDo.deletedFlag.eq(false))
+				.and(squadToDo.toDo.toDoType.eq(ToDoType.valueOf(request.getToDoType()))))
 			.limit(request.getPageSize())
 			.orderBy(squadToDo.toDo.toDoAt.desc(), squadToDo.toDo.id.asc())
 			.fetch();
@@ -71,7 +73,8 @@ public class SquadTodoRepositoryCustomImpl implements SquadTodoRepositoryCustom 
 				.and(squadMember.member.id.eq(memberId))
 				.and(squadToDo.deletedFlag.eq(false))
 				.and(squadToDo.toDo.toDoAt.between(request.startDate(), request.endDate()))
-				.and(squadToDo.toDo.deletedFlag.eq(false)))
+				.and(squadToDo.toDo.deletedFlag.eq(false))
+				.and(squadToDo.toDo.toDoType.eq(ToDoType.valueOf(request.toDoType()))))
 			.groupBy(squadToDo.toDo.toDoAt)
 			.orderBy(squadToDo.toDo.toDoAt.desc())
 			.fetch();
