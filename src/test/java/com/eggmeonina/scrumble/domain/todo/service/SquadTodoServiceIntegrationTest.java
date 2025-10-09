@@ -1,6 +1,8 @@
 package com.eggmeonina.scrumble.domain.todo.service;
 
 import static com.eggmeonina.scrumble.fixture.SquadMemberFixture.*;
+import static com.eggmeonina.scrumble.fixture.SquadTodoFixture.createMember;
+import static com.eggmeonina.scrumble.fixture.SquadTodoFixture.createSquad;
 import static com.eggmeonina.scrumble.fixture.SquadTodoFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -81,7 +83,7 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 		@DisplayName("당일 데이터만 조회할 때_성공")
 		void findSquadTodos_success() {
 			// given
-			SquadTodoRequest request = new SquadTodoRequest(LocalDate.now(), LocalDate.now(), 0L, 10L);
+			SquadTodoRequest request = new SquadTodoRequest(LocalDate.now(), LocalDate.now(), "DAILY", 0L, 10L);
 
 			// when
 			List<SquadTodoResponse> squadTodos = squadTodoService.findSquadTodos(newSquadMember.getId(),request);
@@ -95,7 +97,7 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 		void findSquadTodosWhenTodoDeleted_success() {
 			// given
 			LocalDate date = LocalDate.now().minusDays(2);
-			SquadTodoRequest request = new SquadTodoRequest(date, date, 999999L, 10L);
+			SquadTodoRequest request = new SquadTodoRequest(date, date, "DAILY", 999999L, 10L);
 
 			// when
 			List<SquadTodoResponse> squadTodos = squadTodoService.findSquadTodos(newSquadMember.getId(),request);
@@ -110,7 +112,7 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 			// given
 			LocalDate startDate = LocalDate.now().minusDays(1);
 			LocalDate endDate = LocalDate.now();
-			SquadTodoRequest request = new SquadTodoRequest(startDate, endDate, 0L, 10L);
+			SquadTodoRequest request = new SquadTodoRequest(startDate, endDate, "DAILY", 0L, 10L);
 
 			// when
 			List<SquadTodoResponse> squadTodos = squadTodoService.findSquadTodos(newSquadMember.getId(),request);
@@ -149,7 +151,7 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 			LocalDate startDate = LocalDate.now().minusDays(1);
 			LocalDate endDate = LocalDate.now();
 			long pageSize = 2L;
-			SquadTodoRequest request = new SquadTodoRequest(startDate, endDate, 0L, pageSize);
+			SquadTodoRequest request = new SquadTodoRequest(startDate, endDate, "DAILY", 0L, pageSize);
 
 			// when
 			List<SquadTodoResponse> squadTodos = squadTodoService.findSquadTodos(newSquadMember.getId(), request);
@@ -178,7 +180,7 @@ class SquadTodoAndToDoIntegrationTest extends IntegrationTestHelper {
 			LocalDate startDate = LocalDate.now().minusDays(1);
 			LocalDate endDate = LocalDate.now();
 			long pageSize = 2L;
-			SquadTodoRequest request = new SquadTodoRequest(startDate, endDate, 0L, pageSize);
+			SquadTodoRequest request = new SquadTodoRequest(startDate, endDate, "DAILY", 0L, pageSize);
 
 			// when
 			List<SquadTodoResponse> squadTodos = squadTodoService.findSquadTodos(newSquadMember.getId(), request);

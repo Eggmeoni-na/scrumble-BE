@@ -77,7 +77,7 @@ class SquadTodoServiceTest {
 		Long squadMemberId = 1L;
 		LocalDate startDate = LocalDate.of(2024, 1, 1);
 		LocalDate endDate = LocalDate.of(2024, 1, 7);
-		SquadTodoCountRequest request = new SquadTodoCountRequest(startDate, endDate);
+		SquadTodoCountRequest request = new SquadTodoCountRequest(startDate, endDate, "DAILY");
 
 		List<SquadTodoCountResponse> expectedResponse = Arrays.asList(
 			new SquadTodoCountResponse(LocalDate.of(2024, 1, 1), 5L, 3L),
@@ -116,7 +116,7 @@ class SquadTodoServiceTest {
 		Long squadMemberId = 1L;
 		LocalDate startDate = LocalDate.of(2024, 1, 1);
 		LocalDate endDate = LocalDate.of(2024, 1, 7);
-		SquadTodoCountRequest request = new SquadTodoCountRequest(startDate, endDate);
+		SquadTodoCountRequest request = new SquadTodoCountRequest(startDate, endDate, "DAILY");
 
 		given(squadTodoRepository.getSquadTodoCountSummary(memberId, squadMemberId, request))
 			.willReturn(List.of());

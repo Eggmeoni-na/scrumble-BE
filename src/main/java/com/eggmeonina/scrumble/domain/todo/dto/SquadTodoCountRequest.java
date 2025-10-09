@@ -4,6 +4,6 @@ import java.time.LocalDate;
 
 import jakarta.validation.constraints.NotNull;
 
-public record SquadTodoCountRequest(@NotNull LocalDate startDate, @NotNull LocalDate endDate) {
+public record SquadTodoCountRequest(@NotNull LocalDate startDate, @NotNull LocalDate endDate, @NotNull String toDoType) {
 
 }
