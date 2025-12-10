@@ -15,6 +15,8 @@ public class ToDoRequest {
 	@NotNull
 	private LocalDate endDate;
 	@NotNull
+	private String toDoType;
+	@NotNull
 	private Long lastToDoId;
 	@Positive
 	private long pageSize;
