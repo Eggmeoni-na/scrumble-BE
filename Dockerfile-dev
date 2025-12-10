@@ -1,4 +1,4 @@
-FROM openjdk:17-slim
+FROM amazoncorretto:17.0.17-alpine3.22
 # Jar 파일의 위치 선언
 ARG JAR_FILE=build/libs/*.jar
 COPY ${JAR_FILE} app.jar
